@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controle de Contas Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #090d17;
+    --bg-2: #0d1322;
+    --panel: #121a2c;
+    --panel-2: #182238;
+    --border: #24304a;
+    --border-soft: #1c2740;
+    --text: #eef2fb;
+    --text-dim: #8b96b5;
+    --text-dimmer: #5d6788;
+
+    --gold: #f0b64a;
+    --blue: #5b8cff;
+    --purple: #9c7bff;
+
+    --green: #2fd889;
+    --green-soft: rgba(47, 216, 137, 0.13);
+    --green-line: rgba(47, 216, 137, 0.35);
+
+    --red: #ff5c7a;
+    --red-soft: rgba(255, 92, 122, 0.13);
+    --red-line: rgba(255, 92, 122, 0.35);
+
+    --sans: 'Inter', Arial, sans-serif;
+    --display: 'Sora', 'Inter', sans-serif;
+    --mono: 'JetBrains Mono', 'Courier New', monospace;
+
+    --sidebar-w: 240px;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+
+  body {
+    margin: 0;
+    background:
+      radial-gradient(1100px 500px at 15% -10%, rgba(91, 140, 255, 0.13), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(240, 182, 74, 0.10), transparent 55%),
+      var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+  }
+
+  ::-webkit-scrollbar { height: 10px; width: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg-2); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 6px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-soft); }
+
+  button { font-family: var(--sans); cursor: pointer; }
+  input, select { font-family: var(--sans); }
+
+  /* ---------------- LOGIN ---------------- */
+  #loginScreen {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 500;
+    padding: 20px;
+  }
+  .login-card {
+    width: 100%; max-width: 380px;
+    background: linear-gradient(160deg, var(--panel), var(--panel-2));
+    border: 1px solid var(--border-soft);
+    border-radius: 18px;
+    padding: 34px 32px 30px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+  }
+  .login-brand {
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    margin-bottom: 26px; text-align: center;
+  }
+  .login-icon {
+    width: 56px; height: 56px; border-radius: 14px;
+    background: linear-gradient(145deg, var(--gold), #b9812c);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    box-shadow: 0 8px 22px rgba(240, 182, 74, 0.28);
+  }
+  .login-brand h1 { font-family: var(--display); font-size: 19px; font-weight: 800; margin: 0; }
+  .login-brand p { margin: 0; font-size: 12.5px; color: var(--text-dim); }
+
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block; font-family: var(--mono); font-size: 10.5px;
+    text-transform: uppercase; letter-spacing: .07em; color: var(--text-dimmer);
+    margin-bottom: 7px;
+  }
+  .field input, .field select {
+    width: 100%; background: var(--bg-2); border: 1px solid var(--border);
+    color: var(--text); font-size: 14px; padding: 11px 12px; border-radius: 9px;
+  }
+  .field input:focus, .field select:focus {
+    outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(240,182,74,0.12);
+  }
+
+  .btn-primary {
+    width: 100%; background: linear-gradient(135deg, var(--gold), #d9963a);
+    border: none; color: #1a1305; font-weight: 700; font-size: 14px;
+    padding: 12px; border-radius: 9px; letter-spacing: .01em;
+    transition: filter .15s, transform .1s;
+  }
+  .btn-primary:hover { filter: brightness(1.08); }
+  .btn-primary:active { transform: scale(0.99); }
+  .btn-primary:disabled { opacity: .55; cursor: not-allowed; }
+
+  .login-error {
+    background: var(--red-soft); border: 1px solid var(--red-line); color: var(--red);
+    font-size: 12.5px; padding: 10px 12px; border-radius: 8px; margin-bottom: 16px; display: none;
+  }
+  .login-footer {
+    text-align: center; margin-top: 22px; color: var(--text-dimmer);
+    font-family: var(--mono); font-size: 11px;
+  }
+  .login-footer strong { color: var(--gold); font-weight: 600; }
+
+  /* ---------------- APP SHELL ---------------- */
+  #app { display: none; min-height: 100vh; }
+  #app.active { display: flex; }
+
+  .sidebar {
+    width: var(--sidebar-w); flex-shrink: 0;
+    background: var(--bg-2); border-right: 1px solid var(--border-soft);
+    display: flex; flex-direction: column;
+    position: sticky; top: 0; height: 100vh;
+  }
+  .sb-brand {
+    display: flex; align-items: center; gap: 11px; padding: 22px 18px 18px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .sb-brand-icon {
+    width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+    background: linear-gradient(145deg, var(--gold), #b9812c);
+    display: flex; align-items: center; justify-content: center; font-size: 18px;
+    box-shadow: 0 6px 16px rgba(240,182,74,0.25);
+  }
+  .sb-brand-text h2 { margin: 0; font-family: var(--display); font-size: 14.5px; font-weight: 800; line-height: 1.2; }
+  .sb-brand-text span { font-size: 10.5px; color: var(--text-dimmer); font-family: var(--mono); }
+
+  .sb-nav { flex: 1; padding: 16px 12px; overflow-y: auto; }
+  .sb-section-label {
+    font-family: var(--mono); font-size: 10px; text-transform: uppercase;
+    letter-spacing: .08em; color: var(--text-dimmer); padding: 8px 10px 8px;
+  }
+  .sb-item {
+    display: flex; align-items: center; gap: 10px; width: 100%;
+    background: none; border: none; color: var(--text-dim);
+    padding: 10px 12px; border-radius: 9px; font-size: 13.5px; font-weight: 500;
+    text-align: left; margin-bottom: 3px; transition: background .15s, color .15s;
+  }
+  .sb-item .ico { font-size: 15px; width: 18px; text-align: center; }
+  .sb-item:hover { background: var(--panel-2); color: var(--text); }
+  .sb-item.active { background: rgba(240,182,74,0.10); color: var(--gold); border: 1px solid var(--green-line); border-color: rgba(240,182,74,0.3); }
+
+  .sb-user {
+    padding: 14px 18px; border-top: 1px solid var(--border-soft);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sb-user-avatar {
+    width: 32px; height: 32px; border-radius: 50%; background: var(--panel-2);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-weight: 700; font-size: 12px; color: var(--blue);
+    border: 1px solid var(--border); flex-shrink: 0;
+  }
+  .sb-user-info { flex: 1; min-width: 0; }
+  .sb-user-info .name { font-size: 12.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sb-user-info .lvl { font-size: 10.5px; color: var(--text-dimmer); font-family: var(--mono); }
+  .sb-logout { background: none; border: none; color: var(--text-dimmer); font-size: 15px; padding: 6px; border-radius: 7px; }
+  .sb-logout:hover { color: var(--red); background: var(--red-soft); }
+
+  .sb-footer {
+    padding: 12px 18px 18px; text-align: center; color: var(--text-dimmer);
+    font-family: var(--mono); font-size: 10.5px;
+  }
+  .sb-footer strong { color: var(--gold); font-weight: 600; }
+
+  /* ---------------- MAIN ---------------- */
+  .main { flex: 1; min-width: 0; padding: 30px 32px 50px; }
+  .view { display: none; }
+  .view.active { display: block; }
+
+  .view-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 16px; margin-bottom: 22px; flex-wrap: wrap;
+  }
+  .view-title { font-family: var(--display); font-size: 22px; font-weight: 800; margin: 0 0 4px; }
+  .view-sub { color: var(--text-dim); font-size: 13px; margin: 0; }
+
+  .toolbar { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    background: var(--panel-2); border: 1px solid var(--border);
+    color: var(--text); font-size: 13px; font-weight: 600;
+    padding: 10px 16px; border-radius: 9px; display: flex; align-items: center; gap: 7px;
+    transition: border-color .15s, color .15s, background .15s;
+    white-space: nowrap;
+  }
+  .btn:hover { border-color: var(--blue); color: var(--blue); }
+  .btn.gold { background: linear-gradient(135deg, var(--gold), #d9963a); color: #1a1305; border: none; }
+  .btn.gold:hover { filter: brightness(1.08); color: #1a1305; }
+  .btn.active-filter { border-color: var(--gold); color: var(--gold); background: rgba(240,182,74,0.08); }
+
+  .stats-row {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+    gap: 14px; margin-bottom: 20px;
+  }
+  .stat-card {
+    background: linear-gradient(160deg, var(--panel), var(--panel-2));
+    border: 1px solid var(--border-soft); border-radius: 14px; padding: 16px 18px;
+  }
+  .stat-label { font-size: 10.5px; text-transform: uppercase; letter-spacing: .08em; color: var(--text-dim); font-weight: 600; margin-bottom: 7px; }
+  .stat-value { font-family: var(--mono); font-size: 20px; font-weight: 700; color: var(--gold); }
+
+  .table-card {
+    background: var(--panel); border: 1px solid var(--border-soft); border-radius: 16px;
+    overflow: hidden;
+  }
+  .table-scroll { overflow-x: auto; max-width: 100%; }
+  table.data-table { border-collapse: collapse; width: 100%; min-width: max-content; }
+  table.data-table th, table.data-table td {
+    padding: 10px 14px; font-size: 12.5px; white-space: nowrap; text-align: left;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  table.data-table thead th {
+    position: sticky; top: 0; background: var(--bg-2); z-index: 2;
+    font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: .05em;
+    color: var(--text-dimmer); border-bottom: 1px solid var(--border-soft);
+  }
+  table.data-table tbody tr { cursor: pointer; transition: background .12s; }
+  table.data-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+  table.data-table td.num, table.data-table th.num { text-align: right; font-family: var(--mono); }
+  .filter-row th { padding: 8px 10px; background: var(--bg-2); position: sticky; top: 30px; z-index: 1; }
+  .filter-row.hidden { display: none; }
+  .filter-row input {
+    width: 100%; background: var(--panel-2); border: 1px solid var(--border);
+    color: var(--text); font-size: 12px; padding: 6px 8px; border-radius: 6px;
+  }
+  .filter-row input:focus { outline: none; border-color: var(--blue); }
+
+  .status-pill {
+    font-family: var(--mono); font-size: 10.5px; font-weight: 700; padding: 4px 9px;
+    border-radius: 20px; display: inline-block; border: 1px solid transparent;
+  }
+  .status-nao-iniciado { color: var(--text-dim); background: rgba(139,150,181,0.12); border-color: rgba(139,150,181,0.3); }
+  .status-lancado { color: var(--blue); background: rgba(91,140,255,0.12); border-color: rgba(91,140,255,0.3); }
+  .status-aguardando { color: var(--gold); background: rgba(240,182,74,0.12); border-color: rgba(240,182,74,0.3); }
+  .status-concluido { color: var(--green); background: var(--green-soft); border-color: var(--green-line); }
+
+  tfoot .subtotal-row td {
+    background: var(--bg-2); font-family: var(--mono); font-weight: 700;
+    color: var(--gold); border-top: 2px solid var(--border); position: sticky; bottom: 0;
+  }
+
+  .row-actions { display: flex; gap: 4px; }
+  .icon-btn {
+    background: none; border: none; color: var(--text-dimmer); font-size: 14px;
+    width: 26px; height: 26px; border-radius: 6px;
+  }
+  .icon-btn:hover.edit { color: var(--blue); background: rgba(91,140,255,0.1); }
+  .icon-btn:hover.del { color: var(--red); background: var(--red-soft); }
+
+  .empty-state { padding: 50px 20px; text-align: center; color: var(--text-dimmer); font-family: var(--mono); font-size: 13px; }
+
+  /* ---------------- MODAL ---------------- */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(4,6,12,0.72); backdrop-filter: blur(3px);
+    display: none; align-items: flex-start; justify-content: center; z-index: 400;
+    padding: 40px 20px; overflow-y: auto;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    width: 100%; max-width: 720px;
+    background: linear-gradient(160deg, var(--panel), var(--panel-2));
+    border: 1px solid var(--border-soft); border-radius: 18px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  }
+  .modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 24px; border-bottom: 1px solid var(--border-soft);
+  }
+  .modal-header h3 { margin: 0; font-family: var(--display); font-size: 16.5px; font-weight: 700; }
+  .modal-close { background: none; border: none; color: var(--text-dimmer); font-size: 20px; }
+  .modal-close:hover { color: var(--red); }
+  .modal-body { padding: 22px 24px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; }
+  .form-grid .full { grid-column: 1 / -1; }
+  .form-field label {
+    display: block; font-family: var(--mono); font-size: 10px; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--text-dimmer); margin-bottom: 6px;
+  }
+  .form-field input, .form-field select {
+    width: 100%; background: var(--bg-2); border: 1px solid var(--border);
+    color: var(--text); font-size: 13.5px; padding: 9px 11px; border-radius: 8px;
+  }
+  .form-field input:focus, .form-field select:focus { outline: none; border-color: var(--gold); }
+  .form-field input[readonly] { color: var(--text-dim); background: rgba(255,255,255,0.02); }
+  .form-field .hint { font-size: 10.5px; color: var(--text-dimmer); margin-top: 4px; font-family: var(--mono); }
+  .autocomplete-wrap { position: relative; }
+  .autocomplete-list {
+    position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+    background: var(--bg-2); border: 1px solid var(--border); border-radius: 9px;
+    max-height: 200px; overflow-y: auto; z-index: 50; display: none;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+  }
+  .autocomplete-list.active { display: block; }
+  .autocomplete-item { padding: 9px 12px; font-size: 13px; cursor: pointer; border-bottom: 1px solid var(--border-soft); }
+  .autocomplete-item:last-child { border-bottom: none; }
+  .autocomplete-item:hover, .autocomplete-item.hi { background: var(--panel-2); }
+  .autocomplete-item .sub { font-size: 10.5px; color: var(--text-dimmer); margin-top: 2px; }
+
+  .modal-footer {
+    display: flex; justify-content: flex-end; gap: 10px; padding: 18px 24px;
+    border-top: 1px solid var(--border-soft);
+  }
+
+  .toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 600;
+    background: var(--panel-2); border: 1px solid var(--border); color: var(--text);
+    padding: 13px 18px; border-radius: 10px; font-size: 13px; display: flex; gap: 10px; align-items: center;
+    box-shadow: 0 14px 34px rgba(0,0,0,0.4); transform: translateY(20px); opacity: 0; transition: all .25s;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.err { border-color: var(--red-line); }
+  .toast.ok { border-color: var(--green-line); }
+
+  @media (max-width: 900px) {
+    .sidebar { position: fixed; left: -260px; z-index: 300; transition: left .2s; box-shadow: 20px 0 40px rgba(0,0,0,0.4); }
+    .sidebar.open { left: 0; }
+    .main { padding: 20px 16px 50px; }
+    .form-grid { grid-template-columns: 1fr; }
+    #mobileMenuBtn { display: flex !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= LOGIN ================= -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="login-icon">💰</div>
+      <h1>Controle de Contas Pro</h1>
+      <p>Acesso restrito · módulo COUPA</p>
+    </div>
+    <div class="login-error" id="loginError"></div>
+    <form id="loginForm" onsubmit="return false;">
+      <div class="field">
+        <label>Usuário</label>
+        <input type="text" id="loginUser" autocomplete="username" autocapitalize="off">
+      </div>
+      <div class="field">
+        <label>Senha</label>
+        <input type="password" id="loginPass" autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn-primary" id="loginBtn" onclick="handleLogin()">Entrar</button>
+    </form>
+    <div class="login-footer">Desenvolvido por <strong>Pablo Martins Lopes</strong></div>
+  </div>
+</div>
+
+<!-- ================= APP ================= -->
+<div id="app">
+  <button id="mobileMenuBtn" onclick="toggleSidebar()" style="display:none; position:fixed; top:16px; left:16px; z-index:250; background:var(--panel-2); border:1px solid var(--border); color:var(--text); width:38px; height:38px; border-radius:9px; align-items:center; justify-content:center; font-size:16px;">☰</button>
+
+  <div class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <div class="sb-brand-icon">💰</div>
+      <div class="sb-brand-text">
+        <h2>Controle de<br>Contas Pro</h2>
+      </div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-section-label">Módulos</div>
+      <button class="sb-item active" data-view="coupa" onclick="switchView('coupa')">
+        <span class="ico">📋</span> COUPA
+      </button>
+      <div class="sb-section-label" id="adminSectionLabel" style="display:none;">Administração</div>
+      <button class="sb-item" data-view="usuarios" id="usuariosMenuBtn" style="display:none;" onclick="switchView('usuarios')">
+        <span class="ico">👤</span> Usuários
+      </button>
+    </div>
+    <div class="sb-user">
+      <div class="sb-user-avatar" id="sbAvatar">--</div>
+      <div class="sb-user-info">
+        <div class="name" id="sbUserName">—</div>
+        <div class="lvl" id="sbUserLevel">—</div>
+      </div>
+      <button class="sb-logout" onclick="handleLogout()" title="Sair">⏻</button>
+    </div>
+    <div class="sb-footer">Desenvolvido por <strong>Pablo Martins Lopes</strong></div>
+  </div>
+
+  <div class="main">
+
+    <!-- ============ VIEW: COUPA ============ -->
+    <div class="view active" id="view-coupa">
+      <div class="view-header">
+        <div>
+          <h1 class="view-title">COUPA</h1>
+          <p class="view-sub">Lançamentos de contas a pagar / receber</p>
+        </div>
+        <div class="toolbar">
+          <button class="btn" id="filterToggleBtn" onclick="toggleFilters()">🔍 Filtrar</button>
+          <button class="btn" onclick="clearFilters()">✕ Limpar filtros</button>
+          <button class="btn gold" onclick="openLancamentoModal()">+ Novo lançamento</button>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Registros visíveis</div>
+          <div class="stat-value" id="statCount">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Subtotal (Valor · visível na tela)</div>
+          <div class="stat-value" id="statSubtotal">R$ 0,00</div>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-scroll">
+          <table class="data-table" id="coupaTable">
+            <thead>
+              <tr id="headerRow"></tr>
+              <tr class="filter-row hidden" id="filterRow"></tr>
+            </thead>
+            <tbody id="coupaTbody">
+              <tr><td colspan="18" class="empty-state">Carregando dados do Supabase…</td></tr>
+            </tbody>
+            <tfoot>
+              <tr class="subtotal-row">
+                <td colspan="18" id="tfootSubtotal">Subtotal (Valor): R$ 0,00 · 0 registros</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ VIEW: USUÁRIOS ============ -->
+    <div class="view" id="view-usuarios">
+      <div class="view-header">
+        <div>
+          <h1 class="view-title">Usuários</h1>
+          <p class="view-sub">Cadastro de acesso ao módulo COUPA</p>
+        </div>
+        <div class="toolbar">
+          <button class="btn gold" onclick="openUserModal()">+ Novo usuário</button>
+        </div>
+      </div>
+      <div class="table-card">
+        <div class="table-scroll">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Usuário</th><th>Nome</th><th>Sistemas</th><th>Nível</th><th></th>
+              </tr>
+            </thead>
+            <tbody id="usersTbody">
+              <tr><td colspan="5" class="empty-state">Carregando…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= MODAL: LANÇAMENTO ================= -->
+<div class="modal-overlay" id="lancModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="lancModalTitle">Novo lançamento</h3>
+      <button class="modal-close" onclick="closeLancamentoModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-field">
+          <label>NF</label>
+          <input type="text" id="f_nf" placeholder="Número da NF">
+        </div>
+        <div class="form-field">
+          <label>Emissão</label>
+          <input type="date" id="f_emissao">
+        </div>
+        <div class="form-field">
+          <label>Vencimento</label>
+          <input type="date" id="f_vencimento">
+        </div>
+        <div class="form-field">
+          <label>Recebimento</label>
+          <input type="date" id="f_recebimento">
+        </div>
+
+        <div class="form-field full autocomplete-wrap">
+          <label>Prestador</label>
+          <input type="text" id="f_prestador" placeholder="Digite para buscar no cadastro de fornecedores" autocomplete="off">
+          <div class="autocomplete-list" id="prestadorList"></div>
+        </div>
+
+        <div class="form-field">
+          <label>CNPJ <span style="opacity:.6">(automático)</span></label>
+          <input type="text" id="f_cnpj" readonly>
+        </div>
+        <div class="form-field">
+          <label>Valor</label>
+          <input type="text" id="f_valor" placeholder="0,00" inputmode="decimal">
+        </div>
+        <div class="form-field">
+          <label>Natureza <span style="opacity:.6">(automático)</span></label>
+          <input type="text" id="f_natureza" readonly>
+        </div>
+        <div class="form-field">
+          <label>Descrição <span style="opacity:.6">(automático)</span></label>
+          <input type="text" id="f_descricao" readonly>
+        </div>
+        <div class="form-field">
+          <label>Aprovador <span style="opacity:.6">(automático)</span></label>
+          <input type="text" id="f_aprovador" readonly>
+        </div>
+        <div class="form-field">
+          <label>IVA <span style="opacity:.6">(automático)</span></label>
+          <input type="text" id="f_iva" readonly>
+        </div>
+        <div class="form-field">
+          <label>Código de compra <span style="opacity:.6">(automático)</span></label>
+          <input type="text" id="f_codigo_compra" readonly>
+        </div>
+        <div class="form-field">
+          <label>Pedido</label>
+          <input type="text" id="f_pedido">
+        </div>
+        <div class="form-field">
+          <label>Protocolo</label>
+          <input type="text" id="f_protocolo">
+        </div>
+        <div class="form-field">
+          <label>Ocorrência</label>
+          <input type="text" id="f_ocorrencia">
+        </div>
+        <div class="form-field">
+          <label>Status</label>
+          <select id="f_status">
+            <option value="Não iniciado">Não iniciado</option>
+            <option value="Lançado">Lançado</option>
+            <option value="Aguardando">Aguardando</option>
+            <option value="Concluído">Concluído</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Lançado por</label>
+          <input type="text" id="f_user_lanc" readonly>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeLancamentoModal()">Cancelar</button>
+      <button class="btn gold" id="saveLancBtn" onclick="saveLancamento()">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: USUÁRIO ================= -->
+<div class="modal-overlay" id="userModal">
+  <div class="modal" style="max-width:440px;">
+    <div class="modal-header">
+      <h3>Novo usuário</h3>
+      <button class="modal-close" onclick="closeUserModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-field full">
+          <label>Usuário (login)</label>
+          <input type="text" id="u_user">
+        </div>
+        <div class="form-field full">
+          <label>Nome</label>
+          <input type="text" id="u_name">
+        </div>
+        <div class="form-field full">
+          <label>Senha</label>
+          <input type="text" id="u_pass">
+        </div>
+        <div class="form-field full">
+          <label>Nível de acesso</label>
+          <select id="u_level">
+            <option value="0">0 · Acesso ao sistema</option>
+            <option value="1">1 · Acesso + cadastro de usuários</option>
+            <option value="-1">-1 · Bloqueado</option>
+          </select>
+          <div class="hint">Sistema vinculado automaticamente: COUPA</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeUserModal()">Cancelar</button>
+      <button class="btn gold" onclick="saveUser()">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   CONFIG
+   ===================================================================== */
+const SUPABASE_URL = 'https://bebhhbimcaptgrioxxcw.supabase.co/rest/v1';
+const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJlYmhoYmltY2FwdGdyaW94eGN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyODE2MjksImV4cCI6MjA5OTg1NzYyOX0.WIhrT6A8LAh5BtV1pVz9xnONewehes155OhpgE1lXmI';
+
+function sbHeaders(extra) {
+  return Object.assign({
+    'apikey': ANON_KEY,
+    'Authorization': 'Bearer ' + ANON_KEY,
+    'Content-Type': 'application/json'
+  }, extra || {});
+}
+
+async function sbGet(path) {
+  const res = await fetch(SUPABASE_URL + path, { headers: sbHeaders() });
+  if (!res.ok) throw new Error('Falha na consulta (' + res.status + ')');
+  return res.json();
+}
+async function sbPost(path, body) {
+  const res = await fetch(SUPABASE_URL + path, {
+    method: 'POST', headers: sbHeaders({ 'Prefer': 'return=representation' }), body: JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error('Falha ao inserir (' + res.status + '): ' + await res.text());
+  return res.json();
+}
+async function sbPatch(path, body) {
+  const res = await fetch(SUPABASE_URL + path, {
+    method: 'PATCH', headers: sbHeaders({ 'Prefer': 'return=representation' }), body: JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error('Falha ao atualizar (' + res.status + '): ' + await res.text());
+  return res.json();
+}
+async function sbDelete(path) {
+  const res = await fetch(SUPABASE_URL + path, { method: 'DELETE', headers: sbHeaders() });
+  if (!res.ok) throw new Error('Falha ao excluir (' + res.status + ')');
+  return true;
+}
+
+/* =====================================================================
+   STATE
+   ===================================================================== */
+let currentUser = null;
+let coupaRows = [];
+let editingRowKey = null; // holds id (or NF) of the row currently being edited
+let filtersActive = false;
+const columnFilters = {};
+
+const COUPA_COLUMNS = [
+  { key: 'DATA', label: 'Data', type: 'date' },
+  { key: 'NF', label: 'NF', type: 'text' },
+  { key: 'EMISSÃO', label: 'Emissão', type: 'date' },
+  { key: 'VENCIMENTO', label: 'Vencimento', type: 'date' },
+  { key: 'RECEBIMENTO', label: 'Recebimento', type: 'date' },
+  { key: 'PRESTADOR', label: 'Prestador', type: 'text' },
+  { key: 'CNPJ', label: 'CNPJ', type: 'text' },
+  { key: 'VALOR', label: 'Valor', type: 'money' },
+  { key: 'NATUREZA', label: 'Natureza', type: 'text' },
+  { key: 'DESCRIÇÃO', label: 'Descrição', type: 'text' },
+  { key: 'APROVADOR', label: 'Aprovador', type: 'text' },
+  { key: 'IVA', label: 'IVA', type: 'text' },
+  { key: 'CODIGO_COMPRA', label: 'Cód. compra', type: 'text' },
+  { key: 'PEDIDO', label: 'Pedido', type: 'text' },
+  { key: 'PROTOCOLO', label: 'Protocolo', type: 'text' },
+  { key: 'OCORRÊNCIA', label: 'Ocorrência', type: 'text' },
+  { key: 'STATUS', label: 'Status', type: 'status' },
+  { key: 'USER_LANC', label: 'Lanç. por', type: 'text' }
+];
+
+/* =====================================================================
+   TOAST
+   ===================================================================== */
+function toast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (type === 'err' ? 'err' : type === 'ok' ? 'ok' : '');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.classList.remove('show'); }, 3500);
+}
+
+/* =====================================================================
+   LOGIN
+   ===================================================================== */
+async function handleLogin() {
+  const userEl = document.getElementById('loginUser');
+  const passEl = document.getElementById('loginPass');
+  const errEl = document.getElementById('loginError');
+  const btn = document.getElementById('loginBtn');
+  const user = userEl.value.trim();
+  const pass = passEl.value;
+  errEl.style.display = 'none';
+
+  if (!user || !pass) {
+    errEl.textContent = 'Informe usuário e senha.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Verificando…';
+  try {
+    const data = await sbGet('/BD_USER?USER=eq.' + encodeURIComponent(user) + '&select=*');
+    if (!data.length) throw new Error('Usuário não encontrado.');
+    const u = data[0];
+
+    if (String(u.PASSWORD) !== pass) throw new Error('Senha incorreta.');
+
+    const systems = String(u.SYSTEM || '').toUpperCase();
+    if (!systems.includes('COUPA')) throw new Error('Este usuário não tem acesso ao sistema COUPA.');
+
+    const level = Number(u.LEVEL);
+    if (level === -1) throw new Error('Acesso bloqueado para este usuário.');
+
+    currentUser = u;
+    enterApp();
+  } catch (e) {
+    errEl.textContent = e.message || 'Não foi possível fazer login.';
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Entrar';
+  }
+}
+
+document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+document.getElementById('loginUser').addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+
+function handleLogout() {
+  currentUser = null;
+  coupaRows = [];
+  document.getElementById('app').classList.remove('active');
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+}
+
+function enterApp() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').classList.add('active');
+
+  document.getElementById('sbUserName').textContent = currentUser.NAME || currentUser.USER;
+  document.getElementById('sbAvatar').textContent = (currentUser.NAME || currentUser.USER || '??').slice(0,2).toUpperCase();
+  const level = Number(currentUser.LEVEL);
+  document.getElementById('sbUserLevel').textContent = 'Nível ' + level + (level === 1 ? ' · admin' : '');
+
+  if (level === 1) {
+    document.getElementById('usuariosMenuBtn').style.display = 'flex';
+    document.getElementById('adminSectionLabel').style.display = 'block';
+  }
+
+  buildTableHeader();
+  loadCoupa();
+}
+
+/* =====================================================================
+   SIDEBAR NAV
+   ===================================================================== */
+function switchView(view) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + view).classList.add('active');
+  document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('active'));
+  const btn = document.querySelector('.sb-item[data-view="' + view + '"]');
+  if (btn) btn.classList.add('active');
+  if (view === 'usuarios') loadUsers();
+  document.getElementById('sidebar').classList.remove('open');
+}
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
+/* =====================================================================
+   HELPERS: formatting
+   ===================================================================== */
+function parseBRL(str) {
+  if (str === null || str === undefined) return 0;
+  const clean = String(str).replace(/[R$\s]/g, '').replace(/\./g, '').replace(',', '.');
+  const n = parseFloat(clean);
+  return isNaN(n) ? 0 : n;
+}
+function formatBRL(num) {
+  return (Number(num) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+function todayISO() {
+  return new Date().toISOString().slice(0, 10);
+}
+function calcAprovador(valorNum) {
+  if (valorNum <= 5000) return 'Coordenador';
+  if (valorNum <= 20000) return 'Gerente Jr';
+  if (valorNum <= 100000) return 'Gerente Sr';
+  return 'Diretor';
+}
+function statusClass(status) {
+  switch (status) {
+    case 'Lançado': return 'status-lancado';
+    case 'Aguardando': return 'status-aguardando';
+    case 'Concluído': return 'status-concluido';
+    default: return 'status-nao-iniciado';
+  }
+}
+function fmtDateCell(v) {
+  if (!v) return '—';
+  const d = String(v).slice(0, 10);
+  const parts = d.split('-');
+  if (parts.length === 3) return parts[2] + '/' + parts[1] + '/' + parts[0];
+  return v;
+}
+
+/* =====================================================================
+   TABLE: build header + rows + filters + subtotal
+   ===================================================================== */
+function buildTableHeader() {
+  const headerRow = document.getElementById('headerRow');
+  const filterRow = document.getElementById('filterRow');
+  headerRow.innerHTML = '';
+  filterRow.innerHTML = '';
+
+  COUPA_COLUMNS.forEach(col => {
+    const th = document.createElement('th');
+    if (col.type === 'money') th.classList.add('num');
+    th.textContent = col.label;
+    headerRow.appendChild(th);
+
+    const fth = document.createElement('th');
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.placeholder = col.label + '…';
+    inp.oninput = (e) => { columnFilters[col.key] = e.target.value; renderTable(); };
+    fth.appendChild(inp);
+    filterRow.appendChild(fth);
+  });
+  const thActions = document.createElement('th');
+  headerRow.appendChild(thActions);
+  const fthActions = document.createElement('th');
+  filterRow.appendChild(fthActions);
+
+  document.getElementById('coupaTbody').innerHTML = '';
+  document.querySelector('tfoot .subtotal-row td').setAttribute('colspan', COUPA_COLUMNS.length + 1);
+}
+
+async function loadCoupa() {
+  try {
+    coupaRows = await sbGet('/COUPA?select=*&order=DATA.desc');
+    renderTable();
+  } catch (e) {
+    document.getElementById('coupaTbody').innerHTML =
+      '<tr><td colspan="' + (COUPA_COLUMNS.length + 1) + '" class="empty-state">Erro ao carregar COUPA: ' + e.message + '</td></tr>';
+    toast('Erro ao carregar dados do Supabase: ' + e.message, 'err');
+  }
+}
+
+function rowMatchesFilters(row) {
+  return COUPA_COLUMNS.every(col => {
+    const f = (columnFilters[col.key] || '').trim().toLowerCase();
+    if (!f) return true;
+    const val = String(row[col.key] ?? '').toLowerCase();
+    return val.includes(f);
+  });
+}
+
+function renderTable() {
+  const tbody = document.getElementById('coupaTbody');
+  const visible = coupaRows.filter(rowMatchesFilters);
+
+  if (!visible.length) {
+    tbody.innerHTML = '<tr><td colspan="' + (COUPA_COLUMNS.length + 1) + '" class="empty-state">Nenhum registro encontrado.</td></tr>';
+  } else {
+    tbody.innerHTML = visible.map(row => {
+      const cells = COUPA_COLUMNS.map(col => {
+        let v = row[col.key];
+        if (col.type === 'date') return '<td>' + fmtDateCell(v) + '</td>';
+        if (col.type === 'money') return '<td class="num">' + (v ? formatBRL(parseBRL(v)) : '—') + '</td>';
+        if (col.type === 'status') return '<td><span class="status-pill ' + statusClass(v) + '">' + (v || 'Não iniciado') + '</span></td>';
+        return '<td>' + (v !== null && v !== undefined && v !== '' ? escapeHtml(String(v)) : '—') + '</td>';
+      }).join('');
+      const rk = row.id !== undefined ? row.id : row.NF;
+      return '<tr onclick="editRowFromTable(\'' + encodeURIComponent(rk) + '\')">' + cells +
+        '<td class="row-actions" onclick="event.stopPropagation()">' +
+        '<button class="icon-btn del" title="Excluir" onclick="deleteRow(\'' + encodeURIComponent(rk) + '\')">🗑</button>' +
+        '</td></tr>';
+    }).join('');
+  }
+
+  const subtotal = visible.reduce((sum, r) => sum + parseBRL(r.VALOR), 0);
+  document.getElementById('statCount').textContent = visible.length;
+  document.getElementById('statSubtotal').textContent = formatBRL(subtotal);
+  document.getElementById('tfootSubtotal').textContent =
+    'Subtotal (Valor): ' + formatBRL(subtotal) + ' · ' + visible.length + ' registro(s)';
+}
+
+function toggleFilters() {
+  filtersActive = !filtersActive;
+  document.getElementById('filterRow').classList.toggle('hidden', !filtersActive);
+  document.getElementById('filterToggleBtn').classList.toggle('active-filter', filtersActive);
+}
+function clearFilters() {
+  Object.keys(columnFilters).forEach(k => delete columnFilters[k]);
+  document.querySelectorAll('.filter-row input').forEach(i => i.value = '');
+  renderTable();
+}
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* =====================================================================
+   MODAL: LANÇAMENTO (insert / update / autocomplete)
+   ===================================================================== */
+function openLancamentoModal(row) {
+  editingRowKey = null;
+  document.getElementById('lancModalTitle').textContent = 'Novo lançamento';
+  ['nf','emissao','vencimento','recebimento','prestador','cnpj','valor','natureza','descricao','aprovador','iva','codigo_compra','pedido','protocolo','ocorrencia'].forEach(id => {
+    document.getElementById('f_' + id).value = '';
+  });
+  document.getElementById('f_status').value = 'Não iniciado';
+  document.getElementById('f_user_lanc').value = currentUser ? (currentUser.NAME || currentUser.USER) : '';
+
+  if (row) {
+    editingRowKey = row.id !== undefined ? row.id : row.NF;
+    document.getElementById('lancModalTitle').textContent = 'Editar lançamento';
+    document.getElementById('f_nf').value = row.NF || '';
+    document.getElementById('f_emissao').value = row['EMISSÃO'] ? String(row['EMISSÃO']).slice(0,10) : '';
+    document.getElementById('f_vencimento').value = row.VENCIMENTO ? String(row.VENCIMENTO).slice(0,10) : '';
+    document.getElementById('f_recebimento').value = row.RECEBIMENTO ? String(row.RECEBIMENTO).slice(0,10) : '';
+    document.getElementById('f_prestador').value = row.PRESTADOR || '';
+    document.getElementById('f_cnpj').value = row.CNPJ || '';
+    document.getElementById('f_valor').value = row.VALOR ? formatBRL(parseBRL(row.VALOR)) : '';
+    document.getElementById('f_natureza').value = row.NATUREZA || '';
+    document.getElementById('f_descricao').value = row['DESCRIÇÃO'] || '';
+    document.getElementById('f_aprovador').value = row.APROVADOR || '';
+    document.getElementById('f_iva').value = row.IVA || '';
+    document.getElementById('f_codigo_compra').value = row.CODIGO_COMPRA || '';
+    document.getElementById('f_pedido').value = row.PEDIDO || '';
+    document.getElementById('f_protocolo').value = row.PROTOCOLO || '';
+    document.getElementById('f_ocorrencia').value = row['OCORRÊNCIA'] || '';
+    document.getElementById('f_status').value = row.STATUS || 'Não iniciado';
+    document.getElementById('f_user_lanc').value = row.USER_LANC || (currentUser.NAME || currentUser.USER);
+  }
+
+  document.getElementById('lancModal').classList.add('active');
+}
+function closeLancamentoModal() {
+  document.getElementById('lancModal').classList.remove('active');
+  document.getElementById('prestadorList').classList.remove('active');
+}
+function editRowFromTable(encodedKey) {
+  const key = decodeURIComponent(encodedKey);
+  const row = coupaRows.find(r => String(r.id !== undefined ? r.id : r.NF) === key);
+  if (row) openLancamentoModal(row);
+}
+async function deleteRow(encodedKey) {
+  const key = decodeURIComponent(encodedKey);
+  const row = coupaRows.find(r => String(r.id !== undefined ? r.id : r.NF) === key);
+  if (!row) return;
+  if (!confirm('Excluir o lançamento NF "' + (row.NF || '') + '"?')) return;
+  try {
+    const filterPath = row.id !== undefined
+      ? '/COUPA?id=eq.' + encodeURIComponent(row.id)
+      : '/COUPA?NF=eq.' + encodeURIComponent(row.NF);
+    await sbDelete(filterPath);
+    toast('Lançamento excluído.', 'ok');
+    loadCoupa();
+  } catch (e) {
+    toast(e.message, 'err');
+  }
+}
+
+/* --- Valor: auto-format + recompute Aprovador --- */
+document.getElementById('f_valor').addEventListener('blur', (e) => {
+  const n = parseBRL(e.target.value);
+  e.target.value = n ? formatBRL(n) : '';
+  document.getElementById('f_aprovador').value = n ? calcAprovador(n) : '';
+});
+
+/* --- Prestador autocomplete against FORNECEDOR."RAZÃO SOCIAL" --- */
+let acTimer = null;
+const prestadorInput = document.getElementById('f_prestador');
+const prestadorList = document.getElementById('prestadorList');
+
+prestadorInput.addEventListener('input', () => {
+  const q = prestadorInput.value.trim();
+  clearTimeout(acTimer);
+  // clear dependent fields since prestador changed manually
+  document.getElementById('f_cnpj').value = '';
+  document.getElementById('f_natureza').value = '';
+  document.getElementById('f_descricao').value = '';
+  document.getElementById('f_iva').value = '';
+  document.getElementById('f_codigo_compra').value = '';
+
+  if (q.length < 2) { prestadorList.classList.remove('active'); prestadorList.innerHTML = ''; return; }
+
+  acTimer = setTimeout(async () => {
+    try {
+      const col = encodeURIComponent('RAZÃO SOCIAL');
+      const results = await sbGet('/FORNECEDOR?select=*&' + col + '=ilike.*' + encodeURIComponent(q) + '*&limit=8');
+      if (!results.length) { prestadorList.classList.remove('active'); prestadorList.innerHTML = ''; return; }
+      prestadorList.innerHTML = results.map((f, i) => {
+        const razao = f['RAZÃO SOCIAL'] || '';
+        const cnpj = f['CNPJ'] || '';
+        return '<div class="autocomplete-item" data-idx="' + i + '">' + escapeHtml(razao) +
+          '<div class="sub">' + escapeHtml(cnpj) + '</div></div>';
+      }).join('');
+      prestadorList.classList.add('active');
+      prestadorList.querySelectorAll('.autocomplete-item').forEach((el, i) => {
+        el.onclick = () => selectFornecedor(results[i]);
+      });
+    } catch (e) {
+      toast('Erro ao buscar fornecedores: ' + e.message, 'err');
+    }
+  }, 300);
+});
+document.addEventListener('click', (e) => {
+  if (!prestadorInput.contains(e.target) && !prestadorList.contains(e.target)) {
+    prestadorList.classList.remove('active');
+  }
+});
+function selectFornecedor(f) {
+  document.getElementById('f_prestador').value = f['RAZÃO SOCIAL'] || '';
+  document.getElementById('f_cnpj').value = f['CNPJ'] || '';
+  document.getElementById('f_natureza').value = f['CONTA'] || '';
+  document.getElementById('f_descricao').value = f['TIPO NOTA'] || '';
+  document.getElementById('f_iva').value = f['IVA'] || '';
+  document.getElementById('f_codigo_compra').value = f['CODIGO_COMPRA'] || '';
+  prestadorList.classList.remove('active');
+}
+
+/* --- Save (insert or update, matched by NF to avoid duplicates) --- */
+async function saveLancamento() {
+  const btn = document.getElementById('saveLancBtn');
+  const nf = document.getElementById('f_nf').value.trim();
+  if (!nf) { toast('Informe o número da NF.', 'err'); return; }
+  if (!document.getElementById('f_prestador').value.trim()) { toast('Informe o prestador.', 'err'); return; }
+
+  const valorNum = parseBRL(document.getElementById('f_valor').value);
+  const payload = {
+    NF: nf,
+    'EMISSÃO': document.getElementById('f_emissao').value || null,
+    VENCIMENTO: document.getElementById('f_vencimento').value || null,
+    RECEBIMENTO: document.getElementById('f_recebimento').value || null,
+    PRESTADOR: document.getElementById('f_prestador').value.trim(),
+    CNPJ: document.getElementById('f_cnpj').value,
+    VALOR: valorNum ? formatBRL(valorNum) : '',
+    NATUREZA: document.getElementById('f_natureza').value,
+    'DESCRIÇÃO': document.getElementById('f_descricao').value,
+    APROVADOR: valorNum ? calcAprovador(valorNum) : document.getElementById('f_aprovador').value,
+    IVA: document.getElementById('f_iva').value,
+    CODIGO_COMPRA: document.getElementById('f_codigo_compra').value,
+    PEDIDO: document.getElementById('f_pedido').value,
+    PROTOCOLO: document.getElementById('f_protocolo').value,
+    'OCORRÊNCIA': document.getElementById('f_ocorrencia').value,
+    STATUS: document.getElementById('f_status').value,
+    USER_LANC: currentUser.NAME || currentUser.USER
+  };
+
+  btn.disabled = true;
+  btn.textContent = 'Salvando…';
+  try {
+    // Look for an existing row with the same NF to avoid duplicating data
+    const existing = await sbGet('/COUPA?NF=eq.' + encodeURIComponent(nf) + '&select=id,NF');
+    if (existing.length) {
+      const target = existing[0];
+      const filterPath = target.id !== undefined
+        ? '/COUPA?id=eq.' + encodeURIComponent(target.id)
+        : '/COUPA?NF=eq.' + encodeURIComponent(nf);
+      await sbPatch(filterPath, payload);
+      toast('Lançamento atualizado (NF já existia).', 'ok');
+    } else {
+      payload.DATA = todayISO();
+      await sbPost('/COUPA', payload);
+      toast('Lançamento inserido.', 'ok');
+    }
+    closeLancamentoModal();
+    loadCoupa();
+  } catch (e) {
+    toast(e.message, 'err');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '💾 Salvar';
+  }
+}
+
+/* =====================================================================
+   USERS (level 1 only)
+   ===================================================================== */
+async function loadUsers() {
+  const tbody = document.getElementById('usersTbody');
+  try {
+    const users = await sbGet('/BD_USER?select=*&SYSTEM=ilike.*COUPA*');
+    if (!users.length) {
+      tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Nenhum usuário cadastrado para COUPA.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = users.map(u => (
+      '<tr><td>' + escapeHtml(String(u.USER)) + '</td>' +
+      '<td>' + escapeHtml(String(u.NAME || '')) + '</td>' +
+      '<td>' + escapeHtml(String(u.SYSTEM || '')) + '</td>' +
+      '<td>' + escapeHtml(String(u.LEVEL)) + '</td>' +
+      '<td></td></tr>'
+    )).join('');
+  } catch (e) {
+    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Erro ao carregar usuários: ' + e.message + '</td></tr>';
+  }
+}
+function openUserModal() {
+  document.getElementById('u_user').value = '';
+  document.getElementById('u_name').value = '';
+  document.getElementById('u_pass').value = '';
+  document.getElementById('u_level').value = '0';
+  document.getElementById('userModal').classList.add('active');
+}
+function closeUserModal() { document.getElementById('userModal').classList.remove('active'); }
+async function saveUser() {
+  const user = document.getElementById('u_user').value.trim();
+  const name = document.getElementById('u_name').value.trim();
+  const pass = document.getElementById('u_pass').value;
+  const level = document.getElementById('u_level').value;
+  if (!user || !name || !pass) { toast('Preencha todos os campos.', 'err'); return; }
+  try {
+    const existing = await sbGet('/BD_USER?USER=eq.' + encodeURIComponent(user) + '&select=USER,SYSTEM');
+    if (existing.length) {
+      const systems = String(existing[0].SYSTEM || '');
+      const merged = systems.toUpperCase().includes('COUPA') ? systems : (systems ? systems + ',COUPA' : 'COUPA');
+      await sbPatch('/BD_USER?USER=eq.' + encodeURIComponent(user), { NAME: name, PASSWORD: pass, SYSTEM: merged, LEVEL: level });
+      toast('Usuário atualizado.', 'ok');
+    } else {
+      await sbPost('/BD_USER', { USER: user, NAME: name, PASSWORD: pass, SYSTEM: 'COUPA', LEVEL: level });
+      toast('Usuário criado.', 'ok');
+    }
+    closeUserModal();
+    loadUsers();
+  } catch (e) {
+    toast(e.message, 'err');
+  }
+}
+</script>
+</body>
+</html>

@@ -35,7 +35,7 @@
     --display: 'Sora', 'Inter', sans-serif;
     --mono: 'JetBrains Mono', 'Courier New', monospace;
 
-    --sidebar-w: 240px;
+    --sidebar-w: 260px;
   }
 
   * { box-sizing: border-box; }
@@ -159,7 +159,29 @@
   }
   .sb-item .ico { font-size: 15px; width: 18px; text-align: center; }
   .sb-item:hover { background: var(--panel-2); color: var(--text); }
-  .sb-item.active { background: rgba(240,182,74,0.10); color: var(--gold); border: 1px solid var(--green-line); border-color: rgba(240,182,74,0.3); }
+  .sb-item.active { background: rgba(240,182,74,0.10); color: var(--gold); border: 1px solid rgba(240,182,74,0.3); }
+
+  .nav-group { margin-bottom: 4px; }
+  .nav-group-btn {
+    display: flex; align-items: center; gap: 10px; width: 100%;
+    background: none; border: none; color: var(--text-dim);
+    padding: 10px 12px; border-radius: 9px; font-size: 13.5px; font-weight: 700;
+    text-align: left; cursor: pointer; transition: background .15s, color .15s;
+  }
+  .nav-group-btn:hover { background: var(--panel-2); color: var(--text); }
+  .nav-group-btn .ico { font-size: 15px; width: 18px; text-align: center; }
+  .nav-chev { margin-left: auto; font-size: 10px; opacity: .6; transition: transform .2s; }
+  .nav-group.open .nav-chev { transform: rotate(90deg); }
+  .nav-submenu { max-height: 0; overflow: hidden; transition: max-height .22s ease; }
+  .nav-group.open .nav-submenu { max-height: 320px; }
+  .nav-subitem {
+    display: flex; align-items: center; gap: 9px; width: 100%;
+    background: none; border: none; color: var(--text-dimmer);
+    padding: 9px 12px 9px 34px; border-radius: 8px; font-size: 12.5px; font-weight: 500;
+    text-align: left; margin-bottom: 2px;
+  }
+  .nav-subitem:hover { background: var(--panel-2); color: var(--text); }
+  .nav-subitem.active { background: rgba(240,182,74,0.10); color: var(--gold); }
 
   .sb-user {
     padding: 14px 18px; border-top: 1px solid var(--border-soft);
@@ -207,6 +229,7 @@
   .btn.gold { background: linear-gradient(135deg, var(--gold), #d9963a); color: #1a1305; border: none; }
   .btn.gold:hover { filter: brightness(1.08); color: #1a1305; }
   .btn.active-filter { border-color: var(--gold); color: var(--gold); background: rgba(240,182,74,0.08); }
+  .btn:disabled { opacity: .55; cursor: not-allowed; }
 
   .stats-row {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
@@ -264,12 +287,60 @@
     background: none; border: none; color: var(--text-dimmer); font-size: 14px;
     width: 26px; height: 26px; border-radius: 6px;
   }
-  .icon-btn:hover.edit { color: var(--blue); background: rgba(91,140,255,0.1); }
   .icon-btn:hover.del { color: var(--red); background: var(--red-soft); }
 
   .empty-state { padding: 50px 20px; text-align: center; color: var(--text-dimmer); font-family: var(--mono); font-size: 13px; }
 
-  /* ---------------- MODAL ---------------- */
+  /* ---------------- Cards genéricos (Itens de Escritório) ---------------- */
+  .card {
+    background: linear-gradient(160deg, var(--panel), var(--panel-2));
+    border: 1px solid var(--border-soft); border-radius: 16px;
+    padding: 22px 24px; margin-bottom: 18px;
+  }
+  .card h3 {
+    font-family: var(--display); font-size: 14px; font-weight: 800; color: var(--gold);
+    text-transform: uppercase; letter-spacing: .4px; margin: 0 0 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; }
+  .form-grid.cols-1 { grid-template-columns: 1fr; }
+  .form-grid .full { grid-column: 1 / -1; }
+  .form-field label {
+    display: block; font-family: var(--mono); font-size: 10px; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--text-dimmer); margin-bottom: 6px;
+  }
+  .form-field input, .form-field select {
+    width: 100%; background: var(--bg-2); border: 1px solid var(--border);
+    color: var(--text); font-size: 13.5px; padding: 9px 11px; border-radius: 8px;
+  }
+  .form-field input:focus, .form-field select:focus { outline: none; border-color: var(--gold); }
+  .form-field input[readonly], .form-field input:disabled { color: var(--text-dim); background: rgba(255,255,255,0.02); }
+  .form-field .hint { font-size: 10.5px; color: var(--text-dimmer); margin-top: 4px; font-family: var(--mono); }
+  .actions { display: flex; gap: 10px; margin-top: 16px; }
+  .hint-text { font-size: 11.5px; color: var(--text-dimmer); margin-top: 10px; font-family: var(--mono); }
+
+  .tabs { display: flex; gap: 8px; margin-bottom: 18px; }
+  .tab-btn {
+    padding: 9px 18px; border-radius: 9px; border: 1px solid var(--border);
+    background: var(--panel-2); color: var(--text-dim); font-weight: 700; font-size: 13px;
+  }
+  .tab-btn.active { background: linear-gradient(135deg, var(--gold), #d9963a); color: #1a1305; border-color: transparent; }
+
+  /* Cards de link externo */
+  .ext-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px,1fr)); gap: 14px; margin-bottom: 22px; }
+  .ext-card {
+    background: linear-gradient(160deg, var(--panel), var(--panel-2));
+    border: 1px solid var(--border-soft); border-radius: 14px;
+    padding: 26px 18px; text-align: center; text-decoration: none; color: var(--text);
+    display: flex; flex-direction: column; align-items: center; gap: 9px;
+    transition: transform .15s, border-color .15s;
+  }
+  .ext-card:hover { transform: translateY(-3px); border-color: var(--gold); }
+  .ext-card .ic { font-size: 30px; }
+  .ext-card b { font-family: var(--display); font-size: 14px; }
+  .ext-card span { font-size: 10.5px; color: var(--text-dimmer); font-family: var(--mono); }
+
+  /* ---------------- MODAIS ---------------- */
   .modal-overlay {
     position: fixed; inset: 0; background: rgba(4,6,12,0.72); backdrop-filter: blur(3px);
     display: none; align-items: flex-start; justify-content: center; z-index: 400;
@@ -290,19 +361,9 @@
   .modal-close { background: none; border: none; color: var(--text-dimmer); font-size: 20px; }
   .modal-close:hover { color: var(--red); }
   .modal-body { padding: 22px 24px; }
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; }
-  .form-grid .full { grid-column: 1 / -1; }
-  .form-field label {
-    display: block; font-family: var(--mono); font-size: 10px; text-transform: uppercase;
-    letter-spacing: .06em; color: var(--text-dimmer); margin-bottom: 6px;
-  }
-  .form-field input, .form-field select {
-    width: 100%; background: var(--bg-2); border: 1px solid var(--border);
-    color: var(--text); font-size: 13.5px; padding: 9px 11px; border-radius: 8px;
-  }
-  .form-field input:focus, .form-field select:focus { outline: none; border-color: var(--gold); }
-  .form-field input[readonly] { color: var(--text-dim); background: rgba(255,255,255,0.02); }
-  .form-field .hint { font-size: 10.5px; color: var(--text-dimmer); margin-top: 4px; font-family: var(--mono); }
+  .checkbox-row { display: flex; gap: 18px; align-items: center; }
+  .checkbox-row label { display: flex; align-items: center; gap: 7px; font-family: var(--sans); font-size: 13px; color: var(--text); text-transform: none; letter-spacing: 0; }
+  .checkbox-row input[type="checkbox"] { width: auto; accent-color: var(--gold); }
   .autocomplete-wrap { position: relative; }
   .autocomplete-list {
     position: absolute; top: calc(100% + 4px); left: 0; right: 0;
@@ -332,7 +393,7 @@
   .toast.ok { border-color: var(--green-line); }
 
   @media (max-width: 900px) {
-    .sidebar { position: fixed; left: -260px; z-index: 300; transition: left .2s; box-shadow: 20px 0 40px rgba(0,0,0,0.4); }
+    .sidebar { position: fixed; left: -280px; z-index: 300; transition: left .2s; box-shadow: 20px 0 40px rgba(0,0,0,0.4); }
     .sidebar.open { left: 0; }
     .main { padding: 20px 16px 50px; }
     .form-grid { grid-template-columns: 1fr; }
@@ -348,7 +409,7 @@
     <div class="login-brand">
       <div class="login-icon">💰</div>
       <h1>Controle de Contas Pro</h1>
-      <p>Acesso restrito · módulo COUPA</p>
+      <p>Acesso restrito · Finanças &amp; Itens de Escritório</p>
     </div>
     <div class="login-error" id="loginError"></div>
     <form id="loginForm" onsubmit="return false;">
@@ -377,16 +438,38 @@
         <h2>Controle de<br>Contas Pro</h2>
       </div>
     </div>
+
     <div class="sb-nav">
       <div class="sb-section-label">Módulos</div>
-      <button class="sb-item active" data-view="coupa" onclick="switchView('coupa')">
-        <span class="ico">📋</span> COUPA
-      </button>
+
+      <div class="nav-group" id="grupo-financas" style="display:none;">
+        <button class="nav-group-btn" onclick="toggleGroup('grupo-financas')">
+          <span class="ico">💵</span> FINANÇAS <span class="nav-chev">▶</span>
+        </button>
+        <div class="nav-submenu">
+          <button class="nav-subitem" data-view="fin-coupa" onclick="switchView('fin-coupa')">📋 Coupa</button>
+          <button class="nav-subitem" data-view="fin-sharepoint" onclick="switchView('fin-sharepoint')">📁 SharePoint</button>
+        </div>
+      </div>
+
+      <div class="nav-group" id="grupo-materiais" style="display:none;">
+        <button class="nav-group-btn" onclick="toggleGroup('grupo-materiais')">
+          <span class="ico">🗂️</span> ITENS DE ESCRITÓRIO <span class="nav-chev">▶</span>
+        </button>
+        <div class="nav-submenu">
+          <button class="nav-subitem" data-view="mat-recebimento" onclick="switchView('mat-recebimento')">📥 Recebimento</button>
+          <button class="nav-subitem" data-view="mat-inventario" onclick="switchView('mat-inventario')">🔢 Inventário</button>
+          <button class="nav-subitem" data-view="mat-entrega" onclick="switchView('mat-entrega')">📤 Entrega de Itens</button>
+          <button class="nav-subitem" data-view="mat-cadastro" onclick="switchView('mat-cadastro')">🏷️ Cadastro de Itens</button>
+        </div>
+      </div>
+
       <div class="sb-section-label" id="adminSectionLabel" style="display:none;">Administração</div>
       <button class="sb-item" data-view="usuarios" id="usuariosMenuBtn" style="display:none;" onclick="switchView('usuarios')">
-        <span class="ico">👤</span> Usuários
+        <span class="ico">👤</span> Cadastro de Usuários
       </button>
     </div>
+
     <div class="sb-user">
       <div class="sb-user-avatar" id="sbAvatar">--</div>
       <div class="sb-user-info">
@@ -400,28 +483,37 @@
 
   <div class="main">
 
-    <!-- ============ VIEW: COUPA ============ -->
-    <div class="view active" id="view-coupa">
+    <div class="view-header" style="margin-bottom:10px;">
+      <div>
+        <p class="view-sub" id="topbar-crumb" style="font-family:var(--mono); font-size:11.5px;"></p>
+      </div>
+    </div>
+
+    <!-- ============ VIEW: FINANÇAS > COUPA ============ -->
+    <div class="view" id="view-fin-coupa">
       <div class="view-header">
         <div>
           <h1 class="view-title">COUPA</h1>
           <p class="view-sub">Lançamentos de contas a pagar / receber</p>
         </div>
         <div class="toolbar">
-          <button class="btn" id="filterToggleBtn" onclick="toggleFilters()">🔍 Filtrar</button>
-          <button class="btn" onclick="clearFilters()">✕ Limpar filtros</button>
-          <button class="btn gold" onclick="openLancamentoModal()">+ Novo lançamento</button>
+          <button class="btn" id="coupaFilterToggleBtn" onclick="toggleCoupaFilters()">🔍 Filtrar</button>
+          <button class="btn" onclick="clearCoupaFilters()">✕ Limpar filtros</button>
+          <button class="btn gold" onclick="openCoupaModal()">+ Novo lançamento</button>
         </div>
       </div>
+
+      <!-- Links externos -->
+      <div class="ext-grid" id="coupaLinksGrid"></div>
 
       <div class="stats-row">
         <div class="stat-card">
           <div class="stat-label">Registros visíveis</div>
-          <div class="stat-value" id="statCount">0</div>
+          <div class="stat-value" id="coupaStatCount">0</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Subtotal (Valor · visível na tela)</div>
-          <div class="stat-value" id="statSubtotal">R$ 0,00</div>
+          <div class="stat-value" id="coupaStatSubtotal">R$ 0,00</div>
         </div>
       </div>
 
@@ -429,18 +521,253 @@
         <div class="table-scroll">
           <table class="data-table" id="coupaTable">
             <thead>
-              <tr id="headerRow"></tr>
-              <tr class="filter-row hidden" id="filterRow"></tr>
+              <tr id="coupaHeaderRow"></tr>
+              <tr class="filter-row hidden" id="coupaFilterRow"></tr>
             </thead>
             <tbody id="coupaTbody">
               <tr><td colspan="18" class="empty-state">Carregando dados do Supabase…</td></tr>
             </tbody>
             <tfoot>
               <tr class="subtotal-row">
-                <td colspan="18" id="tfootSubtotal">Subtotal (Valor): R$ 0,00 · 0 registros</td>
+                <td colspan="18" id="coupaTfootSubtotal">Subtotal (Valor): R$ 0,00 · 0 registros</td>
               </tr>
             </tfoot>
           </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ VIEW: FINANÇAS > SHAREPOINT ============ -->
+    <div class="view" id="view-fin-sharepoint">
+      <div class="view-header">
+        <div>
+          <h1 class="view-title">SharePoint</h1>
+          <p class="view-sub">Lançamentos de contas a pagar / receber</p>
+        </div>
+        <div class="toolbar">
+          <button class="btn" id="spFilterToggleBtn" onclick="toggleSpFilters()">🔍 Filtrar</button>
+          <button class="btn" onclick="clearSpFilters()">✕ Limpar filtros</button>
+          <button class="btn gold" onclick="openSpModal()">+ Novo lançamento</button>
+        </div>
+      </div>
+
+      <div class="ext-grid" style="max-width:320px;">
+        <a class="ext-card" href="https://assai.sharepoint.com/sites/EnvioNotas/SitePages/HomePage.aspx?CT=1783542136844&OR=OWA-NT-Mail&CID=8fcc3898-549d-1177-b872-049a0167b83d&SI=NonSentItems&SLSync=F" target="_blank" rel="noopener">
+          <span class="ic">📁</span>
+          <b>SharePoint</b>
+          <span>Abrir portal de envio de notas</span>
+        </a>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Registros visíveis</div>
+          <div class="stat-value" id="spStatCount">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Subtotal (Valor · visível na tela)</div>
+          <div class="stat-value" id="spStatSubtotal">R$ 0,00</div>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-scroll">
+          <table class="data-table" id="spTable">
+            <thead>
+              <tr id="spHeaderRow"></tr>
+              <tr class="filter-row hidden" id="spFilterRow"></tr>
+            </thead>
+            <tbody id="spTbody">
+              <tr><td colspan="16" class="empty-state">Carregando dados do Supabase…</td></tr>
+            </tbody>
+            <tfoot>
+              <tr class="subtotal-row">
+                <td colspan="16" id="spTfootSubtotal">Subtotal (Valor): R$ 0,00 · 0 registros</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ VIEW: ITENS DE ESCRITÓRIO > RECEBIMENTO ============ -->
+    <div class="view" id="view-mat-recebimento">
+      <div class="view-header">
+        <div>
+          <h1 class="view-title">Recebimento</h1>
+          <p class="view-sub">Lançar entrada de itens de escritório</p>
+        </div>
+      </div>
+      <div class="card">
+        <h3>📥 Lançar Recebimento</h3>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>EAN</label>
+            <input type="text" id="rec-ean" placeholder="Bipe ou digite o EAN" autocomplete="off">
+          </div>
+          <div class="form-field">
+            <label>Descrição</label>
+            <input type="text" id="rec-desc" placeholder="Descrição do item">
+          </div>
+          <div class="form-field">
+            <label>Quantidade</label>
+            <input type="number" id="rec-qtd" min="1" placeholder="0">
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn gold" id="rec-btn" onclick="lancarRecebimento()">✅ Lançar Recebimento</button>
+          <button class="btn" onclick="limparForm('recebimento')">Limpar</button>
+        </div>
+        <p class="hint-text">Ao lançar, o item é gravado em RECEBIMENTO_ITENS e o saldo em BD_SALDO é somado automaticamente.</p>
+      </div>
+    </div>
+
+    <!-- ============ VIEW: ITENS DE ESCRITÓRIO > INVENTÁRIO ============ -->
+    <div class="view" id="view-mat-inventario">
+      <div class="view-header">
+        <div>
+          <h1 class="view-title">Inventário</h1>
+          <p class="view-sub">Contagem e ajuste de saldo</p>
+        </div>
+      </div>
+      <div class="card">
+        <h3>🔢 Contagem de Inventário</h3>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>EAN</label>
+            <input type="text" id="inv-ean" placeholder="Bipe ou digite o EAN" autocomplete="off">
+          </div>
+          <div class="form-field" style="display:flex; align-items:flex-end;">
+            <button class="btn" style="width:100%;" onclick="buscarSaldoInventario()">🔍 Buscar Item</button>
+          </div>
+        </div>
+
+        <div class="stats-row" id="inv-info" style="display:none;">
+          <div class="stat-card">
+            <div class="stat-label">Descrição</div>
+            <div class="stat-value" id="inv-desc-view" style="font-size:14px;">-</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Saldo Atual (Sistema)</div>
+            <div class="stat-value" id="inv-saldo-atual">-</div>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Descrição (caso item novo)</label>
+            <input type="text" id="inv-desc" placeholder="Preencher apenas se o item não existir ainda">
+          </div>
+          <div class="form-field">
+            <label>Quantidade Contada</label>
+            <input type="number" id="inv-contagem" min="0" placeholder="0">
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn gold" id="inv-btn" onclick="confirmarAjusteInventario()">✅ Confirmar Ajuste de Saldo</button>
+          <button class="btn" onclick="limparForm('inventario')">Limpar</button>
+        </div>
+        <p class="hint-text">O saldo em BD_SALDO será substituído pelo valor contado (não soma nem subtrai, ajusta direto).</p>
+      </div>
+    </div>
+
+    <!-- ============ VIEW: ITENS DE ESCRITÓRIO > ENTREGA ============ -->
+    <div class="view" id="view-mat-entrega">
+      <div class="view-header">
+        <div>
+          <h1 class="view-title">Entrega de Itens</h1>
+          <p class="view-sub">Registrar saída de itens de escritório</p>
+        </div>
+      </div>
+      <div class="card">
+        <h3>📤 Registrar Entrega de Item</h3>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>EAN</label>
+            <input type="text" id="ent-ean" placeholder="Bipe ou digite o EAN" autocomplete="off">
+          </div>
+          <div class="form-field">
+            <label>Descrição</label>
+            <input type="text" id="ent-desc" placeholder="Descrição do item">
+          </div>
+          <div class="form-field">
+            <label>Quantidade</label>
+            <input type="number" id="ent-qtd" min="1" placeholder="0">
+          </div>
+          <div class="form-field">
+            <label>Solicitante</label>
+            <input type="text" id="ent-solicitante" placeholder="Nome do solicitante">
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn gold" id="ent-btn" onclick="lancarEntrega()">✅ Registrar Entrega</button>
+          <button class="btn" onclick="limparForm('entrega')">Limpar</button>
+        </div>
+        <p class="hint-text">Ao registrar, o item é gravado em SAIDA_ITENS e o saldo em BD_SALDO é debitado automaticamente.</p>
+      </div>
+    </div>
+
+    <!-- ============ VIEW: ITENS DE ESCRITÓRIO > CADASTRO DE ITENS ============ -->
+    <div class="view" id="view-mat-cadastro">
+      <div class="view-header">
+        <div>
+          <h1 class="view-title">Cadastro de Itens</h1>
+          <p class="view-sub">Adicionar ou editar itens do catálogo</p>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" id="tab-add" onclick="mostrarTabCadastro('add')">➕ Adicionar Item</button>
+        <button class="tab-btn" id="tab-edit" onclick="mostrarTabCadastro('edit')">✏️ Editar Item</button>
+      </div>
+
+      <div class="card" id="cadastro-add">
+        <h3>➕ Adicionar Novo Item</h3>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>EAN</label>
+            <input type="text" id="add-ean" placeholder="Bipe ou digite o EAN" autocomplete="off">
+          </div>
+          <div class="form-field">
+            <label>Descrição</label>
+            <input type="text" id="add-desc" placeholder="Descrição do item">
+          </div>
+          <div class="form-field">
+            <label>Tipo</label>
+            <input type="text" id="add-tipo" placeholder="Ex: Papelaria, Limpeza, Informática...">
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn gold" id="add-btn" onclick="cadastrarItem()">✅ Cadastrar Item</button>
+          <button class="btn" onclick="limparForm('cadastro-add')">Limpar</button>
+        </div>
+      </div>
+
+      <div class="card" id="cadastro-edit" style="display:none;">
+        <h3>✏️ Editar Item Existente</h3>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>EAN</label>
+            <input type="text" id="edit-ean" placeholder="Bipe ou digite o EAN" autocomplete="off">
+          </div>
+          <div class="form-field" style="display:flex; align-items:flex-end;">
+            <button class="btn" style="width:100%;" onclick="buscarItemEdicao()">🔍 Buscar Item</button>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Descrição</label>
+            <input type="text" id="edit-desc" placeholder="Descrição do item" disabled>
+          </div>
+          <div class="form-field">
+            <label>Tipo</label>
+            <input type="text" id="edit-tipo" placeholder="Tipo do item" disabled>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn gold" id="edit-btn" onclick="salvarEdicaoItem()" disabled>💾 Salvar Alterações</button>
+          <button class="btn" onclick="limparForm('cadastro-edit')">Limpar</button>
         </div>
       </div>
     </div>
@@ -449,8 +776,8 @@
     <div class="view" id="view-usuarios">
       <div class="view-header">
         <div>
-          <h1 class="view-title">Usuários</h1>
-          <p class="view-sub">Cadastro de acesso ao módulo COUPA</p>
+          <h1 class="view-title">Cadastro de Usuários</h1>
+          <p class="view-sub">Controle de acesso aos módulos Finanças / Itens de Escritório</p>
         </div>
         <div class="toolbar">
           <button class="btn gold" onclick="openUserModal()">+ Novo usuário</button>
@@ -475,81 +802,81 @@
   </div>
 </div>
 
-<!-- ================= MODAL: LANÇAMENTO ================= -->
-<div class="modal-overlay" id="lancModal">
+<!-- ================= MODAL: LANÇAMENTO COUPA ================= -->
+<div class="modal-overlay" id="lancModalCoupa">
   <div class="modal">
     <div class="modal-header">
-      <h3 id="lancModalTitle">Novo lançamento</h3>
-      <button class="modal-close" onclick="closeLancamentoModal()">×</button>
+      <h3 id="lancCoupaTitle">Novo lançamento · COUPA</h3>
+      <button class="modal-close" onclick="closeCoupaModal()">×</button>
     </div>
     <div class="modal-body">
       <div class="form-grid">
         <div class="form-field">
           <label>NF</label>
-          <input type="text" id="f_nf" placeholder="Número da NF">
+          <input type="text" id="cf_nf" placeholder="Número da NF">
         </div>
         <div class="form-field">
           <label>Emissão</label>
-          <input type="date" id="f_emissao">
+          <input type="date" id="cf_emissao">
         </div>
         <div class="form-field">
           <label>Vencimento</label>
-          <input type="date" id="f_vencimento">
+          <input type="date" id="cf_vencimento">
         </div>
         <div class="form-field">
           <label>Recebimento</label>
-          <input type="date" id="f_recebimento">
+          <input type="date" id="cf_recebimento">
         </div>
 
         <div class="form-field full autocomplete-wrap">
           <label>Prestador</label>
-          <input type="text" id="f_prestador" placeholder="Digite para buscar no cadastro de fornecedores" autocomplete="off">
-          <div class="autocomplete-list" id="prestadorList"></div>
+          <input type="text" id="cf_prestador" placeholder="Digite para buscar no cadastro de fornecedores" autocomplete="off">
+          <div class="autocomplete-list" id="coupaPrestadorList"></div>
         </div>
 
         <div class="form-field">
           <label>CNPJ <span style="opacity:.6">(automático)</span></label>
-          <input type="text" id="f_cnpj" readonly>
+          <input type="text" id="cf_cnpj" readonly>
         </div>
         <div class="form-field">
           <label>Valor</label>
-          <input type="text" id="f_valor" placeholder="0,00" inputmode="decimal">
+          <input type="text" id="cf_valor" placeholder="0,00" inputmode="decimal">
         </div>
         <div class="form-field">
           <label>Natureza <span style="opacity:.6">(automático)</span></label>
-          <input type="text" id="f_natureza" readonly>
+          <input type="text" id="cf_natureza" readonly>
         </div>
         <div class="form-field">
           <label>Descrição <span style="opacity:.6">(automático)</span></label>
-          <input type="text" id="f_descricao" readonly>
+          <input type="text" id="cf_descricao" readonly>
         </div>
         <div class="form-field">
           <label>Aprovador <span style="opacity:.6">(automático)</span></label>
-          <input type="text" id="f_aprovador" readonly>
+          <input type="text" id="cf_aprovador" readonly>
         </div>
         <div class="form-field">
           <label>IVA <span style="opacity:.6">(automático)</span></label>
-          <input type="text" id="f_iva" readonly>
+          <input type="text" id="cf_iva" readonly>
         </div>
         <div class="form-field">
           <label>Código de compra <span style="opacity:.6">(automático)</span></label>
-          <input type="text" id="f_codigo_compra" readonly>
+          <input type="text" id="cf_codigo_compra" readonly>
         </div>
         <div class="form-field">
           <label>Pedido</label>
-          <input type="text" id="f_pedido">
+          <input type="text" id="cf_pedido">
         </div>
         <div class="form-field">
           <label>Protocolo</label>
-          <input type="text" id="f_protocolo">
+          <input type="text" id="cf_protocolo">
         </div>
         <div class="form-field">
           <label>Ocorrência</label>
-          <input type="text" id="f_ocorrencia">
+          <input type="text" id="cf_ocorrencia">
         </div>
         <div class="form-field">
           <label>Status</label>
-          <select id="f_status">
+          <select id="cf_status">
             <option value="Não iniciado">Não iniciado</option>
             <option value="Lançado">Lançado</option>
             <option value="Aguardando">Aguardando</option>
@@ -558,13 +885,99 @@
         </div>
         <div class="form-field">
           <label>Lançado por</label>
-          <input type="text" id="f_user_lanc" readonly>
+          <input type="text" id="cf_user_lanc" readonly>
         </div>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn" onclick="closeLancamentoModal()">Cancelar</button>
-      <button class="btn gold" id="saveLancBtn" onclick="saveLancamento()">💾 Salvar</button>
+      <button class="btn" onclick="closeCoupaModal()">Cancelar</button>
+      <button class="btn gold" id="saveCoupaBtn" onclick="saveCoupaLancamento()">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: LANÇAMENTO SHAREPOINT ================= -->
+<div class="modal-overlay" id="lancModalSp">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="lancSpTitle">Novo lançamento · SharePoint</h3>
+      <button class="modal-close" onclick="closeSpModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-field">
+          <label>NF</label>
+          <input type="text" id="sf_nf" placeholder="Número da NF">
+        </div>
+        <div class="form-field">
+          <label>Emissão</label>
+          <input type="date" id="sf_emissao">
+        </div>
+        <div class="form-field">
+          <label>Vencimento</label>
+          <input type="date" id="sf_vencimento">
+        </div>
+        <div class="form-field">
+          <label>Recebimento</label>
+          <input type="date" id="sf_recebimento">
+        </div>
+
+        <div class="form-field full autocomplete-wrap">
+          <label>Prestador</label>
+          <input type="text" id="sf_prestador" placeholder="Digite para buscar no cadastro de fornecedores" autocomplete="off">
+          <div class="autocomplete-list" id="spPrestadorList"></div>
+        </div>
+
+        <div class="form-field">
+          <label>CNPJ <span style="opacity:.6">(automático)</span></label>
+          <input type="text" id="sf_cnpj" readonly>
+        </div>
+        <div class="form-field">
+          <label>Valor</label>
+          <input type="text" id="sf_valor" placeholder="0,00" inputmode="decimal">
+        </div>
+        <div class="form-field">
+          <label>Natureza <span style="opacity:.6">(automático)</span></label>
+          <input type="text" id="sf_natureza" readonly>
+        </div>
+        <div class="form-field">
+          <label>Descrição <span style="opacity:.6">(automático)</span></label>
+          <input type="text" id="sf_descricao" readonly>
+        </div>
+        <div class="form-field">
+          <label>Aprovador <span style="opacity:.6">(automático)</span></label>
+          <input type="text" id="sf_aprovador" readonly>
+        </div>
+        <div class="form-field">
+          <label>Pedido</label>
+          <input type="text" id="sf_pedido">
+        </div>
+        <div class="form-field">
+          <label>Protocolo</label>
+          <input type="text" id="sf_protocolo">
+        </div>
+        <div class="form-field">
+          <label>Ocorrência</label>
+          <input type="text" id="sf_ocorrencia">
+        </div>
+        <div class="form-field">
+          <label>Status</label>
+          <select id="sf_status">
+            <option value="Não iniciado">Não iniciado</option>
+            <option value="Lançado">Lançado</option>
+            <option value="Aguardando">Aguardando</option>
+            <option value="Concluído">Concluído</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Lançado por</label>
+          <input type="text" id="sf_user_lanc" readonly>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeSpModal()">Cancelar</button>
+      <button class="btn gold" id="saveSpBtn" onclick="saveSpLancamento()">💾 Salvar</button>
     </div>
   </div>
 </div>
@@ -591,13 +1004,19 @@
           <input type="text" id="u_pass">
         </div>
         <div class="form-field full">
+          <label>Módulos com acesso</label>
+          <div class="checkbox-row">
+            <label><input type="checkbox" id="u_sys_financas" checked> Finanças</label>
+            <label><input type="checkbox" id="u_sys_materiais"> Itens de Escritório</label>
+          </div>
+        </div>
+        <div class="form-field full">
           <label>Nível de acesso</label>
           <select id="u_level">
             <option value="0">0 · Acesso ao sistema</option>
             <option value="1">1 · Acesso + cadastro de usuários</option>
             <option value="-1">-1 · Bloqueado</option>
           </select>
-          <div class="hint">Sistema vinculado automaticamente: COUPA</div>
         </div>
       </div>
     </div>
@@ -624,7 +1043,6 @@ function sbHeaders(extra) {
     'Content-Type': 'application/json'
   }, extra || {});
 }
-
 async function sbGet(path) {
   const res = await fetch(SUPABASE_URL + path, { headers: sbHeaders() });
   if (!res.ok) throw new Error('Falha na consulta (' + res.status + ')');
@@ -649,39 +1067,47 @@ async function sbDelete(path) {
   if (!res.ok) throw new Error('Falha ao excluir (' + res.status + ')');
   return true;
 }
+function qs(paramsObj) { return new URLSearchParams(paramsObj).toString(); }
+
+/* =====================================================================
+   LINKS EXTERNOS — FINANÇAS > COUPA
+   ===================================================================== */
+const COUPA_LINKS = [
+  { label: 'COUPA', icon: '🧾', url: 'https://assai.coupahost.com/', desc: 'Portal de compras' },
+  { label: 'UNI AP', icon: '🔗', url: 'https://ani-up.midassolutions.com.br/assai/up/', desc: 'Contas a pagar' },
+  { label: 'MIDAS', icon: '🏛️', url: 'https://urano-portal.midassolutions.com.br/072/portal/Account/Login?ReturnUrl=%2fASSAI%2fportal%2f', desc: 'Portal Midas' },
+  { label: 'CONSULTAR NF', icon: '🔍', url: 'https://assai.service-now.com/sp?id=csc_consulta_de_nf', desc: 'Consulta de nota fiscal' },
+  { label: 'BAIXAR NF', icon: '⬇️', url: 'https://www.nfe.fazenda.gov.br/portal/consultaResumo.aspx?tipoConteudo=7PhJ+gAVw2g=', desc: 'Portal da NF-e' }
+];
+
+function renderCoupaLinks() {
+  const grid = document.getElementById('coupaLinksGrid');
+  grid.innerHTML = COUPA_LINKS.map(l =>
+    '<a class="ext-card" href="' + l.url + '" target="_blank" rel="noopener">' +
+    '<span class="ic">' + l.icon + '</span><b>' + l.label + '</b><span>' + l.desc + '</span></a>'
+  ).join('');
+}
 
 /* =====================================================================
    STATE
    ===================================================================== */
-let currentUser = null;
-let coupaRows = [];
-let editingRowKey = null; // holds id (or NF) of the row currently being edited
-let filtersActive = false;
-const columnFilters = {};
+let currentUser = null; // { USER, NAME, LEVEL, access: ['financas','materiais'] }
 
-const COUPA_COLUMNS = [
-  { key: 'DATA', label: 'Data', type: 'date' },
-  { key: 'NF', label: 'NF', type: 'text' },
-  { key: 'EMISSÃO', label: 'Emissão', type: 'date' },
-  { key: 'VENCIMENTO', label: 'Vencimento', type: 'date' },
-  { key: 'RECEBIMENTO', label: 'Recebimento', type: 'date' },
-  { key: 'PRESTADOR', label: 'Prestador', type: 'text' },
-  { key: 'CNPJ', label: 'CNPJ', type: 'text' },
-  { key: 'VALOR', label: 'Valor', type: 'money' },
-  { key: 'NATUREZA', label: 'Natureza', type: 'text' },
-  { key: 'DESCRIÇÃO', label: 'Descrição', type: 'text' },
-  { key: 'APROVADOR', label: 'Aprovador', type: 'text' },
-  { key: 'IVA', label: 'IVA', type: 'text' },
-  { key: 'CODIGO_COMPRA', label: 'Cód. compra', type: 'text' },
-  { key: 'PEDIDO', label: 'Pedido', type: 'text' },
-  { key: 'PROTOCOLO', label: 'Protocolo', type: 'text' },
-  { key: 'OCORRÊNCIA', label: 'Ocorrência', type: 'text' },
-  { key: 'STATUS', label: 'Status', type: 'status' },
-  { key: 'USER_LANC', label: 'Lanç. por', type: 'text' }
-];
+// COUPA
+let coupaRows = [];
+let coupaFiltersActive = false;
+const coupaFilters = {};
+let coupaEditingKey = null;
+
+// SHAREPOINT
+let spRows = [];
+let spLoaded = false;
+let spFiltersActive = false;
+const spFilters = {};
+let spEditingKey = null;
 
 /* =====================================================================
-   TOAST
+   TOAST / LOADING HELPERS
    ===================================================================== */
 function toast(msg, type) {
   const t = document.getElementById('toast');
@@ -689,6 +1115,50 @@ function toast(msg, type) {
   t.className = 'toast show ' + (type === 'err' ? 'err' : type === 'ok' ? 'ok' : '');
   clearTimeout(t._timer);
   t._timer = setTimeout(() => { t.classList.remove('show'); }, 3500);
+}
+function setLoading(btnId, loading, label) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  btn.disabled = loading;
+  if (loading) btn.dataset.original = btn.textContent;
+  btn.textContent = loading ? '⏳ Processando...' : (btn.dataset.original || label);
+}
+
+/* =====================================================================
+   HELPERS: formatting
+   ===================================================================== */
+function parseBRL(str) {
+  if (str === null || str === undefined) return 0;
+  const clean = String(str).replace(/[R$\s]/g, '').replace(/\./g, '').replace(',', '.');
+  const n = parseFloat(clean);
+  return isNaN(n) ? 0 : n;
+}
+function formatBRL(num) {
+  return (Number(num) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+function calcAprovador(valorNum) {
+  if (valorNum <= 5000) return 'Coordenador';
+  if (valorNum <= 20000) return 'Gerente Jr';
+  if (valorNum <= 100000) return 'Gerente Sr';
+  return 'Diretor';
+}
+function statusClass(status) {
+  switch (status) {
+    case 'Lançado': return 'status-lancado';
+    case 'Aguardando': return 'status-aguardando';
+    case 'Concluído': return 'status-concluido';
+    default: return 'status-nao-iniciado';
+  }
+}
+function fmtDateCell(v) {
+  if (!v) return '—';
+  const d = String(v).slice(0, 10);
+  const parts = d.split('-');
+  if (parts.length === 3) return parts[2] + '/' + parts[1] + '/' + parts[0];
+  return v;
+}
+function escapeHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 /* =====================================================================
@@ -718,13 +1188,23 @@ async function handleLogin() {
 
     if (String(u.PASSWORD) !== pass) throw new Error('Senha incorreta.');
 
-    const systems = String(u.SYSTEM || '').toUpperCase();
-    if (!systems.includes('COUPA')) throw new Error('Este usuário não tem acesso ao sistema COUPA.');
-
     const level = Number(u.LEVEL);
     if (level === -1) throw new Error('Acesso bloqueado para este usuário.');
 
+    const systemsRaw = String(u.SYSTEM || '').toUpperCase();
+    const access = [];
+    if (level === 1) {
+      access.push('financas', 'materiais');
+    } else {
+      if (systemsRaw.includes('FINANCAS')) access.push('financas');
+      if (systemsRaw.includes('MATERIAIS')) access.push('materiais');
+      if (!access.length) {
+        throw new Error('Este usuário não tem acesso a nenhum módulo (Finanças / Itens de Escritório).');
+      }
+    }
+
     currentUser = u;
+    currentUser.access = access;
     enterApp();
   } catch (e) {
     errEl.textContent = e.message || 'Não foi possível fazer login.';
@@ -734,13 +1214,13 @@ async function handleLogin() {
     btn.textContent = 'Entrar';
   }
 }
-
 document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
 document.getElementById('loginUser').addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
 
 function handleLogout() {
   currentUser = null;
   coupaRows = [];
+  spRows = []; spLoaded = false;
   document.getElementById('app').classList.remove('active');
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('loginUser').value = '';
@@ -761,67 +1241,90 @@ function enterApp() {
     document.getElementById('adminSectionLabel').style.display = 'block';
   }
 
-  buildTableHeader();
-  loadCoupa();
+  document.getElementById('grupo-financas').style.display = currentUser.access.includes('financas') ? 'block' : 'none';
+  document.getElementById('grupo-materiais').style.display = currentUser.access.includes('materiais') ? 'block' : 'none';
+
+  renderCoupaLinks();
+  buildCoupaTableHeader();
+  buildSpTableHeader();
+
+  let defaultView = null;
+  if (currentUser.access.includes('financas')) defaultView = 'fin-coupa';
+  else if (currentUser.access.includes('materiais')) defaultView = 'mat-recebimento';
+  else if (level === 1) defaultView = 'usuarios';
+
+  if (defaultView) switchView(defaultView);
 }
 
 /* =====================================================================
    SIDEBAR NAV
    ===================================================================== */
+const VIEW_META = {
+  'fin-coupa':        { group: 'grupo-financas',  crumb: 'Finanças / Coupa' },
+  'fin-sharepoint':   { group: 'grupo-financas',  crumb: 'Finanças / SharePoint' },
+  'mat-recebimento':  { group: 'grupo-materiais', crumb: 'Itens de Escritório / Recebimento' },
+  'mat-inventario':   { group: 'grupo-materiais', crumb: 'Itens de Escritório / Inventário' },
+  'mat-entrega':      { group: 'grupo-materiais', crumb: 'Itens de Escritório / Entrega de Itens' },
+  'mat-cadastro':     { group: 'grupo-materiais', crumb: 'Itens de Escritório / Cadastro de Itens' },
+  'usuarios':         { group: null,              crumb: 'Administração / Cadastro de Usuários' }
+};
+
+function toggleGroup(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
 function switchView(view) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + view).classList.add('active');
-  document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('active'));
-  const btn = document.querySelector('.sb-item[data-view="' + view + '"]');
+
+  document.querySelectorAll('.nav-subitem, #usuariosMenuBtn').forEach(b => b.classList.remove('active'));
+  const btn = document.querySelector('[data-view="' + view + '"]');
   if (btn) btn.classList.add('active');
-  if (view === 'usuarios') loadUsers();
+
+  const meta = VIEW_META[view];
+  document.getElementById('topbar-crumb').textContent = meta ? meta.crumb : '';
+
+  document.querySelectorAll('.nav-group').forEach(g => g.classList.remove('open'));
+  if (meta && meta.group) document.getElementById(meta.group).classList.add('open');
+
+  if (view === 'usuarios') {
+    loadUsers();
+  } else if (view === 'fin-coupa') {
+    loadCoupa();
+  } else if (view === 'fin-sharepoint' && !spLoaded) {
+    loadSharepoint();
+  }
   document.getElementById('sidebar').classList.remove('open');
 }
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 
 /* =====================================================================
-   HELPERS: formatting
+   TABELA COUPA
    ===================================================================== */
-function parseBRL(str) {
-  if (str === null || str === undefined) return 0;
-  const clean = String(str).replace(/[R$\s]/g, '').replace(/\./g, '').replace(',', '.');
-  const n = parseFloat(clean);
-  return isNaN(n) ? 0 : n;
-}
-function formatBRL(num) {
-  return (Number(num) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-}
-function todayISO() {
-  return new Date().toISOString().slice(0, 10);
-}
-function calcAprovador(valorNum) {
-  if (valorNum <= 5000) return 'Coordenador';
-  if (valorNum <= 20000) return 'Gerente Jr';
-  if (valorNum <= 100000) return 'Gerente Sr';
-  return 'Diretor';
-}
-function statusClass(status) {
-  switch (status) {
-    case 'Lançado': return 'status-lancado';
-    case 'Aguardando': return 'status-aguardando';
-    case 'Concluído': return 'status-concluido';
-    default: return 'status-nao-iniciado';
-  }
-}
-function fmtDateCell(v) {
-  if (!v) return '—';
-  const d = String(v).slice(0, 10);
-  const parts = d.split('-');
-  if (parts.length === 3) return parts[2] + '/' + parts[1] + '/' + parts[0];
-  return v;
-}
+const COUPA_COLUMNS = [
+  { key: 'DATA', label: 'Data', type: 'date' },
+  { key: 'NF', label: 'NF', type: 'text' },
+  { key: 'EMISSÃO', label: 'Emissão', type: 'date' },
+  { key: 'VENCIMENTO', label: 'Vencimento', type: 'date' },
+  { key: 'RECEBIMENTO', label: 'Recebimento', type: 'date' },
+  { key: 'PRESTADOR', label: 'Prestador', type: 'text' },
+  { key: 'CNPJ', label: 'CNPJ', type: 'text' },
+  { key: 'VALOR', label: 'Valor', type: 'money' },
+  { key: 'NATUREZA', label: 'Natureza', type: 'text' },
+  { key: 'DESCRIÇÃO', label: 'Descrição', type: 'text' },
+  { key: 'APROVADOR', label: 'Aprovador', type: 'text' },
+  { key: 'IVA', label: 'IVA', type: 'text' },
+  { key: 'CODIGO_COMPRA', label: 'Cód. compra', type: 'text' },
+  { key: 'PEDIDO', label: 'Pedido', type: 'text' },
+  { key: 'PROTOCOLO', label: 'Protocolo', type: 'text' },
+  { key: 'OCORRÊNCIA', label: 'Ocorrência', type: 'text' },
+  { key: 'STATUS', label: 'Status', type: 'status' },
+  { key: 'USER_LANC', label: 'Lanç. por', type: 'text' }
+];
 
-/* =====================================================================
-   TABLE: build header + rows + filters + subtotal
-   ===================================================================== */
-function buildTableHeader() {
-  const headerRow = document.getElementById('headerRow');
-  const filterRow = document.getElementById('filterRow');
+function buildCoupaTableHeader() {
+  const headerRow = document.getElementById('coupaHeaderRow');
+  const filterRow = document.getElementById('coupaFilterRow');
   headerRow.innerHTML = '';
   filterRow.innerHTML = '';
 
@@ -835,42 +1338,40 @@ function buildTableHeader() {
     const inp = document.createElement('input');
     inp.type = 'text';
     inp.placeholder = col.label + '…';
-    inp.oninput = (e) => { columnFilters[col.key] = e.target.value; renderTable(); };
+    inp.oninput = (e) => { coupaFilters[col.key] = e.target.value; renderCoupaTable(); };
     fth.appendChild(inp);
     filterRow.appendChild(fth);
   });
-  const thActions = document.createElement('th');
-  headerRow.appendChild(thActions);
-  const fthActions = document.createElement('th');
-  filterRow.appendChild(fthActions);
+  headerRow.appendChild(document.createElement('th'));
+  filterRow.appendChild(document.createElement('th'));
 
   document.getElementById('coupaTbody').innerHTML = '';
-  document.querySelector('tfoot .subtotal-row td').setAttribute('colspan', COUPA_COLUMNS.length + 1);
+  document.querySelector('#view-fin-coupa tfoot .subtotal-row td').setAttribute('colspan', COUPA_COLUMNS.length + 1);
 }
 
 async function loadCoupa() {
   try {
     coupaRows = await sbGet('/COUPA?select=*&order=DATA.desc');
-    renderTable();
+    renderCoupaTable();
   } catch (e) {
     document.getElementById('coupaTbody').innerHTML =
       '<tr><td colspan="' + (COUPA_COLUMNS.length + 1) + '" class="empty-state">Erro ao carregar COUPA: ' + e.message + '</td></tr>';
-    toast('Erro ao carregar dados do Supabase: ' + e.message, 'err');
+    toast('Erro ao carregar dados do Supabase (Coupa): ' + e.message, 'err');
   }
 }
 
-function rowMatchesFilters(row) {
+function coupaRowMatchesFilters(row) {
   return COUPA_COLUMNS.every(col => {
-    const f = (columnFilters[col.key] || '').trim().toLowerCase();
+    const f = (coupaFilters[col.key] || '').trim().toLowerCase();
     if (!f) return true;
     const val = String(row[col.key] ?? '').toLowerCase();
     return val.includes(f);
   });
 }
 
-function renderTable() {
+function renderCoupaTable() {
   const tbody = document.getElementById('coupaTbody');
-  const visible = coupaRows.filter(rowMatchesFilters);
+  const visible = coupaRows.filter(coupaRowMatchesFilters);
 
   if (!visible.length) {
     tbody.innerHTML = '<tr><td colspan="' + (COUPA_COLUMNS.length + 1) + '" class="empty-state">Nenhum registro encontrado.</td></tr>';
@@ -884,80 +1385,78 @@ function renderTable() {
         return '<td>' + (v !== null && v !== undefined && v !== '' ? escapeHtml(String(v)) : '—') + '</td>';
       }).join('');
       const rk = row.id !== undefined ? row.id : row.NF;
-      return '<tr onclick="editRowFromTable(\'' + encodeURIComponent(rk) + '\')">' + cells +
+      return '<tr onclick="editCoupaRow(\'' + encodeURIComponent(rk) + '\')">' + cells +
         '<td class="row-actions" onclick="event.stopPropagation()">' +
-        '<button class="icon-btn del" title="Excluir" onclick="deleteRow(\'' + encodeURIComponent(rk) + '\')">🗑</button>' +
+        '<button class="icon-btn del" title="Excluir" onclick="deleteCoupaRow(\'' + encodeURIComponent(rk) + '\')">🗑</button>' +
         '</td></tr>';
     }).join('');
   }
 
   const subtotal = visible.reduce((sum, r) => sum + parseBRL(r.VALOR), 0);
-  document.getElementById('statCount').textContent = visible.length;
-  document.getElementById('statSubtotal').textContent = formatBRL(subtotal);
-  document.getElementById('tfootSubtotal').textContent =
+  document.getElementById('coupaStatCount').textContent = visible.length;
+  document.getElementById('coupaStatSubtotal').textContent = formatBRL(subtotal);
+  document.getElementById('coupaTfootSubtotal').textContent =
     'Subtotal (Valor): ' + formatBRL(subtotal) + ' · ' + visible.length + ' registro(s)';
 }
 
-function toggleFilters() {
-  filtersActive = !filtersActive;
-  document.getElementById('filterRow').classList.toggle('hidden', !filtersActive);
-  document.getElementById('filterToggleBtn').classList.toggle('active-filter', filtersActive);
+function toggleCoupaFilters() {
+  coupaFiltersActive = !coupaFiltersActive;
+  document.getElementById('coupaFilterRow').classList.toggle('hidden', !coupaFiltersActive);
+  document.getElementById('coupaFilterToggleBtn').classList.toggle('active-filter', coupaFiltersActive);
 }
-function clearFilters() {
-  Object.keys(columnFilters).forEach(k => delete columnFilters[k]);
-  document.querySelectorAll('.filter-row input').forEach(i => i.value = '');
-  renderTable();
-}
-function escapeHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function clearCoupaFilters() {
+  Object.keys(coupaFilters).forEach(k => delete coupaFilters[k]);
+  document.querySelectorAll('#coupaFilterRow input').forEach(i => i.value = '');
+  renderCoupaTable();
 }
 
 /* =====================================================================
-   MODAL: LANÇAMENTO (insert / update / autocomplete)
+   MODAL COUPA
    ===================================================================== */
-function openLancamentoModal(row) {
-  editingRowKey = null;
-  document.getElementById('lancModalTitle').textContent = 'Novo lançamento';
-  ['nf','emissao','vencimento','recebimento','prestador','cnpj','valor','natureza','descricao','aprovador','iva','codigo_compra','pedido','protocolo','ocorrencia'].forEach(id => {
-    document.getElementById('f_' + id).value = '';
+function openCoupaModal(row) {
+  coupaEditingKey = null;
+  document.getElementById('lancCoupaTitle').textContent = 'Novo lançamento · COUPA';
+  ['cf_nf','cf_emissao','cf_vencimento','cf_recebimento','cf_prestador','cf_cnpj','cf_valor','cf_natureza','cf_descricao','cf_aprovador','cf_iva','cf_codigo_compra','cf_pedido','cf_protocolo','cf_ocorrencia'].forEach(id => {
+    document.getElementById(id).value = '';
   });
-  document.getElementById('f_status').value = 'Não iniciado';
-  document.getElementById('f_user_lanc').value = currentUser ? (currentUser.NAME || currentUser.USER) : '';
+  document.getElementById('cf_status').value = 'Não iniciado';
+  document.getElementById('cf_user_lanc').value = currentUser ? (currentUser.NAME || currentUser.USER) : '';
 
   if (row) {
-    editingRowKey = row.id !== undefined ? row.id : row.NF;
-    document.getElementById('lancModalTitle').textContent = 'Editar lançamento';
-    document.getElementById('f_nf').value = row.NF || '';
-    document.getElementById('f_emissao').value = row['EMISSÃO'] ? String(row['EMISSÃO']).slice(0,10) : '';
-    document.getElementById('f_vencimento').value = row.VENCIMENTO ? String(row.VENCIMENTO).slice(0,10) : '';
-    document.getElementById('f_recebimento').value = row.RECEBIMENTO ? String(row.RECEBIMENTO).slice(0,10) : '';
-    document.getElementById('f_prestador').value = row.PRESTADOR || '';
-    document.getElementById('f_cnpj').value = row.CNPJ || '';
-    document.getElementById('f_valor').value = row.VALOR ? formatBRL(parseBRL(row.VALOR)) : '';
-    document.getElementById('f_natureza').value = row.NATUREZA || '';
-    document.getElementById('f_descricao').value = row['DESCRIÇÃO'] || '';
-    document.getElementById('f_aprovador').value = row.APROVADOR || '';
-    document.getElementById('f_iva').value = row.IVA || '';
-    document.getElementById('f_codigo_compra').value = row.CODIGO_COMPRA || '';
-    document.getElementById('f_pedido').value = row.PEDIDO || '';
-    document.getElementById('f_protocolo').value = row.PROTOCOLO || '';
-    document.getElementById('f_ocorrencia').value = row['OCORRÊNCIA'] || '';
-    document.getElementById('f_status').value = row.STATUS || 'Não iniciado';
-    document.getElementById('f_user_lanc').value = row.USER_LANC || (currentUser.NAME || currentUser.USER);
+    coupaEditingKey = row.id !== undefined ? row.id : row.NF;
+    document.getElementById('lancCoupaTitle').textContent = 'Editar lançamento · COUPA';
+    document.getElementById('cf_nf').value = row.NF || '';
+    document.getElementById('cf_emissao').value = row['EMISSÃO'] ? String(row['EMISSÃO']).slice(0,10) : '';
+    document.getElementById('cf_vencimento').value = row.VENCIMENTO ? String(row.VENCIMENTO).slice(0,10) : '';
+    document.getElementById('cf_recebimento').value = row.RECEBIMENTO ? String(row.RECEBIMENTO).slice(0,10) : '';
+    document.getElementById('cf_prestador').value = row.PRESTADOR || '';
+    document.getElementById('cf_cnpj').value = row.CNPJ || '';
+    document.getElementById('cf_valor').value = row.VALOR ? formatBRL(parseBRL(row.VALOR)) : '';
+    document.getElementById('cf_natureza').value = row.NATUREZA || '';
+    document.getElementById('cf_descricao').value = row['DESCRIÇÃO'] || '';
+    document.getElementById('cf_aprovador').value = row.APROVADOR || '';
+    document.getElementById('cf_iva').value = row.IVA || '';
+    document.getElementById('cf_codigo_compra').value = row.CODIGO_COMPRA || '';
+    document.getElementById('cf_pedido').value = row.PEDIDO || '';
+    document.getElementById('cf_protocolo').value = row.PROTOCOLO || '';
+    document.getElementById('cf_ocorrencia').value = row['OCORRÊNCIA'] || '';
+    document.getElementById('cf_status').value = row.STATUS || 'Não iniciado';
+    document.getElementById('cf_user_lanc').value = row.USER_LANC || (currentUser.NAME || currentUser.USER);
   }
 
-  document.getElementById('lancModal').classList.add('active');
+  document.getElementById('lancModalCoupa').classList.add('active');
 }
-function closeLancamentoModal() {
-  document.getElementById('lancModal').classList.remove('active');
-  document.getElementById('prestadorList').classList.remove('active');
+function closeCoupaModal() {
+  document.getElementById('lancModalCoupa').classList.remove('active');
+  document.getElementById('coupaPrestadorList').classList.remove('active');
+  coupaEditingKey = null;
 }
-function editRowFromTable(encodedKey) {
+function editCoupaRow(encodedKey) {
   const key = decodeURIComponent(encodedKey);
   const row = coupaRows.find(r => String(r.id !== undefined ? r.id : r.NF) === key);
-  if (row) openLancamentoModal(row);
+  if (row) openCoupaModal(row);
 }
-async function deleteRow(encodedKey) {
+async function deleteCoupaRow(encodedKey) {
   const key = decodeURIComponent(encodedKey);
   const row = coupaRows.find(r => String(r.id !== undefined ? r.id : r.NF) === key);
   if (!row) return;
@@ -974,44 +1473,43 @@ async function deleteRow(encodedKey) {
   }
 }
 
-/* --- Valor: auto-format + recompute Aprovador --- */
-document.getElementById('f_valor').addEventListener('blur', (e) => {
+/* --- Coupa: Valor auto-format + recompute Aprovador --- */
+document.getElementById('cf_valor').addEventListener('blur', (e) => {
   const n = parseBRL(e.target.value);
   e.target.value = n ? formatBRL(n) : '';
-  document.getElementById('f_aprovador').value = n ? calcAprovador(n) : '';
+  document.getElementById('cf_aprovador').value = n ? calcAprovador(n) : '';
 });
 
-/* --- Prestador autocomplete against FORNECEDOR."RAZÃO SOCIAL" --- */
-let acTimer = null;
-const prestadorInput = document.getElementById('f_prestador');
-const prestadorList = document.getElementById('prestadorList');
+/* --- Coupa: Autocomplete fornecedor --- */
+let coupaAcTimer = null;
+const cfPrestador = document.getElementById('cf_prestador');
+const coupaPrestadorList = document.getElementById('coupaPrestadorList');
 
-prestadorInput.addEventListener('input', () => {
-  const q = prestadorInput.value.trim();
-  clearTimeout(acTimer);
-  // clear dependent fields since prestador changed manually
-  document.getElementById('f_cnpj').value = '';
-  document.getElementById('f_natureza').value = '';
-  document.getElementById('f_descricao').value = '';
-  document.getElementById('f_iva').value = '';
-  document.getElementById('f_codigo_compra').value = '';
+cfPrestador.addEventListener('input', () => {
+  const q = cfPrestador.value.trim();
+  clearTimeout(coupaAcTimer);
+  document.getElementById('cf_cnpj').value = '';
+  document.getElementById('cf_natureza').value = '';
+  document.getElementById('cf_descricao').value = '';
+  document.getElementById('cf_iva').value = '';
+  document.getElementById('cf_codigo_compra').value = '';
 
-  if (q.length < 2) { prestadorList.classList.remove('active'); prestadorList.innerHTML = ''; return; }
+  if (q.length < 2) { coupaPrestadorList.classList.remove('active'); coupaPrestadorList.innerHTML = ''; return; }
 
-  acTimer = setTimeout(async () => {
+  coupaAcTimer = setTimeout(async () => {
     try {
       const col = encodeURIComponent('RAZÃO SOCIAL');
       const results = await sbGet('/FORNECEDOR?select=*&' + col + '=ilike.*' + encodeURIComponent(q) + '*&limit=8');
-      if (!results.length) { prestadorList.classList.remove('active'); prestadorList.innerHTML = ''; return; }
-      prestadorList.innerHTML = results.map((f, i) => {
+      if (!results.length) { coupaPrestadorList.classList.remove('active'); coupaPrestadorList.innerHTML = ''; return; }
+      coupaPrestadorList.innerHTML = results.map((f, i) => {
         const razao = f['RAZÃO SOCIAL'] || '';
         const cnpj = f['CNPJ'] || '';
         return '<div class="autocomplete-item" data-idx="' + i + '">' + escapeHtml(razao) +
           '<div class="sub">' + escapeHtml(cnpj) + '</div></div>';
       }).join('');
-      prestadorList.classList.add('active');
-      prestadorList.querySelectorAll('.autocomplete-item').forEach((el, i) => {
-        el.onclick = () => selectFornecedor(results[i]);
+      coupaPrestadorList.classList.add('active');
+      coupaPrestadorList.querySelectorAll('.autocomplete-item').forEach((el, i) => {
+        el.onclick = () => selectCoupaFornecedor(results[i]);
       });
     } catch (e) {
       toast('Erro ao buscar fornecedores: ' + e.message, 'err');
@@ -1019,52 +1517,51 @@ prestadorInput.addEventListener('input', () => {
   }, 300);
 });
 document.addEventListener('click', (e) => {
-  if (!prestadorInput.contains(e.target) && !prestadorList.contains(e.target)) {
-    prestadorList.classList.remove('active');
+  if (!cfPrestador.contains(e.target) && !coupaPrestadorList.contains(e.target)) {
+    coupaPrestadorList.classList.remove('active');
   }
 });
-function selectFornecedor(f) {
-  document.getElementById('f_prestador').value = f['RAZÃO SOCIAL'] || '';
-  document.getElementById('f_cnpj').value = f['CNPJ'] || '';
-  document.getElementById('f_natureza').value = f['CONTA'] || '';
-  document.getElementById('f_descricao').value = f['TIPO NOTA'] || '';
-  document.getElementById('f_iva').value = f['IVA'] || '';
-  document.getElementById('f_codigo_compra').value = f['CODIGO_COMPRA'] || '';
-  prestadorList.classList.remove('active');
+function selectCoupaFornecedor(f) {
+  document.getElementById('cf_prestador').value = f['RAZÃO SOCIAL'] || '';
+  document.getElementById('cf_cnpj').value = f['CNPJ'] || '';
+  document.getElementById('cf_natureza').value = f['CONTA'] || '';
+  document.getElementById('cf_descricao').value = f['TIPO NOTA'] || '';
+  document.getElementById('cf_iva').value = f['IVA'] || '';
+  document.getElementById('cf_codigo_compra').value = f['CODIGO_COMPRA'] || '';
+  coupaPrestadorList.classList.remove('active');
 }
 
-/* --- Save (insert or update, matched by NF to avoid duplicates) --- */
-async function saveLancamento() {
-  const btn = document.getElementById('saveLancBtn');
-  const nf = document.getElementById('f_nf').value.trim();
+/* --- Coupa: Salvar --- */
+async function saveCoupaLancamento() {
+  const btn = document.getElementById('saveCoupaBtn');
+  const nf = document.getElementById('cf_nf').value.trim();
   if (!nf) { toast('Informe o número da NF.', 'err'); return; }
-  if (!document.getElementById('f_prestador').value.trim()) { toast('Informe o prestador.', 'err'); return; }
+  if (!document.getElementById('cf_prestador').value.trim()) { toast('Informe o prestador.', 'err'); return; }
 
-  const valorNum = parseBRL(document.getElementById('f_valor').value);
+  const valorNum = parseBRL(document.getElementById('cf_valor').value);
   const payload = {
     NF: nf,
-    'EMISSÃO': document.getElementById('f_emissao').value || null,
-    VENCIMENTO: document.getElementById('f_vencimento').value || null,
-    RECEBIMENTO: document.getElementById('f_recebimento').value || null,
-    PRESTADOR: document.getElementById('f_prestador').value.trim(),
-    CNPJ: document.getElementById('f_cnpj').value,
+    'EMISSÃO': document.getElementById('cf_emissao').value || null,
+    VENCIMENTO: document.getElementById('cf_vencimento').value || null,
+    RECEBIMENTO: document.getElementById('cf_recebimento').value || null,
+    PRESTADOR: document.getElementById('cf_prestador').value.trim(),
+    CNPJ: document.getElementById('cf_cnpj').value,
     VALOR: valorNum ? formatBRL(valorNum) : '',
-    NATUREZA: document.getElementById('f_natureza').value,
-    'DESCRIÇÃO': document.getElementById('f_descricao').value,
-    APROVADOR: valorNum ? calcAprovador(valorNum) : document.getElementById('f_aprovador').value,
-    IVA: document.getElementById('f_iva').value,
-    CODIGO_COMPRA: document.getElementById('f_codigo_compra').value,
-    PEDIDO: document.getElementById('f_pedido').value,
-    PROTOCOLO: document.getElementById('f_protocolo').value,
-    'OCORRÊNCIA': document.getElementById('f_ocorrencia').value,
-    STATUS: document.getElementById('f_status').value,
+    NATUREZA: document.getElementById('cf_natureza').value,
+    'DESCRIÇÃO': document.getElementById('cf_descricao').value,
+    APROVADOR: valorNum ? calcAprovador(valorNum) : document.getElementById('cf_aprovador').value,
+    IVA: document.getElementById('cf_iva').value,
+    CODIGO_COMPRA: document.getElementById('cf_codigo_compra').value,
+    PEDIDO: document.getElementById('cf_pedido').value,
+    PROTOCOLO: document.getElementById('cf_protocolo').value,
+    'OCORRÊNCIA': document.getElementById('cf_ocorrencia').value,
+    STATUS: document.getElementById('cf_status').value,
     USER_LANC: currentUser.NAME || currentUser.USER
   };
 
   btn.disabled = true;
   btn.textContent = 'Salvando…';
   try {
-    // Look for an existing row with the same NF to avoid duplicating data
     const existing = await sbGet('/COUPA?NF=eq.' + encodeURIComponent(nf) + '&select=id,NF');
     if (existing.length) {
       const target = existing[0];
@@ -1074,11 +1571,11 @@ async function saveLancamento() {
       await sbPatch(filterPath, payload);
       toast('Lançamento atualizado (NF já existia).', 'ok');
     } else {
-      payload.DATA = todayISO();
+      payload.DATA = new Date().toISOString().slice(0, 10);
       await sbPost('/COUPA', payload);
       toast('Lançamento inserido.', 'ok');
     }
-    closeLancamentoModal();
+    closeCoupaModal();
     loadCoupa();
   } catch (e) {
     toast(e.message, 'err');
@@ -1089,16 +1586,497 @@ async function saveLancamento() {
 }
 
 /* =====================================================================
-   USERS (level 1 only)
+   TABELA SHAREPOINT
+   ===================================================================== */
+const SP_COLUMNS = [
+  { key: 'NF', label: 'NF', type: 'text' },
+  { key: 'EMISSÃO', label: 'Emissão', type: 'date' },
+  { key: 'VENCIMENTO', label: 'Vencimento', type: 'date' },
+  { key: 'RECEBIMENTO', label: 'Recebimento', type: 'date' },
+  { key: 'PRESTADOR', label: 'Prestador', type: 'text' },
+  { key: 'CNPJ', label: 'CNPJ', type: 'text' },
+  { key: 'VALOR', label: 'Valor', type: 'money' },
+  { key: 'NATUREZA', label: 'Natureza', type: 'text' },
+  { key: 'DESCRIÇÃO', label: 'Descrição', type: 'text' },
+  { key: 'APROVADOR', label: 'Aprovador', type: 'text' },
+  { key: 'PEDIDO', label: 'Pedido', type: 'text' },
+  { key: 'PROTOCOLO', label: 'Protocolo', type: 'text' },
+  { key: 'OCORRÊNCIA', label: 'Ocorrência', type: 'text' },
+  { key: 'STATUS', label: 'Status', type: 'status' },
+  { key: 'USER_LANC', label: 'Lanç. por', type: 'text' }
+];
+
+function buildSpTableHeader() {
+  const headerRow = document.getElementById('spHeaderRow');
+  const filterRow = document.getElementById('spFilterRow');
+  headerRow.innerHTML = '';
+  filterRow.innerHTML = '';
+
+  SP_COLUMNS.forEach(col => {
+    const th = document.createElement('th');
+    if (col.type === 'money') th.classList.add('num');
+    th.textContent = col.label;
+    headerRow.appendChild(th);
+
+    const fth = document.createElement('th');
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.placeholder = col.label + '…';
+    inp.oninput = (e) => { spFilters[col.key] = e.target.value; renderSpTable(); };
+    fth.appendChild(inp);
+    filterRow.appendChild(fth);
+  });
+  headerRow.appendChild(document.createElement('th'));
+  filterRow.appendChild(document.createElement('th'));
+
+  document.getElementById('spTbody').innerHTML = '';
+  document.querySelector('#view-fin-sharepoint tfoot .subtotal-row td').setAttribute('colspan', SP_COLUMNS.length + 1);
+}
+
+async function loadSharepoint() {
+  try {
+    spRows = await sbGet('/SHAREPOINT?select=*');
+    spLoaded = true;
+    renderSpTable();
+  } catch (e) {
+    document.getElementById('spTbody').innerHTML =
+      '<tr><td colspan="' + (SP_COLUMNS.length + 1) + '" class="empty-state">Erro ao carregar SharePoint: ' + e.message + '</td></tr>';
+    toast('Erro ao carregar dados do Supabase (SharePoint): ' + e.message, 'err');
+  }
+}
+
+function spRowMatchesFilters(row) {
+  return SP_COLUMNS.every(col => {
+    const f = (spFilters[col.key] || '').trim().toLowerCase();
+    if (!f) return true;
+    const val = String(row[col.key] ?? '').toLowerCase();
+    return val.includes(f);
+  });
+}
+
+function renderSpTable() {
+  const tbody = document.getElementById('spTbody');
+  const visible = spRows.filter(spRowMatchesFilters);
+
+  if (!visible.length) {
+    tbody.innerHTML = '<tr><td colspan="' + (SP_COLUMNS.length + 1) + '" class="empty-state">Nenhum registro encontrado.</td></tr>';
+  } else {
+    tbody.innerHTML = visible.map(row => {
+      const cells = SP_COLUMNS.map(col => {
+        let v = row[col.key];
+        if (col.type === 'date') return '<td>' + fmtDateCell(v) + '</td>';
+        if (col.type === 'money') return '<td class="num">' + (v ? formatBRL(parseBRL(v)) : '—') + '</td>';
+        if (col.type === 'status') return '<td><span class="status-pill ' + statusClass(v) + '">' + (v || 'Não iniciado') + '</span></td>';
+        return '<td>' + (v !== null && v !== undefined && v !== '' ? escapeHtml(String(v)) : '—') + '</td>';
+      }).join('');
+      const rk = row.id !== undefined ? row.id : row.NF;
+      return '<tr onclick="editSpRow(\'' + encodeURIComponent(rk) + '\')">' + cells +
+        '<td class="row-actions" onclick="event.stopPropagation()">' +
+        '<button class="icon-btn del" title="Excluir" onclick="deleteSpRow(\'' + encodeURIComponent(rk) + '\')">🗑</button>' +
+        '</td></tr>';
+    }).join('');
+  }
+
+  const subtotal = visible.reduce((sum, r) => sum + parseBRL(r.VALOR), 0);
+  document.getElementById('spStatCount').textContent = visible.length;
+  document.getElementById('spStatSubtotal').textContent = formatBRL(subtotal);
+  document.getElementById('spTfootSubtotal').textContent =
+    'Subtotal (Valor): ' + formatBRL(subtotal) + ' · ' + visible.length + ' registro(s)';
+}
+
+function toggleSpFilters() {
+  spFiltersActive = !spFiltersActive;
+  document.getElementById('spFilterRow').classList.toggle('hidden', !spFiltersActive);
+  document.getElementById('spFilterToggleBtn').classList.toggle('active-filter', spFiltersActive);
+}
+function clearSpFilters() {
+  Object.keys(spFilters).forEach(k => delete spFilters[k]);
+  document.querySelectorAll('#spFilterRow input').forEach(i => i.value = '');
+  renderSpTable();
+}
+
+/* =====================================================================
+   MODAL SHAREPOINT
+   ===================================================================== */
+function openSpModal(row) {
+  spEditingKey = null;
+  document.getElementById('lancSpTitle').textContent = 'Novo lançamento · SharePoint';
+  ['sf_nf','sf_emissao','sf_vencimento','sf_recebimento','sf_prestador','sf_cnpj','sf_valor','sf_natureza','sf_descricao','sf_aprovador','sf_pedido','sf_protocolo','sf_ocorrencia'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('sf_status').value = 'Não iniciado';
+  document.getElementById('sf_user_lanc').value = currentUser ? (currentUser.NAME || currentUser.USER) : '';
+
+  if (row) {
+    spEditingKey = row.id !== undefined ? row.id : row.NF;
+    document.getElementById('lancSpTitle').textContent = 'Editar lançamento · SharePoint';
+    document.getElementById('sf_nf').value = row.NF || '';
+    document.getElementById('sf_emissao').value = row['EMISSÃO'] ? String(row['EMISSÃO']).slice(0,10) : '';
+    document.getElementById('sf_vencimento').value = row.VENCIMENTO ? String(row.VENCIMENTO).slice(0,10) : '';
+    document.getElementById('sf_recebimento').value = row.RECEBIMENTO ? String(row.RECEBIMENTO).slice(0,10) : '';
+    document.getElementById('sf_prestador').value = row.PRESTADOR || '';
+    document.getElementById('sf_cnpj').value = row.CNPJ || '';
+    document.getElementById('sf_valor').value = row.VALOR ? formatBRL(parseBRL(row.VALOR)) : '';
+    document.getElementById('sf_natureza').value = row.NATUREZA || '';
+    document.getElementById('sf_descricao').value = row['DESCRIÇÃO'] || '';
+    document.getElementById('sf_aprovador').value = row.APROVADOR || '';
+    document.getElementById('sf_pedido').value = row.PEDIDO || '';
+    document.getElementById('sf_protocolo').value = row.PROTOCOLO || '';
+    document.getElementById('sf_ocorrencia').value = row['OCORRÊNCIA'] || '';
+    document.getElementById('sf_status').value = row.STATUS || 'Não iniciado';
+    document.getElementById('sf_user_lanc').value = row.USER_LANC || (currentUser.NAME || currentUser.USER);
+  }
+
+  document.getElementById('lancModalSp').classList.add('active');
+}
+function closeSpModal() {
+  document.getElementById('lancModalSp').classList.remove('active');
+  document.getElementById('spPrestadorList').classList.remove('active');
+  spEditingKey = null;
+}
+function editSpRow(encodedKey) {
+  const key = decodeURIComponent(encodedKey);
+  const row = spRows.find(r => String(r.id !== undefined ? r.id : r.NF) === key);
+  if (row) openSpModal(row);
+}
+async function deleteSpRow(encodedKey) {
+  const key = decodeURIComponent(encodedKey);
+  const row = spRows.find(r => String(r.id !== undefined ? r.id : r.NF) === key);
+  if (!row) return;
+  if (!confirm('Excluir o lançamento NF "' + (row.NF || '') + '"?')) return;
+  try {
+    const filterPath = row.id !== undefined
+      ? '/SHAREPOINT?id=eq.' + encodeURIComponent(row.id)
+      : '/SHAREPOINT?NF=eq.' + encodeURIComponent(row.NF);
+    await sbDelete(filterPath);
+    toast('Lançamento excluído.', 'ok');
+    loadSharepoint();
+  } catch (e) {
+    toast(e.message, 'err');
+  }
+}
+
+/* --- SharePoint: Valor auto-format + recompute Aprovador --- */
+document.getElementById('sf_valor').addEventListener('blur', (e) => {
+  const n = parseBRL(e.target.value);
+  e.target.value = n ? formatBRL(n) : '';
+  document.getElementById('sf_aprovador').value = n ? calcAprovador(n) : '';
+});
+
+/* --- SharePoint: Autocomplete fornecedor --- */
+let spAcTimer = null;
+const sfPrestador = document.getElementById('sf_prestador');
+const spPrestadorList = document.getElementById('spPrestadorList');
+
+sfPrestador.addEventListener('input', () => {
+  const q = sfPrestador.value.trim();
+  clearTimeout(spAcTimer);
+  document.getElementById('sf_cnpj').value = '';
+  document.getElementById('sf_natureza').value = '';
+  document.getElementById('sf_descricao').value = '';
+
+  if (q.length < 2) { spPrestadorList.classList.remove('active'); spPrestadorList.innerHTML = ''; return; }
+
+  spAcTimer = setTimeout(async () => {
+    try {
+      const col = encodeURIComponent('RAZÃO SOCIAL');
+      const results = await sbGet('/FORNECEDOR?select=*&' + col + '=ilike.*' + encodeURIComponent(q) + '*&limit=8');
+      if (!results.length) { spPrestadorList.classList.remove('active'); spPrestadorList.innerHTML = ''; return; }
+      spPrestadorList.innerHTML = results.map((f, i) => {
+        const razao = f['RAZÃO SOCIAL'] || '';
+        const cnpj = f['CNPJ'] || '';
+        return '<div class="autocomplete-item" data-idx="' + i + '">' + escapeHtml(razao) +
+          '<div class="sub">' + escapeHtml(cnpj) + '</div></div>';
+      }).join('');
+      spPrestadorList.classList.add('active');
+      spPrestadorList.querySelectorAll('.autocomplete-item').forEach((el, i) => {
+        el.onclick = () => selectSpFornecedor(results[i]);
+      });
+    } catch (e) {
+      toast('Erro ao buscar fornecedores: ' + e.message, 'err');
+    }
+  }, 300);
+});
+document.addEventListener('click', (e) => {
+  if (!sfPrestador.contains(e.target) && !spPrestadorList.contains(e.target)) {
+    spPrestadorList.classList.remove('active');
+  }
+});
+function selectSpFornecedor(f) {
+  document.getElementById('sf_prestador').value = f['RAZÃO SOCIAL'] || '';
+  document.getElementById('sf_cnpj').value = f['CNPJ'] || '';
+  document.getElementById('sf_natureza').value = f['CONTA'] || '';
+  document.getElementById('sf_descricao').value = f['TIPO NOTA'] || '';
+  spPrestadorList.classList.remove('active');
+}
+
+/* --- SharePoint: Salvar --- */
+async function saveSpLancamento() {
+  const btn = document.getElementById('saveSpBtn');
+  const nf = document.getElementById('sf_nf').value.trim();
+  if (!nf) { toast('Informe o número da NF.', 'err'); return; }
+  if (!document.getElementById('sf_prestador').value.trim()) { toast('Informe o prestador.', 'err'); return; }
+
+  const valorNum = parseBRL(document.getElementById('sf_valor').value);
+  const payload = {
+    NF: nf,
+    'EMISSÃO': document.getElementById('sf_emissao').value || null,
+    VENCIMENTO: document.getElementById('sf_vencimento').value || null,
+    RECEBIMENTO: document.getElementById('sf_recebimento').value || null,
+    PRESTADOR: document.getElementById('sf_prestador').value.trim(),
+    CNPJ: document.getElementById('sf_cnpj').value,
+    VALOR: valorNum ? formatBRL(valorNum) : '',
+    NATUREZA: document.getElementById('sf_natureza').value,
+    'DESCRIÇÃO': document.getElementById('sf_descricao').value,
+    APROVADOR: valorNum ? calcAprovador(valorNum) : document.getElementById('sf_aprovador').value,
+    PEDIDO: document.getElementById('sf_pedido').value,
+    PROTOCOLO: document.getElementById('sf_protocolo').value,
+    'OCORRÊNCIA': document.getElementById('sf_ocorrencia').value,
+    STATUS: document.getElementById('sf_status').value,
+    USER_LANC: currentUser.NAME || currentUser.USER
+  };
+
+  btn.disabled = true;
+  btn.textContent = 'Salvando…';
+  try {
+    const existing = await sbGet('/SHAREPOINT?NF=eq.' + encodeURIComponent(nf) + '&select=id,NF');
+    if (existing.length) {
+      const target = existing[0];
+      const filterPath = target.id !== undefined
+        ? '/SHAREPOINT?id=eq.' + encodeURIComponent(target.id)
+        : '/SHAREPOINT?NF=eq.' + encodeURIComponent(nf);
+      await sbPatch(filterPath, payload);
+      toast('Lançamento atualizado (NF já existia).', 'ok');
+    } else {
+      await sbPost('/SHAREPOINT', payload);
+      toast('Lançamento inserido.', 'ok');
+    }
+    closeSpModal();
+    loadSharepoint();
+  } catch (e) {
+    toast(e.message, 'err');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '💾 Salvar';
+  }
+}
+
+/* =====================================================================
+   ITENS DE ESCRITÓRIO — helpers de saldo (BD_SALDO)
+   ===================================================================== */
+async function buscarPorEan(table, ean, selectCols) {
+  const rows = await sbGet('/' + table + '?' + qs({ EAN: 'eq.' + ean, select: selectCols }));
+  return rows[0] || null;
+}
+async function ajustarSaldo(ean, descricao, qtd, modo) {
+  const existente = await buscarPorEan('BD_SALDO', ean, 'EAN,DESCRIÇÃO,SALDO');
+  let novoSaldo;
+  if (existente) {
+    const atual = Number(existente.SALDO) || 0;
+    if (modo === 'soma') novoSaldo = atual + Number(qtd);
+    else if (modo === 'subtrai') novoSaldo = atual - Number(qtd);
+    else novoSaldo = Number(qtd);
+    await sbPatch('/BD_SALDO?' + qs({ EAN: 'eq.' + ean }), {
+      'DESCRIÇÃO': descricao || existente['DESCRIÇÃO'],
+      SALDO: novoSaldo
+    });
+  } else {
+    novoSaldo = modo === 'subtrai' ? -Number(qtd) : Number(qtd);
+    await sbPost('/BD_SALDO', [{ EAN: ean, 'DESCRIÇÃO': descricao || '', SALDO: novoSaldo }]);
+  }
+  return novoSaldo;
+}
+
+function limparForm(area) {
+  const map = {
+    recebimento: ['rec-ean','rec-desc','rec-qtd'],
+    inventario: ['inv-ean','inv-desc','inv-contagem'],
+    entrega: ['ent-ean','ent-desc','ent-qtd','ent-solicitante'],
+    'cadastro-add': ['add-ean','add-desc','add-tipo'],
+    'cadastro-edit': ['edit-ean','edit-desc','edit-tipo']
+  };
+  (map[area]||[]).forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  if (area === 'inventario') document.getElementById('inv-info').style.display = 'none';
+  if (area === 'cadastro-edit') {
+    document.getElementById('edit-desc').disabled = true;
+    document.getElementById('edit-tipo').disabled = true;
+    document.getElementById('edit-btn').disabled = true;
+  }
+}
+
+async function autoPreencherDescricao(eanInputId, descInputId) {
+  const ean = document.getElementById(eanInputId).value.trim();
+  if (!ean) return;
+  try {
+    const item = await buscarPorEan('CADASTRO_ITENS', ean, 'DESCRIÇÃO');
+    if (item && item['DESCRIÇÃO']) document.getElementById(descInputId).value = item['DESCRIÇÃO'];
+  } catch (e) { /* best-effort */ }
+}
+['rec-ean','ent-ean'].forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const target = id === 'rec-ean' ? 'rec-desc' : 'ent-desc';
+  el.addEventListener('blur', () => autoPreencherDescricao(id, target));
+  el.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); autoPreencherDescricao(id, target); } });
+});
+
+/* ---- Recebimento ---- */
+async function lancarRecebimento() {
+  const ean = document.getElementById('rec-ean').value.trim();
+  const desc = document.getElementById('rec-desc').value.trim();
+  const qtd = Number(document.getElementById('rec-qtd').value);
+  if (!ean || !desc || !qtd || qtd<=0) { toast('Preencha EAN, Descrição e Quantidade (maior que 0).', 'err'); return; }
+
+  setLoading('rec-btn', true);
+  try {
+    await sbPost('/RECEBIMENTO_ITENS', [{ EAN: ean, 'DESCRIÇÃO': desc, QTD: qtd }]);
+    const novoSaldo = await ajustarSaldo(ean, desc, qtd, 'soma');
+    toast('Recebimento lançado! Novo saldo de "' + desc + '": ' + novoSaldo, 'ok');
+    limparForm('recebimento');
+    document.getElementById('rec-ean').focus();
+  } catch (e) {
+    toast('Erro ao lançar recebimento: ' + e.message, 'err');
+  } finally {
+    setLoading('rec-btn', false, '✅ Lançar Recebimento');
+  }
+}
+
+/* ---- Inventário ---- */
+async function buscarSaldoInventario() {
+  const ean = document.getElementById('inv-ean').value.trim();
+  if (!ean) { toast('Informe o EAN para buscar.', 'err'); return; }
+  try {
+    const item = await buscarPorEan('BD_SALDO', ean, 'EAN,DESCRIÇÃO,SALDO');
+    const box = document.getElementById('inv-info');
+    if (item) {
+      document.getElementById('inv-desc-view').textContent = item['DESCRIÇÃO'] || '(sem descrição)';
+      document.getElementById('inv-saldo-atual').textContent = item.SALDO ?? 0;
+      document.getElementById('inv-desc').value = item['DESCRIÇÃO'] || '';
+      box.style.display = 'grid';
+      toast('Item encontrado no saldo.', 'ok');
+    } else {
+      document.getElementById('inv-desc-view').textContent = 'Item não encontrado (será criado)';
+      document.getElementById('inv-saldo-atual').textContent = '0';
+      box.style.display = 'grid';
+      toast('Item não existe em BD_SALDO ainda. Preencha a descrição para criá-lo.', 'err');
+    }
+  } catch (e) {
+    toast('Erro ao buscar item: ' + e.message, 'err');
+  }
+}
+async function confirmarAjusteInventario() {
+  const ean = document.getElementById('inv-ean').value.trim();
+  const desc = document.getElementById('inv-desc').value.trim();
+  const contagem = document.getElementById('inv-contagem').value;
+  if (!ean || contagem === '') { toast('Informe o EAN e a quantidade contada.', 'err'); return; }
+
+  setLoading('inv-btn', true);
+  try {
+    const novoSaldo = await ajustarSaldo(ean, desc, Number(contagem), 'define');
+    toast('Saldo ajustado! Novo saldo: ' + novoSaldo, 'ok');
+    limparForm('inventario');
+  } catch (e) {
+    toast('Erro ao ajustar saldo do inventário: ' + e.message, 'err');
+  } finally {
+    setLoading('inv-btn', false, '✅ Confirmar Ajuste de Saldo');
+  }
+}
+
+/* ---- Entrega ---- */
+async function lancarEntrega() {
+  const ean = document.getElementById('ent-ean').value.trim();
+  const desc = document.getElementById('ent-desc').value.trim();
+  const qtd = Number(document.getElementById('ent-qtd').value);
+  const solicitante = document.getElementById('ent-solicitante').value.trim();
+  if (!ean || !desc || !qtd || qtd<=0 || !solicitante) { toast('Preencha EAN, Descrição, Quantidade e Solicitante.', 'err'); return; }
+
+  setLoading('ent-btn', true);
+  try {
+    await sbPost('/SAIDA_ITENS', [{ EAN: ean, 'DESCRIÇÃO': desc, QTD: qtd, SOLICITANTE: solicitante }]);
+    const novoSaldo = await ajustarSaldo(ean, desc, qtd, 'subtrai');
+    toast('Entrega registrada! Novo saldo de "' + desc + '": ' + novoSaldo, 'ok');
+    limparForm('entrega');
+    document.getElementById('ent-ean').focus();
+  } catch (e) {
+    toast('Erro ao registrar entrega: ' + e.message, 'err');
+  } finally {
+    setLoading('ent-btn', false, '✅ Registrar Entrega');
+  }
+}
+
+/* ---- Cadastro de Itens ---- */
+function mostrarTabCadastro(qual) {
+  document.getElementById('tab-add').classList.toggle('active', qual==='add');
+  document.getElementById('tab-edit').classList.toggle('active', qual==='edit');
+  document.getElementById('cadastro-add').style.display = qual==='add' ? 'block' : 'none';
+  document.getElementById('cadastro-edit').style.display = qual==='edit' ? 'block' : 'none';
+}
+async function cadastrarItem() {
+  const ean = document.getElementById('add-ean').value.trim();
+  const desc = document.getElementById('add-desc').value.trim();
+  const tipo = document.getElementById('add-tipo').value.trim();
+  if (!ean || !desc || !tipo) { toast('Preencha EAN, Descrição e Tipo.', 'err'); return; }
+
+  setLoading('add-btn', true);
+  try {
+    const existente = await buscarPorEan('CADASTRO_ITENS', ean, 'EAN');
+    if (existente) { toast('Este EAN já está cadastrado. Use a aba Editar Item.', 'err'); return; }
+    await sbPost('/CADASTRO_ITENS', [{ EAN: ean, 'DESCRIÇÃO': desc, TIPO: tipo }]);
+    toast('Item cadastrado com sucesso!', 'ok');
+    limparForm('cadastro-add');
+  } catch (e) {
+    toast('Erro ao cadastrar item: ' + e.message, 'err');
+  } finally {
+    setLoading('add-btn', false, '✅ Cadastrar Item');
+  }
+}
+async function buscarItemEdicao() {
+  const ean = document.getElementById('edit-ean').value.trim();
+  if (!ean) { toast('Informe o EAN para buscar.', 'err'); return; }
+  try {
+    const item = await buscarPorEan('CADASTRO_ITENS', ean, 'EAN,DESCRIÇÃO,TIPO');
+    const descInput = document.getElementById('edit-desc');
+    const tipoInput = document.getElementById('edit-tipo');
+    const saveBtn = document.getElementById('edit-btn');
+    if (item) {
+      descInput.value = item['DESCRIÇÃO'] || '';
+      tipoInput.value = item.TIPO || '';
+      descInput.disabled = false; tipoInput.disabled = false; saveBtn.disabled = false;
+      toast('Item encontrado. Edite os campos e salve.', 'ok');
+    } else {
+      descInput.value = ''; tipoInput.value = '';
+      descInput.disabled = true; tipoInput.disabled = true; saveBtn.disabled = true;
+      toast('Item não encontrado em CADASTRO_ITENS.', 'err');
+    }
+  } catch (e) {
+    toast('Erro ao buscar item: ' + e.message, 'err');
+  }
+}
+async function salvarEdicaoItem() {
+  const ean = document.getElementById('edit-ean').value.trim();
+  const desc = document.getElementById('edit-desc').value.trim();
+  const tipo = document.getElementById('edit-tipo').value.trim();
+  if (!ean || !desc || !tipo) { toast('Preencha Descrição e Tipo antes de salvar.', 'err'); return; }
+
+  setLoading('edit-btn', true);
+  try {
+    await sbPatch('/CADASTRO_ITENS?' + qs({ EAN: 'eq.' + ean }), { 'DESCRIÇÃO': desc, TIPO: tipo });
+    toast('Item atualizado com sucesso!', 'ok');
+  } catch (e) {
+    toast('Erro ao salvar alterações: ' + e.message, 'err');
+  } finally {
+    setLoading('edit-btn', false, '💾 Salvar Alterações');
+  }
+}
+
+/* =====================================================================
+   USUÁRIOS
    ===================================================================== */
 async function loadUsers() {
   const tbody = document.getElementById('usersTbody');
   try {
-    const users = await sbGet('/BD_USER?select=*&SYSTEM=ilike.*COUPA*');
-    if (!users.length) {
-      tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Nenhum usuário cadastrado para COUPA.</td></tr>';
-      return;
-    }
+    const users = await sbGet('/BD_USER?select=*');
+    if (!users.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Nenhum usuário cadastrado.</td></tr>'; return; }
     tbody.innerHTML = users.map(u => (
       '<tr><td>' + escapeHtml(String(u.USER)) + '</td>' +
       '<td>' + escapeHtml(String(u.NAME || '')) + '</td>' +
@@ -1114,6 +2092,8 @@ function openUserModal() {
   document.getElementById('u_user').value = '';
   document.getElementById('u_name').value = '';
   document.getElementById('u_pass').value = '';
+  document.getElementById('u_sys_financas').checked = true;
+  document.getElementById('u_sys_materiais').checked = false;
   document.getElementById('u_level').value = '0';
   document.getElementById('userModal').classList.add('active');
 }
@@ -1123,16 +2103,21 @@ async function saveUser() {
   const name = document.getElementById('u_name').value.trim();
   const pass = document.getElementById('u_pass').value;
   const level = document.getElementById('u_level').value;
+  const systems = [];
+  if (document.getElementById('u_sys_financas').checked) systems.push('FINANCAS');
+  if (document.getElementById('u_sys_materiais').checked) systems.push('MATERIAIS');
+
   if (!user || !name || !pass) { toast('Preencha todos os campos.', 'err'); return; }
+  if (!systems.length && level !== '1') { toast('Selecione ao menos um módulo.', 'err'); return; }
+
+  const systemStr = systems.join(',');
   try {
-    const existing = await sbGet('/BD_USER?USER=eq.' + encodeURIComponent(user) + '&select=USER,SYSTEM');
+    const existing = await sbGet('/BD_USER?USER=eq.' + encodeURIComponent(user) + '&select=USER');
     if (existing.length) {
-      const systems = String(existing[0].SYSTEM || '');
-      const merged = systems.toUpperCase().includes('COUPA') ? systems : (systems ? systems + ',COUPA' : 'COUPA');
-      await sbPatch('/BD_USER?USER=eq.' + encodeURIComponent(user), { NAME: name, PASSWORD: pass, SYSTEM: merged, LEVEL: level });
+      await sbPatch('/BD_USER?USER=eq.' + encodeURIComponent(user), { NAME: name, PASSWORD: pass, SYSTEM: systemStr, LEVEL: level });
       toast('Usuário atualizado.', 'ok');
     } else {
-      await sbPost('/BD_USER', { USER: user, NAME: name, PASSWORD: pass, SYSTEM: 'COUPA', LEVEL: level });
+      await sbPost('/BD_USER', { USER: user, NAME: name, PASSWORD: pass, SYSTEM: systemStr, LEVEL: level });
       toast('Usuário criado.', 'ok');
     }
     closeUserModal();

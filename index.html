@@ -255,10 +255,23 @@
     border-bottom: 1px solid var(--border-soft);
   }
   table.data-table thead th {
-    position: sticky; top: 0; background: var(--bg-2); z-index: 2;
-    font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: .05em;
-    color: var(--text-dimmer); border-bottom: 1px solid var(--border-soft);
-  }
+    position: sticky; 
+    top: 0; 
+    background: var(--bg-2); 
+    z-index: 10;
+    font-family: var(--mono); 
+    font-size: 10px; 
+    text-transform: uppercase; 
+    letter-spacing: .05em;
+    color: var(--text-dimmer); 
+    border-bottom: 1px solid var(--border-soft);
+}
+table.data-table thead tr:first-child th {
+    top: 0;
+}
+table.data-table thead tr.filter-row th {
+    top: 30px; /* altura aproximada da primeira linha do cabeçalho */
+}
   table.data-table tbody tr { cursor: pointer; transition: background .12s; }
   table.data-table tbody tr:hover { background: rgba(255,255,255,0.02); }
   table.data-table td.num, table.data-table th.num { text-align: right; font-family: var(--mono); }

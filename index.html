@@ -60,20 +60,24 @@
   button { font-family: var(--sans); cursor: pointer; }
   input, select { font-family: var(--sans); }
 
-  /* ---------------- LOGIN ---------------- */
+  /* LOGIN */
   #loginScreen {
     position: fixed; inset: 0;
     display: flex; align-items: center; justify-content: center;
-    z-index: 500;
-    padding: 20px;
+    z-index: 500; padding: 20px;
+    overflow: hidden;
+  }
+  #loginVideo {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%; object-fit: cover;
+    z-index: -1; filter: brightness(0.4);
   }
   .login-card {
     width: 100%; max-width: 380px;
     background: linear-gradient(160deg, var(--panel), var(--panel-2));
-    border: 1px solid var(--border-soft);
-    border-radius: 18px;
-    padding: 34px 32px 30px;
-    box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+    border: 1px solid var(--border-soft); border-radius: 18px;
+    padding: 34px 32px 30px; box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+    position: relative; z-index: 1;
   }
   .login-brand {
     display: flex; flex-direction: column; align-items: center; gap: 12px;
@@ -83,8 +87,7 @@
     width: 56px; height: 56px; border-radius: 14px;
     background: linear-gradient(145deg, var(--gold), #b9812c);
     display: flex; align-items: center; justify-content: center;
-    font-size: 26px;
-    box-shadow: 0 8px 22px rgba(240, 182, 74, 0.28);
+    font-size: 26px; box-shadow: 0 8px 22px rgba(240, 182, 74, 0.28);
   }
   .login-brand h1 { font-family: var(--display); font-size: 19px; font-weight: 800; margin: 0; }
   .login-brand p { margin: 0; font-size: 12.5px; color: var(--text-dim); }
@@ -123,7 +126,7 @@
   }
   .login-footer strong { color: var(--gold); font-weight: 600; }
 
-  /* ---------------- APP SHELL ---------------- */
+  /* APP SHELL */
   #app { display: none; min-height: 100vh; }
   #app.active { display: flex; }
 
@@ -205,7 +208,6 @@
   }
   .sb-footer strong { color: var(--gold); font-weight: 600; }
 
-  /* ---------------- MAIN ---------------- */
   .main { flex: 1; min-width: 0; padding: 30px 32px 50px; }
   .view { display: none; }
   .view.active { display: block; }
@@ -217,7 +219,7 @@
   .view-title { font-family: var(--display); font-size: 22px; font-weight: 800; margin: 0 0 4px; }
   .view-sub { color: var(--text-dim); font-size: 13px; margin: 0; }
 
-  .toolbar { display: flex; gap: 10px; flex-wrap: wrap; }
+  .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
   .btn {
     background: var(--panel-2); border: 1px solid var(--border);
     color: var(--text); font-size: 13px; font-weight: 600;
@@ -291,7 +293,6 @@
 
   .empty-state { padding: 50px 20px; text-align: center; color: var(--text-dimmer); font-family: var(--mono); font-size: 13px; }
 
-  /* ---------------- Cards genéricos (Itens de Escritório) ---------------- */
   .card {
     background: linear-gradient(160deg, var(--panel), var(--panel-2));
     border: 1px solid var(--border-soft); border-radius: 16px;
@@ -326,7 +327,6 @@
   }
   .tab-btn.active { background: linear-gradient(135deg, var(--gold), #d9963a); color: #1a1305; border-color: transparent; }
 
-  /* Cards de link externo */
   .ext-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px,1fr)); gap: 14px; margin-bottom: 22px; }
   .ext-card {
     background: linear-gradient(160deg, var(--panel), var(--panel-2));
@@ -340,7 +340,7 @@
   .ext-card b { font-family: var(--display); font-size: 14px; }
   .ext-card span { font-size: 10.5px; color: var(--text-dimmer); font-family: var(--mono); }
 
-  /* ---------------- MODAIS ---------------- */
+  /* MODAIS */
   .modal-overlay {
     position: fixed; inset: 0; background: rgba(4,6,12,0.72); backdrop-filter: blur(3px);
     display: none; align-items: flex-start; justify-content: center; z-index: 400;
@@ -362,7 +362,7 @@
   .modal-close:hover { color: var(--red); }
   .modal-body { padding: 22px 24px; }
   .checkbox-row { display: flex; gap: 18px; align-items: center; }
-  .checkbox-row label { display: flex; align-items: center; gap: 7px; font-family: var(--sans); font-size: 13px; color: var(--text); text-transform: none; letter-spacing: 0; }
+  .checkbox-row label { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--text); text-transform: none; letter-spacing: 0; }
   .checkbox-row input[type="checkbox"] { width: auto; accent-color: var(--gold); }
   .autocomplete-wrap { position: relative; }
   .autocomplete-list {
@@ -392,6 +392,23 @@
   .toast.err { border-color: var(--red-line); }
   .toast.ok { border-color: var(--green-line); }
 
+  /* Seletor CD superior */
+  .top-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 24px; background: var(--bg-2); border-bottom: 1px solid var(--border-soft);
+    margin-bottom: 12px; flex-wrap: wrap; gap: 10px;
+  }
+  .cd-selector {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 9px; padding: 6px 12px;
+  }
+  .cd-selector label { font-size: 11px; font-weight: 600; color: var(--text-dim); white-space: nowrap; }
+  .cd-selector select {
+    background: transparent; border: none; color: var(--gold); font-size: 14px; font-weight: 700;
+    outline: none; cursor: pointer;
+  }
+
   @media (max-width: 900px) {
     .sidebar { position: fixed; left: -280px; z-index: 300; transition: left .2s; box-shadow: 20px 0 40px rgba(0,0,0,0.4); }
     .sidebar.open { left: 0; }
@@ -405,11 +422,14 @@
 
 <!-- ================= LOGIN ================= -->
 <div id="loginScreen">
+  <video autoplay muted loop playsinline id="loginVideo">
+    <source src="video.mp4" type="video/mp4">
+  </video>
   <div class="login-card">
     <div class="login-brand">
       <div class="login-icon">💰</div>
       <h1>Controle de Contas Pro</h1>
-      <p>Acesso restrito · Finanças &amp; Itens de Escritório</p>
+      <p>Acesso restrito · Finanças &amp; Itens de Escritório &amp; Suprimentos</p>
     </div>
     <div class="login-error" id="loginError"></div>
     <form id="loginForm" onsubmit="return false;">
@@ -434,11 +454,8 @@
   <div class="sidebar" id="sidebar">
     <div class="sb-brand">
       <div class="sb-brand-icon">💰</div>
-      <div class="sb-brand-text">
-        <h2>Controle de<br>Contas Pro</h2>
-      </div>
+      <div class="sb-brand-text"><h2>Controle de<br>Contas Pro</h2></div>
     </div>
-
     <div class="sb-nav">
       <div class="sb-section-label">Módulos</div>
 
@@ -464,9 +481,22 @@
         </div>
       </div>
 
+      <div class="nav-group" id="grupo-suprimentos" style="display:none;">
+        <button class="nav-group-btn" onclick="toggleGroup('grupo-suprimentos')">
+          <span class="ico">🛒</span> SUPRIMENTOS <span class="nav-chev">▶</span>
+        </button>
+        <div class="nav-submenu">
+          <button class="nav-subitem" data-view="sup-solicitar" onclick="switchView('sup-solicitar')">📋 Solicitar Materiais</button>
+          <button class="nav-subitem" data-view="sup-visualizar" onclick="switchView('sup-visualizar')">📊 Visualizar Solicitações</button>
+        </div>
+      </div>
+
       <div class="sb-section-label" id="adminSectionLabel" style="display:none;">Administração</div>
       <button class="sb-item" data-view="usuarios" id="usuariosMenuBtn" style="display:none;" onclick="switchView('usuarios')">
         <span class="ico">👤</span> Cadastro de Usuários
+      </button>
+      <button class="sb-item" id="bloqueioSolicBtn" style="display:none;" onclick="alternarBloqueioSolicitacoes()">
+        <span class="ico">🔒</span> Bloquear Solicitações
       </button>
     </div>
 
@@ -482,11 +512,15 @@
   </div>
 
   <div class="main">
-
-    <div class="view-header" style="margin-bottom:10px;">
-      <div>
-        <p class="view-sub" id="topbar-crumb" style="font-family:var(--mono); font-size:11.5px;"></p>
+    <!-- Seletor de CD no topo -->
+    <div class="top-bar" id="topBar" style="display:none;">
+      <div class="cd-selector">
+        <label>🏷️ CD ativo:</label>
+        <select id="cdSelectTop" onchange="onCDChange()">
+          <option value="">Carregando...</option>
+        </select>
       </div>
+      <div style="font-size:12px; color:var(--text-dim);" id="topbar-crumb"></div>
     </div>
 
     <!-- ============ VIEW: FINANÇAS > COUPA ============ -->
@@ -502,307 +536,203 @@
           <button class="btn gold" onclick="openCoupaModal()">+ Novo lançamento</button>
         </div>
       </div>
-
-      <!-- Links externos -->
       <div class="ext-grid" id="coupaLinksGrid"></div>
-
       <div class="stats-row">
-        <div class="stat-card">
-          <div class="stat-label">Registros visíveis</div>
-          <div class="stat-value" id="coupaStatCount">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Subtotal (Valor · visível na tela)</div>
-          <div class="stat-value" id="coupaStatSubtotal">R$ 0,00</div>
-        </div>
+        <div class="stat-card"><div class="stat-label">Registros visíveis</div><div class="stat-value" id="coupaStatCount">0</div></div>
+        <div class="stat-card"><div class="stat-label">Subtotal (Valor)</div><div class="stat-value" id="coupaStatSubtotal">R$ 0,00</div></div>
       </div>
-
-      <div class="table-card">
-        <div class="table-scroll">
-          <table class="data-table" id="coupaTable">
-            <thead>
-              <tr id="coupaHeaderRow"></tr>
-              <tr class="filter-row hidden" id="coupaFilterRow"></tr>
-            </thead>
-            <tbody id="coupaTbody">
-              <tr><td colspan="18" class="empty-state">Carregando dados do Supabase…</td></tr>
-            </tbody>
-            <tfoot>
-              <tr class="subtotal-row">
-                <td colspan="18" id="coupaTfootSubtotal">Subtotal (Valor): R$ 0,00 · 0 registros</td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-      </div>
+      <div class="table-card"><div class="table-scroll">
+        <table class="data-table" id="coupaTable">
+          <thead><tr id="coupaHeaderRow"></tr><tr class="filter-row hidden" id="coupaFilterRow"></tr></thead>
+          <tbody id="coupaTbody"><tr><td colspan="19" class="empty-state">Carregando dados…</td></tr></tbody>
+          <tfoot><tr class="subtotal-row"><td colspan="19" id="coupaTfootSubtotal">Subtotal: R$ 0,00 · 0 registros</td></tr></tfoot>
+        </table>
+      </div></div>
     </div>
 
     <!-- ============ VIEW: FINANÇAS > SHAREPOINT ============ -->
     <div class="view" id="view-fin-sharepoint">
       <div class="view-header">
-        <div>
-          <h1 class="view-title">SharePoint</h1>
-          <p class="view-sub">Lançamentos de contas a pagar / receber</p>
-        </div>
+        <div><h1 class="view-title">SharePoint</h1><p class="view-sub">Lançamentos de contas a pagar / receber</p></div>
         <div class="toolbar">
           <button class="btn" id="spFilterToggleBtn" onclick="toggleSpFilters()">🔍 Filtrar</button>
           <button class="btn" onclick="clearSpFilters()">✕ Limpar filtros</button>
           <button class="btn gold" onclick="openSpModal()">+ Novo lançamento</button>
         </div>
       </div>
-
-      <div class="ext-grid" style="max-width:320px;">
-        <a class="ext-card" href="https://assai.sharepoint.com/sites/EnvioNotas/SitePages/HomePage.aspx?CT=1783542136844&OR=OWA-NT-Mail&CID=8fcc3898-549d-1177-b872-049a0167b83d&SI=NonSentItems&SLSync=F" target="_blank" rel="noopener">
-          <span class="ic">📁</span>
-          <b>SharePoint</b>
-          <span>Abrir portal de envio de notas</span>
-        </a>
-      </div>
-
+      <div class="ext-grid" style="max-width:320px;"><a class="ext-card" href="https://assai.sharepoint.com/sites/EnvioNotas/SitePages/HomePage.aspx?CT=1783542136844&OR=OWA-NT-Mail&CID=8fcc3898-549d-1177-b872-049a0167b83d&SI=NonSentItems&SLSync=F" target="_blank"><span class="ic">📁</span><b>SharePoint</b><span>Abrir portal de envio de notas</span></a></div>
       <div class="stats-row">
-        <div class="stat-card">
-          <div class="stat-label">Registros visíveis</div>
-          <div class="stat-value" id="spStatCount">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Subtotal (Valor · visível na tela)</div>
-          <div class="stat-value" id="spStatSubtotal">R$ 0,00</div>
-        </div>
+        <div class="stat-card"><div class="stat-label">Registros visíveis</div><div class="stat-value" id="spStatCount">0</div></div>
+        <div class="stat-card"><div class="stat-label">Subtotal (Valor)</div><div class="stat-value" id="spStatSubtotal">R$ 0,00</div></div>
       </div>
-
-      <div class="table-card">
-        <div class="table-scroll">
-          <table class="data-table" id="spTable">
-            <thead>
-              <tr id="spHeaderRow"></tr>
-              <tr class="filter-row hidden" id="spFilterRow"></tr>
-            </thead>
-            <tbody id="spTbody">
-              <tr><td colspan="16" class="empty-state">Carregando dados do Supabase…</td></tr>
-            </tbody>
-            <tfoot>
-              <tr class="subtotal-row">
-                <td colspan="16" id="spTfootSubtotal">Subtotal (Valor): R$ 0,00 · 0 registros</td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-      </div>
+      <div class="table-card"><div class="table-scroll">
+        <table class="data-table" id="spTable">
+          <thead><tr id="spHeaderRow"></tr><tr class="filter-row hidden" id="spFilterRow"></tr></thead>
+          <tbody id="spTbody"><tr><td colspan="17" class="empty-state">Carregando dados…</td></tr></tbody>
+          <tfoot><tr class="subtotal-row"><td colspan="17" id="spTfootSubtotal">Subtotal: R$ 0,00 · 0 registros</td></tr></tfoot>
+        </table>
+      </div></div>
     </div>
 
     <!-- ============ VIEW: ITENS DE ESCRITÓRIO > RECEBIMENTO ============ -->
     <div class="view" id="view-mat-recebimento">
-      <div class="view-header">
-        <div>
-          <h1 class="view-title">Recebimento</h1>
-          <p class="view-sub">Lançar entrada de itens de escritório</p>
-        </div>
-      </div>
+      <div class="view-header"><div><h1 class="view-title">Recebimento</h1><p class="view-sub">Lançar entrada de itens de escritório</p></div></div>
       <div class="card">
         <h3>📥 Lançar Recebimento</h3>
         <div class="form-grid">
-          <div class="form-field">
-            <label>EAN</label>
-            <input type="text" id="rec-ean" placeholder="Bipe ou digite o EAN" autocomplete="off">
-          </div>
-          <div class="form-field">
-            <label>Descrição</label>
-            <input type="text" id="rec-desc" placeholder="Descrição do item">
-          </div>
-          <div class="form-field">
-            <label>Quantidade</label>
-            <input type="number" id="rec-qtd" min="1" placeholder="0">
-          </div>
+          <div class="form-field"><label>EAN</label><input type="text" id="rec-ean" placeholder="Bipe ou digite o EAN" autocomplete="off"></div>
+          <div class="form-field"><label>Descrição</label><input type="text" id="rec-desc" placeholder="Descrição do item"></div>
+          <div class="form-field"><label>Quantidade</label><input type="number" id="rec-qtd" min="1" placeholder="0"></div>
         </div>
-        <div class="actions">
-          <button class="btn gold" id="rec-btn" onclick="lancarRecebimento()">✅ Lançar Recebimento</button>
-          <button class="btn" onclick="limparForm('recebimento')">Limpar</button>
-        </div>
+        <div class="actions"><button class="btn gold" id="rec-btn" onclick="lancarRecebimento()">✅ Lançar Recebimento</button><button class="btn" onclick="limparForm('recebimento')">Limpar</button></div>
         <p class="hint-text">Ao lançar, o item é gravado em RECEBIMENTO_ITENS e o saldo em BD_SALDO é somado automaticamente.</p>
       </div>
     </div>
 
     <!-- ============ VIEW: ITENS DE ESCRITÓRIO > INVENTÁRIO ============ -->
     <div class="view" id="view-mat-inventario">
-      <div class="view-header">
-        <div>
-          <h1 class="view-title">Inventário</h1>
-          <p class="view-sub">Contagem e ajuste de saldo</p>
-        </div>
-      </div>
+      <div class="view-header"><div><h1 class="view-title">Inventário</h1><p class="view-sub">Contagem e ajuste de saldo</p></div></div>
       <div class="card">
         <h3>🔢 Contagem de Inventário</h3>
         <div class="form-grid">
-          <div class="form-field">
-            <label>EAN</label>
-            <input type="text" id="inv-ean" placeholder="Bipe ou digite o EAN" autocomplete="off">
-          </div>
-          <div class="form-field" style="display:flex; align-items:flex-end;">
-            <button class="btn" style="width:100%;" onclick="buscarSaldoInventario()">🔍 Buscar Item</button>
-          </div>
+          <div class="form-field"><label>EAN</label><input type="text" id="inv-ean" placeholder="Bipe ou digite o EAN" autocomplete="off"></div>
+          <div class="form-field" style="display:flex;align-items:flex-end;"><button class="btn" style="width:100%;" onclick="buscarSaldoInventario()">🔍 Buscar Item</button></div>
         </div>
-
         <div class="stats-row" id="inv-info" style="display:none;">
-          <div class="stat-card">
-            <div class="stat-label">Descrição</div>
-            <div class="stat-value" id="inv-desc-view" style="font-size:14px;">-</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Saldo Atual (Sistema)</div>
-            <div class="stat-value" id="inv-saldo-atual">-</div>
-          </div>
+          <div class="stat-card"><div class="stat-label">Descrição</div><div class="stat-value" id="inv-desc-view" style="font-size:14px;">-</div></div>
+          <div class="stat-card"><div class="stat-label">Saldo Atual (Sistema)</div><div class="stat-value" id="inv-saldo-atual">-</div></div>
         </div>
-
         <div class="form-grid">
-          <div class="form-field">
-            <label>Descrição (caso item novo)</label>
-            <input type="text" id="inv-desc" placeholder="Preencher apenas se o item não existir ainda">
-          </div>
-          <div class="form-field">
-            <label>Quantidade Contada</label>
-            <input type="number" id="inv-contagem" min="0" placeholder="0">
-          </div>
+          <div class="form-field"><label>Descrição (se item novo)</label><input type="text" id="inv-desc" placeholder="Preencher se não existir"></div>
+          <div class="form-field"><label>Quantidade Contada</label><input type="number" id="inv-contagem" min="0" placeholder="0"></div>
         </div>
-
-        <div class="actions">
-          <button class="btn gold" id="inv-btn" onclick="confirmarAjusteInventario()">✅ Confirmar Ajuste de Saldo</button>
-          <button class="btn" onclick="limparForm('inventario')">Limpar</button>
-        </div>
-        <p class="hint-text">O saldo em BD_SALDO será substituído pelo valor contado (não soma nem subtrai, ajusta direto).</p>
+        <div class="actions"><button class="btn gold" id="inv-btn" onclick="confirmarAjusteInventario()">✅ Confirmar Ajuste de Saldo</button><button class="btn" onclick="limparForm('inventario')">Limpar</button></div>
+        <p class="hint-text">O saldo em BD_SALDO será substituído pelo valor contado.</p>
       </div>
     </div>
 
     <!-- ============ VIEW: ITENS DE ESCRITÓRIO > ENTREGA ============ -->
     <div class="view" id="view-mat-entrega">
-      <div class="view-header">
-        <div>
-          <h1 class="view-title">Entrega de Itens</h1>
-          <p class="view-sub">Registrar saída de itens de escritório</p>
-        </div>
-      </div>
+      <div class="view-header"><div><h1 class="view-title">Entrega de Itens</h1><p class="view-sub">Registrar saída de itens</p></div></div>
       <div class="card">
         <h3>📤 Registrar Entrega de Item</h3>
         <div class="form-grid">
-          <div class="form-field">
-            <label>EAN</label>
-            <input type="text" id="ent-ean" placeholder="Bipe ou digite o EAN" autocomplete="off">
-          </div>
-          <div class="form-field">
-            <label>Descrição</label>
-            <input type="text" id="ent-desc" placeholder="Descrição do item">
-          </div>
-          <div class="form-field">
-            <label>Quantidade</label>
-            <input type="number" id="ent-qtd" min="1" placeholder="0">
-          </div>
-          <div class="form-field">
-            <label>Solicitante</label>
-            <input type="text" id="ent-solicitante" placeholder="Nome do solicitante">
-          </div>
+          <div class="form-field"><label>EAN</label><input type="text" id="ent-ean" placeholder="Bipe ou digite o EAN" autocomplete="off"></div>
+          <div class="form-field"><label>Descrição</label><input type="text" id="ent-desc" placeholder="Descrição do item"></div>
+          <div class="form-field"><label>Quantidade</label><input type="number" id="ent-qtd" min="1" placeholder="0"></div>
+          <div class="form-field"><label>Solicitante</label><input type="text" id="ent-solicitante" placeholder="Nome do solicitante"></div>
         </div>
-        <div class="actions">
-          <button class="btn gold" id="ent-btn" onclick="lancarEntrega()">✅ Registrar Entrega</button>
-          <button class="btn" onclick="limparForm('entrega')">Limpar</button>
-        </div>
+        <div class="actions"><button class="btn gold" id="ent-btn" onclick="lancarEntrega()">✅ Registrar Entrega</button><button class="btn" onclick="limparForm('entrega')">Limpar</button></div>
         <p class="hint-text">Ao registrar, o item é gravado em SAIDA_ITENS e o saldo em BD_SALDO é debitado automaticamente.</p>
       </div>
     </div>
 
     <!-- ============ VIEW: ITENS DE ESCRITÓRIO > CADASTRO DE ITENS ============ -->
     <div class="view" id="view-mat-cadastro">
-      <div class="view-header">
-        <div>
-          <h1 class="view-title">Cadastro de Itens</h1>
-          <p class="view-sub">Adicionar ou editar itens do catálogo</p>
-        </div>
-      </div>
-
+      <div class="view-header"><div><h1 class="view-title">Cadastro de Itens</h1><p class="view-sub">Adicionar ou editar itens do catálogo</p></div></div>
       <div class="tabs">
         <button class="tab-btn active" id="tab-add" onclick="mostrarTabCadastro('add')">➕ Adicionar Item</button>
         <button class="tab-btn" id="tab-edit" onclick="mostrarTabCadastro('edit')">✏️ Editar Item</button>
       </div>
-
       <div class="card" id="cadastro-add">
         <h3>➕ Adicionar Novo Item</h3>
         <div class="form-grid">
-          <div class="form-field">
-            <label>EAN</label>
-            <input type="text" id="add-ean" placeholder="Bipe ou digite o EAN" autocomplete="off">
-          </div>
-          <div class="form-field">
-            <label>Descrição</label>
-            <input type="text" id="add-desc" placeholder="Descrição do item">
-          </div>
-          <div class="form-field">
-            <label>Tipo</label>
-            <input type="text" id="add-tipo" placeholder="Ex: Papelaria, Limpeza, Informática...">
-          </div>
+          <div class="form-field"><label>EAN</label><input type="text" id="add-ean" placeholder="Bipe ou digite o EAN"></div>
+          <div class="form-field"><label>Descrição</label><input type="text" id="add-desc" placeholder="Descrição do item"></div>
+          <div class="form-field"><label>Tipo</label><input type="text" id="add-tipo" placeholder="Ex: Papelaria, Limpeza..."></div>
         </div>
-        <div class="actions">
-          <button class="btn gold" id="add-btn" onclick="cadastrarItem()">✅ Cadastrar Item</button>
-          <button class="btn" onclick="limparForm('cadastro-add')">Limpar</button>
-        </div>
+        <div class="actions"><button class="btn gold" id="add-btn" onclick="cadastrarItem()">✅ Cadastrar Item</button><button class="btn" onclick="limparForm('cadastro-add')">Limpar</button></div>
       </div>
-
       <div class="card" id="cadastro-edit" style="display:none;">
         <h3>✏️ Editar Item Existente</h3>
         <div class="form-grid">
-          <div class="form-field">
-            <label>EAN</label>
-            <input type="text" id="edit-ean" placeholder="Bipe ou digite o EAN" autocomplete="off">
-          </div>
-          <div class="form-field" style="display:flex; align-items:flex-end;">
-            <button class="btn" style="width:100%;" onclick="buscarItemEdicao()">🔍 Buscar Item</button>
-          </div>
+          <div class="form-field"><label>EAN</label><input type="text" id="edit-ean" placeholder="Bipe ou digite o EAN"></div>
+          <div class="form-field" style="display:flex;align-items:flex-end;"><button class="btn" style="width:100%;" onclick="buscarItemEdicao()">🔍 Buscar Item</button></div>
         </div>
         <div class="form-grid">
-          <div class="form-field">
-            <label>Descrição</label>
-            <input type="text" id="edit-desc" placeholder="Descrição do item" disabled>
-          </div>
-          <div class="form-field">
-            <label>Tipo</label>
-            <input type="text" id="edit-tipo" placeholder="Tipo do item" disabled>
-          </div>
+          <div class="form-field"><label>Descrição</label><input type="text" id="edit-desc" placeholder="Descrição do item" disabled></div>
+          <div class="form-field"><label>Tipo</label><input type="text" id="edit-tipo" placeholder="Tipo do item" disabled></div>
         </div>
-        <div class="actions">
-          <button class="btn gold" id="edit-btn" onclick="salvarEdicaoItem()" disabled>💾 Salvar Alterações</button>
-          <button class="btn" onclick="limparForm('cadastro-edit')">Limpar</button>
+        <div class="actions"><button class="btn gold" id="edit-btn" onclick="salvarEdicaoItem()" disabled>💾 Salvar Alterações</button><button class="btn" onclick="limparForm('cadastro-edit')">Limpar</button></div>
+      </div>
+    </div>
+
+    <!-- ============ VIEW: SUPRIMENTOS > SOLICITAR MATERIAIS ============ -->
+    <div class="view" id="view-sup-solicitar">
+      <div class="view-header">
+        <div>
+          <h1 class="view-title">Solicitar Materiais</h1>
+          <p class="view-sub">Preencha as quantidades e confirme</p>
+        </div>
+        <div class="toolbar">
+          <button class="btn" id="supFilterToggleBtn" onclick="toggleSupFilters()">🔍 Filtrar</button>
+          <button class="btn" onclick="clearSupFilters()">✕ Limpar filtros</button>
+          <button class="btn gold active-filter" id="btnModoSolicitar" onclick="modoSolicitar()">📋 Novo Pedido</button>
+          <button class="btn" id="btnModoEditar" onclick="modoEditar()">✏️ Editar Solicitação</button>
         </div>
       </div>
+      <div class="table-card"><div class="table-scroll">
+        <table class="data-table" id="supTable">
+          <thead>
+            <tr>
+              <th>Código</th><th>Descrição do Produto</th><th>Unidade</th><th>Fornecedor</th><th>Categoria</th><th class="num">Valor Unitário</th><th>Quantidade</th><th class="num">Valor Total</th>
+            </tr>
+            <tr class="filter-row hidden" id="supFilterRow">
+              <th><input type="text" placeholder="Código…" oninput="supFilters.CODIGO=this.value;renderSupTable()"></th>
+              <th><input type="text" placeholder="Descrição…" oninput="supFilters['DESCRIÇÃO DO PRODUTO']=this.value;renderSupTable()"></th>
+              <th><input type="text" placeholder="Unidade…" oninput="supFilters.UNIDADE=this.value;renderSupTable()"></th>
+              <th><input type="text" placeholder="Fornecedor…" oninput="supFilters.FORNECEDOR=this.value;renderSupTable()"></th>
+              <th><input type="text" placeholder="Categoria…" oninput="supFilters.CATEGORIA=this.value;renderSupTable()"></th>
+              <th></th><th></th><th></th>
+            </tr>
+          </thead>
+          <tbody id="supTbody"><tr><td colspan="8" class="empty-state">Selecione o modo (Novo Pedido ou Editar)</td></tr></tbody>
+        </table>
+      </div></div>
+      <div style="margin-top:16px; text-align:right;">
+        <button class="btn gold" id="btnConfirmar" onclick="confirmarSolicitacao()">✅ Confirmar Solicitação</button>
+        <button class="btn gold" id="btnSalvarEdicao" onclick="salvarEdicaoSolicitacao()" style="display:none;">💾 Salvar Alterações</button>
+      </div>
+    </div>
+
+    <!-- ============ VIEW: SUPRIMENTOS > VISUALIZAR SOLICITAÇÕES ============ -->
+    <div class="view" id="view-sup-visualizar">
+      <div class="view-header">
+        <div><h1 class="view-title">Solicitações Realizadas</h1><p class="view-sub">Visualizar e exportar solicitações</p></div>
+        <div class="toolbar">
+          <button class="btn" onclick="exportarConsolidado()">📥 Exportar Consolidado</button>
+        </div>
+      </div>
+      <div class="table-card"><div class="table-scroll">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Data</th><th>Código</th><th>Descrição</th><th>Unidade</th><th>Fornecedor</th><th>Categoria</th><th class="num">Valor Unit.</th><th class="num">Quantidade</th><th class="num">Valor Total</th><th>Usuário</th><th>Turno</th><th>CD</th>
+            </tr>
+          </thead>
+          <tbody id="solTbody"><tr><td colspan="12" class="empty-state">Carregando solicitações…</td></tr></tbody>
+        </table>
+      </div></div>
     </div>
 
     <!-- ============ VIEW: USUÁRIOS ============ -->
     <div class="view" id="view-usuarios">
       <div class="view-header">
-        <div>
-          <h1 class="view-title">Cadastro de Usuários</h1>
-          <p class="view-sub">Controle de acesso aos módulos Finanças / Itens de Escritório</p>
-        </div>
-        <div class="toolbar">
-          <button class="btn gold" onclick="openUserModal()">+ Novo usuário</button>
-        </div>
+        <div><h1 class="view-title">Cadastro de Usuários</h1><p class="view-sub">Controle de acesso e CD</p></div>
+        <div class="toolbar"><button class="btn gold" onclick="openUserModal()">+ Novo usuário</button></div>
       </div>
-      <div class="table-card">
-        <div class="table-scroll">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Usuário</th><th>Nome</th><th>Sistemas</th><th>Nível</th><th></th>
-              </tr>
-            </thead>
-            <tbody id="usersTbody">
-              <tr><td colspan="5" class="empty-state">Carregando…</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <div class="table-card"><div class="table-scroll">
+        <table class="data-table">
+          <thead><tr><th>Usuário</th><th>Nome</th><th>Sistemas</th><th>Nível</th><th>CD</th><th></th></tr></thead>
+          <tbody id="usersTbody"><tr><td colspan="6" class="empty-state">Carregando…</td></tr></tbody>
+        </table>
+      </div></div>
     </div>
-
   </div>
 </div>
 
-<!-- ================= MODAL: LANÇAMENTO COUPA ================= -->
+<!-- ================= MODAIS ================= -->
+<!-- MODAL LANÇAMENTO COUPA -->
 <div class="modal-overlay" id="lancModalCoupa">
   <div class="modal">
     <div class="modal-header">
@@ -811,82 +741,26 @@
     </div>
     <div class="modal-body">
       <div class="form-grid">
-        <div class="form-field">
-          <label>NF</label>
-          <input type="text" id="cf_nf" placeholder="Número da NF">
-        </div>
-        <div class="form-field">
-          <label>Emissão</label>
-          <input type="date" id="cf_emissao">
-        </div>
-        <div class="form-field">
-          <label>Vencimento</label>
-          <input type="date" id="cf_vencimento">
-        </div>
-        <div class="form-field">
-          <label>Recebimento</label>
-          <input type="date" id="cf_recebimento">
-        </div>
-
+        <div class="form-field"><label>NF</label><input type="text" id="cf_nf"></div>
+        <div class="form-field"><label>Emissão</label><input type="date" id="cf_emissao"></div>
+        <div class="form-field"><label>Vencimento</label><input type="date" id="cf_vencimento"></div>
+        <div class="form-field"><label>Recebimento</label><input type="date" id="cf_recebimento"></div>
         <div class="form-field full autocomplete-wrap">
-          <label>Prestador</label>
-          <input type="text" id="cf_prestador" placeholder="Digite para buscar no cadastro de fornecedores" autocomplete="off">
+          <label>Prestador</label><input type="text" id="cf_prestador" placeholder="Digite para buscar fornecedor" autocomplete="off">
           <div class="autocomplete-list" id="coupaPrestadorList"></div>
         </div>
-
-        <div class="form-field">
-          <label>CNPJ <span style="opacity:.6">(automático)</span></label>
-          <input type="text" id="cf_cnpj" readonly>
-        </div>
-        <div class="form-field">
-          <label>Valor</label>
-          <input type="text" id="cf_valor" placeholder="0,00" inputmode="decimal">
-        </div>
-        <div class="form-field">
-          <label>Natureza <span style="opacity:.6">(automático)</span></label>
-          <input type="text" id="cf_natureza" readonly>
-        </div>
-        <div class="form-field">
-          <label>Descrição <span style="opacity:.6">(automático)</span></label>
-          <input type="text" id="cf_descricao" readonly>
-        </div>
-        <div class="form-field">
-          <label>Aprovador <span style="opacity:.6">(automático)</span></label>
-          <input type="text" id="cf_aprovador" readonly>
-        </div>
-        <div class="form-field">
-          <label>IVA <span style="opacity:.6">(automático)</span></label>
-          <input type="text" id="cf_iva" readonly>
-        </div>
-        <div class="form-field">
-          <label>Código de compra <span style="opacity:.6">(automático)</span></label>
-          <input type="text" id="cf_codigo_compra" readonly>
-        </div>
-        <div class="form-field">
-          <label>Pedido</label>
-          <input type="text" id="cf_pedido">
-        </div>
-        <div class="form-field">
-          <label>Protocolo</label>
-          <input type="text" id="cf_protocolo">
-        </div>
-        <div class="form-field">
-          <label>Ocorrência</label>
-          <input type="text" id="cf_ocorrencia">
-        </div>
-        <div class="form-field">
-          <label>Status</label>
-          <select id="cf_status">
-            <option value="Não iniciado">Não iniciado</option>
-            <option value="Lançado">Lançado</option>
-            <option value="Aguardando">Aguardando</option>
-            <option value="Concluído">Concluído</option>
-          </select>
-        </div>
-        <div class="form-field">
-          <label>Lançado por</label>
-          <input type="text" id="cf_user_lanc" readonly>
-        </div>
+        <div class="form-field"><label>CNPJ (automático)</label><input type="text" id="cf_cnpj" readonly></div>
+        <div class="form-field"><label>Valor</label><input type="text" id="cf_valor" placeholder="0,00" inputmode="decimal"></div>
+        <div class="form-field"><label>Natureza (automático)</label><input type="text" id="cf_natureza" readonly></div>
+        <div class="form-field"><label>Descrição (automático)</label><input type="text" id="cf_descricao" readonly></div>
+        <div class="form-field"><label>Aprovador</label><input type="text" id="cf_aprovador" readonly></div>
+        <div class="form-field"><label>IVA (automático)</label><input type="text" id="cf_iva" readonly></div>
+        <div class="form-field"><label>Cód. compra (automático)</label><input type="text" id="cf_codigo_compra" readonly></div>
+        <div class="form-field"><label>Pedido</label><input type="text" id="cf_pedido"></div>
+        <div class="form-field"><label>Protocolo</label><input type="text" id="cf_protocolo"></div>
+        <div class="form-field"><label>Ocorrência</label><input type="text" id="cf_ocorrencia"></div>
+        <div class="form-field"><label>Status</label><select id="cf_status"><option value="Não iniciado">Não iniciado</option><option value="Lançado">Lançado</option><option value="Aguardando">Aguardando</option><option value="Concluído">Concluído</option></select></div>
+        <div class="form-field"><label>Lançado por</label><input type="text" id="cf_user_lanc" readonly></div>
       </div>
     </div>
     <div class="modal-footer">
@@ -896,83 +770,30 @@
   </div>
 </div>
 
-<!-- ================= MODAL: LANÇAMENTO SHAREPOINT ================= -->
+<!-- MODAL LANÇAMENTO SHAREPOINT -->
 <div class="modal-overlay" id="lancModalSp">
   <div class="modal">
-    <div class="modal-header">
-      <h3 id="lancSpTitle">Novo lançamento · SharePoint</h3>
-      <button class="modal-close" onclick="closeSpModal()">×</button>
-    </div>
+    <div class="modal-header"><h3 id="lancSpTitle">Novo lançamento · SharePoint</h3><button class="modal-close" onclick="closeSpModal()">×</button></div>
     <div class="modal-body">
       <div class="form-grid">
-        <div class="form-field">
-          <label>NF</label>
-          <input type="text" id="sf_nf" placeholder="Número da NF">
-        </div>
-        <div class="form-field">
-          <label>Emissão</label>
-          <input type="date" id="sf_emissao">
-        </div>
-        <div class="form-field">
-          <label>Vencimento</label>
-          <input type="date" id="sf_vencimento">
-        </div>
-        <div class="form-field">
-          <label>Recebimento</label>
-          <input type="date" id="sf_recebimento">
-        </div>
-
+        <div class="form-field"><label>NF</label><input type="text" id="sf_nf"></div>
+        <div class="form-field"><label>Emissão</label><input type="date" id="sf_emissao"></div>
+        <div class="form-field"><label>Vencimento</label><input type="date" id="sf_vencimento"></div>
+        <div class="form-field"><label>Recebimento</label><input type="date" id="sf_recebimento"></div>
         <div class="form-field full autocomplete-wrap">
-          <label>Prestador</label>
-          <input type="text" id="sf_prestador" placeholder="Digite para buscar no cadastro de fornecedores" autocomplete="off">
+          <label>Prestador</label><input type="text" id="sf_prestador" placeholder="Digite para buscar fornecedor" autocomplete="off">
           <div class="autocomplete-list" id="spPrestadorList"></div>
         </div>
-
-        <div class="form-field">
-          <label>CNPJ <span style="opacity:.6">(automático)</span></label>
-          <input type="text" id="sf_cnpj" readonly>
-        </div>
-        <div class="form-field">
-          <label>Valor</label>
-          <input type="text" id="sf_valor" placeholder="0,00" inputmode="decimal">
-        </div>
-        <div class="form-field">
-          <label>Natureza <span style="opacity:.6">(automático)</span></label>
-          <input type="text" id="sf_natureza" readonly>
-        </div>
-        <div class="form-field">
-          <label>Descrição <span style="opacity:.6">(automático)</span></label>
-          <input type="text" id="sf_descricao" readonly>
-        </div>
-        <div class="form-field">
-          <label>Aprovador <span style="opacity:.6">(automático)</span></label>
-          <input type="text" id="sf_aprovador" readonly>
-        </div>
-        <div class="form-field">
-          <label>Pedido</label>
-          <input type="text" id="sf_pedido">
-        </div>
-        <div class="form-field">
-          <label>Protocolo</label>
-          <input type="text" id="sf_protocolo">
-        </div>
-        <div class="form-field">
-          <label>Ocorrência</label>
-          <input type="text" id="sf_ocorrencia">
-        </div>
-        <div class="form-field">
-          <label>Status</label>
-          <select id="sf_status">
-            <option value="Não iniciado">Não iniciado</option>
-            <option value="Lançado">Lançado</option>
-            <option value="Aguardando">Aguardando</option>
-            <option value="Concluído">Concluído</option>
-          </select>
-        </div>
-        <div class="form-field">
-          <label>Lançado por</label>
-          <input type="text" id="sf_user_lanc" readonly>
-        </div>
+        <div class="form-field"><label>CNPJ (automático)</label><input type="text" id="sf_cnpj" readonly></div>
+        <div class="form-field"><label>Valor</label><input type="text" id="sf_valor" placeholder="0,00" inputmode="decimal"></div>
+        <div class="form-field"><label>Natureza (automático)</label><input type="text" id="sf_natureza" readonly></div>
+        <div class="form-field"><label>Descrição (automático)</label><input type="text" id="sf_descricao" readonly></div>
+        <div class="form-field"><label>Aprovador</label><input type="text" id="sf_aprovador" readonly></div>
+        <div class="form-field"><label>Pedido</label><input type="text" id="sf_pedido"></div>
+        <div class="form-field"><label>Protocolo</label><input type="text" id="sf_protocolo"></div>
+        <div class="form-field"><label>Ocorrência</label><input type="text" id="sf_ocorrencia"></div>
+        <div class="form-field"><label>Status</label><select id="sf_status"><option value="Não iniciado">Não iniciado</option><option value="Lançado">Lançado</option><option value="Aguardando">Aguardando</option><option value="Concluído">Concluído</option></select></div>
+        <div class="form-field"><label>Lançado por</label><input type="text" id="sf_user_lanc" readonly></div>
       </div>
     </div>
     <div class="modal-footer">
@@ -982,42 +803,23 @@
   </div>
 </div>
 
-<!-- ================= MODAL: USUÁRIO ================= -->
+<!-- MODAL USUÁRIO -->
 <div class="modal-overlay" id="userModal">
   <div class="modal" style="max-width:440px;">
-    <div class="modal-header">
-      <h3>Novo usuário</h3>
-      <button class="modal-close" onclick="closeUserModal()">×</button>
-    </div>
+    <div class="modal-header"><h3>Novo usuário</h3><button class="modal-close" onclick="closeUserModal()">×</button></div>
     <div class="modal-body">
       <div class="form-grid">
-        <div class="form-field full">
-          <label>Usuário (login)</label>
-          <input type="text" id="u_user">
-        </div>
-        <div class="form-field full">
-          <label>Nome</label>
-          <input type="text" id="u_name">
-        </div>
-        <div class="form-field full">
-          <label>Senha</label>
-          <input type="text" id="u_pass">
-        </div>
-        <div class="form-field full">
-          <label>Módulos com acesso</label>
+        <div class="form-field full"><label>Usuário (login)</label><input type="text" id="u_user"></div>
+        <div class="form-field full"><label>Nome</label><input type="text" id="u_name"></div>
+        <div class="form-field full"><label>Senha</label><input type="text" id="u_pass"></div>
+        <div class="form-field full"><label>Módulos</label>
           <div class="checkbox-row">
             <label><input type="checkbox" id="u_sys_financas" checked> Finanças</label>
             <label><input type="checkbox" id="u_sys_materiais"> Itens de Escritório</label>
           </div>
         </div>
-        <div class="form-field full">
-          <label>Nível de acesso</label>
-          <select id="u_level">
-            <option value="0">0 · Acesso ao sistema</option>
-            <option value="1">1 · Acesso + cadastro de usuários</option>
-            <option value="-1">-1 · Bloqueado</option>
-          </select>
-        </div>
+        <div class="form-field full"><label>Nível</label><select id="u_level"><option value="0">0 · Acesso ao sistema</option><option value="1">1 · Acesso + cadastro de usuários</option><option value="-1">-1 · Bloqueado</option></select></div>
+        <div class="form-field full"><label>CD</label><input type="text" id="u_cd" placeholder="Código do CD ou ALL"></div>
       </div>
     </div>
     <div class="modal-footer">
@@ -1070,7 +872,7 @@ async function sbDelete(path) {
 function qs(paramsObj) { return new URLSearchParams(paramsObj).toString(); }
 
 /* =====================================================================
-   LINKS EXTERNOS — FINANÇAS > COUPA
+   LINKS EXTERNOS
    ===================================================================== */
 const COUPA_LINKS = [
   { label: 'COUPA', icon: '🧾', url: 'https://assai.coupahost.com/', desc: 'Portal de compras' },
@@ -1079,35 +881,27 @@ const COUPA_LINKS = [
   { label: 'CONSULTAR NF', icon: '🔍', url: 'https://assai.service-now.com/sp?id=csc_consulta_de_nf', desc: 'Consulta de nota fiscal' },
   { label: 'BAIXAR NF', icon: '⬇️', url: 'https://www.nfe.fazenda.gov.br/portal/consultaResumo.aspx?tipoConteudo=7PhJ+gAVw2g=', desc: 'Portal da NF-e' }
 ];
-
 function renderCoupaLinks() {
-  const grid = document.getElementById('coupaLinksGrid');
-  grid.innerHTML = COUPA_LINKS.map(l =>
-    '<a class="ext-card" href="' + l.url + '" target="_blank" rel="noopener">' +
-    '<span class="ic">' + l.icon + '</span><b>' + l.label + '</b><span>' + l.desc + '</span></a>'
+  document.getElementById('coupaLinksGrid').innerHTML = COUPA_LINKS.map(l =>
+    '<a class="ext-card" href="'+l.url+'" target="_blank"><span class="ic">'+l.icon+'</span><b>'+l.label+'</b><span>'+l.desc+'</span></a>'
   ).join('');
 }
 
 /* =====================================================================
    STATE
    ===================================================================== */
-let currentUser = null; // { USER, NAME, LEVEL, access: ['financas','materiais'] }
+let currentUser = null;
+let currentCD = null;
+let availableCDs = [];
 
-// COUPA
-let coupaRows = [];
-let coupaFiltersActive = false;
-const coupaFilters = {};
-let coupaEditingKey = null;
-
-// SHAREPOINT
-let spRows = [];
-let spLoaded = false;
-let spFiltersActive = false;
-const spFilters = {};
-let spEditingKey = null;
+let coupaRows = [], coupaFiltersActive = false, coupaFilters = {}, coupaEditingKey = null;
+let spRows = [], spLoaded = false, spFiltersActive = false, spFilters = {}, spEditingKey = null;
+let supRows = [], supFilters = {};
+let solicitacoesEdit = []; // usado no modo editar
+let modoAtualSup = 'solicitar'; // 'solicitar' ou 'editar'
 
 /* =====================================================================
-   TOAST / LOADING HELPERS
+   TOAST / HELPERS
    ===================================================================== */
 function toast(msg, type) {
   const t = document.getElementById('toast');
@@ -1123,27 +917,21 @@ function setLoading(btnId, loading, label) {
   if (loading) btn.dataset.original = btn.textContent;
   btn.textContent = loading ? '⏳ Processando...' : (btn.dataset.original || label);
 }
-
-/* =====================================================================
-   HELPERS: formatting
-   ===================================================================== */
 function parseBRL(str) {
   if (str === null || str === undefined) return 0;
   const clean = String(str).replace(/[R$\s]/g, '').replace(/\./g, '').replace(',', '.');
   const n = parseFloat(clean);
   return isNaN(n) ? 0 : n;
 }
-function formatBRL(num) {
-  return (Number(num) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-}
-function calcAprovador(valorNum) {
-  if (valorNum <= 5000) return 'Coordenador';
-  if (valorNum <= 20000) return 'Gerente Jr';
-  if (valorNum <= 100000) return 'Gerente Sr';
+function formatBRL(num) { return (Number(num)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
+function calcAprovador(v) {
+  if (v <= 5000) return 'Coordenador';
+  if (v <= 20000) return 'Gerente Jr';
+  if (v <= 100000) return 'Gerente Sr';
   return 'Diretor';
 }
-function statusClass(status) {
-  switch (status) {
+function statusClass(s) {
+  switch (s) {
     case 'Lançado': return 'status-lancado';
     case 'Aguardando': return 'status-aguardando';
     case 'Concluído': return 'status-concluido';
@@ -1152,13 +940,17 @@ function statusClass(status) {
 }
 function fmtDateCell(v) {
   if (!v) return '—';
-  const d = String(v).slice(0, 10);
+  const d = String(v).slice(0,10);
   const parts = d.split('-');
-  if (parts.length === 3) return parts[2] + '/' + parts[1] + '/' + parts[0];
+  if (parts.length===3) return parts[2]+'/'+parts[1]+'/'+parts[0];
   return v;
 }
-function escapeHtml(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function escapeHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function getTurno() {
+  const h = new Date().getHours() + new Date().getMinutes()/60;
+  if (h >= 6 && h < 14.333) return '1º TURNO';
+  else if (h >= 14.333 && h < 22) return '2º TURNO';
+  else return '3º TURNO';
 }
 
 /* =====================================================================
@@ -1172,77 +964,89 @@ async function handleLogin() {
   const user = userEl.value.trim();
   const pass = passEl.value;
   errEl.style.display = 'none';
-
-  if (!user || !pass) {
-    errEl.textContent = 'Informe usuário e senha.';
-    errEl.style.display = 'block';
-    return;
-  }
-
-  btn.disabled = true;
-  btn.textContent = 'Verificando…';
+  if (!user || !pass) { errEl.textContent = 'Informe usuário e senha.'; errEl.style.display = 'block'; return; }
+  btn.disabled = true; btn.textContent = 'Verificando…';
   try {
-    const data = await sbGet('/BD_USER?USER=eq.' + encodeURIComponent(user) + '&select=*');
+    const data = await sbGet('/BD_USER?USER=eq.'+encodeURIComponent(user)+'&select=*');
     if (!data.length) throw new Error('Usuário não encontrado.');
     const u = data[0];
-
     if (String(u.PASSWORD) !== pass) throw new Error('Senha incorreta.');
-
     const level = Number(u.LEVEL);
-    if (level === -1) throw new Error('Acesso bloqueado para este usuário.');
-
-    const systemsRaw = String(u.SYSTEM || '').toUpperCase();
+    if (level === -1) throw new Error('Acesso bloqueado.');
+    const systemsRaw = String(u.SYSTEM||'').toUpperCase();
     const access = [];
-    if (level === 1) {
-      access.push('financas', 'materiais');
-    } else {
+    if (level === 1) { access.push('financas','materiais'); }
+    else {
       if (systemsRaw.includes('FINANCAS')) access.push('financas');
       if (systemsRaw.includes('MATERIAIS')) access.push('materiais');
-      if (!access.length) {
-        throw new Error('Este usuário não tem acesso a nenhum módulo (Finanças / Itens de Escritório).');
-      }
+      if (!access.length) throw new Error('Sem acesso a módulos.');
     }
-
     currentUser = u;
     currentUser.access = access;
+    currentUser.CD = String(u.CD||'').trim();
     enterApp();
   } catch (e) {
-    errEl.textContent = e.message || 'Não foi possível fazer login.';
+    errEl.textContent = e.message;
     errEl.style.display = 'block';
   } finally {
-    btn.disabled = false;
-    btn.textContent = 'Entrar';
+    btn.disabled = false; btn.textContent = 'Entrar';
   }
 }
-document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
-document.getElementById('loginUser').addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key==='Enter') handleLogin(); });
+document.getElementById('loginUser').addEventListener('keydown', e => { if (e.key==='Enter') handleLogin(); });
 
 function handleLogout() {
-  currentUser = null;
-  coupaRows = [];
-  spRows = []; spLoaded = false;
+  currentUser = null; currentCD = null; availableCDs = [];
+  coupaRows = []; spRows = []; spLoaded = false; supRows = []; solicitacoesEdit = [];
   document.getElementById('app').classList.remove('active');
   document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('loginUser').value = '';
-  document.getElementById('loginPass').value = '';
 }
 
-function enterApp() {
+/* =====================================================================
+   ENTRAR NO APP + SELEÇÃO DE CD
+   ===================================================================== */
+async function enterApp() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('app').classList.add('active');
+  document.getElementById('topBar').style.display = 'flex';
 
   document.getElementById('sbUserName').textContent = currentUser.NAME || currentUser.USER;
-  document.getElementById('sbAvatar').textContent = (currentUser.NAME || currentUser.USER || '??').slice(0,2).toUpperCase();
+  document.getElementById('sbAvatar').textContent = (currentUser.NAME||currentUser.USER||'??').slice(0,2).toUpperCase();
   const level = Number(currentUser.LEVEL);
-  document.getElementById('sbUserLevel').textContent = 'Nível ' + level + (level === 1 ? ' · admin' : '');
+  document.getElementById('sbUserLevel').textContent = 'Nível '+level+(level===1?' · admin':'')+(currentUser.CD?' · CD '+currentUser.CD:'');
 
-  if (level === 1) {
-    document.getElementById('usuariosMenuBtn').style.display = 'flex';
-    document.getElementById('adminSectionLabel').style.display = 'block';
+  if (level===1 || currentUser.USER==='5520967') {
+    document.getElementById('usuariosMenuBtn').style.display='flex';
+    document.getElementById('adminSectionLabel').style.display='block';
   }
+  if (currentUser.USER==='5520967') document.getElementById('bloqueioSolicBtn').style.display='flex';
 
-  document.getElementById('grupo-financas').style.display = currentUser.access.includes('financas') ? 'block' : 'none';
-  document.getElementById('grupo-materiais').style.display = currentUser.access.includes('materiais') ? 'block' : 'none';
+  document.getElementById('grupo-financas').style.display = currentUser.access.includes('financas')?'block':'none';
+  document.getElementById('grupo-materiais').style.display = currentUser.access.includes('materiais')?'block':'none';
+  document.getElementById('grupo-suprimentos').style.display = 'block';
+
+  await loadAvailableCDs();
+
+  if (currentUser.CD === 'ALL') {
+    if (availableCDs.length > 0) {
+      currentCD = availableCDs[0];
+      document.getElementById('cdSelectTop').value = currentCD;
+      document.getElementById('cdSelectTop').disabled = false;
+    } else {
+      currentCD = '';
+      toast('Nenhum CD disponível.', 'err');
+    }
+  } else {
+    currentCD = currentUser.CD;
+    if (!availableCDs.includes(currentCD)) {
+      availableCDs.push(currentCD);
+      const opt = document.createElement('option');
+      opt.value = currentCD; opt.textContent = currentCD;
+      document.getElementById('cdSelectTop').appendChild(opt);
+    }
+    document.getElementById('cdSelectTop').value = currentCD;
+    document.getElementById('cdSelectTop').disabled = true;
+  }
 
   renderCoupaLinks();
   buildCoupaTableHeader();
@@ -1251,9 +1055,33 @@ function enterApp() {
   let defaultView = null;
   if (currentUser.access.includes('financas')) defaultView = 'fin-coupa';
   else if (currentUser.access.includes('materiais')) defaultView = 'mat-recebimento';
-  else if (level === 1) defaultView = 'usuarios';
+  else defaultView = 'sup-solicitar';
 
   if (defaultView) switchView(defaultView);
+}
+
+async function loadAvailableCDs() {
+  try {
+    const resp = await sbGet('/BD_USER?select=CD&order=CD');
+    availableCDs = [...new Set(resp.map(r=>String(r.CD).trim()).filter(Boolean))];
+    const select = document.getElementById('cdSelectTop');
+    select.innerHTML = availableCDs.map(cd => '<option value="'+cd+'">'+cd+'</option>').join('');
+  } catch (e) {
+    availableCDs = [];
+    toast('Erro ao carregar CDs: '+e.message, 'err');
+  }
+}
+
+function onCDChange() {
+  const newCD = document.getElementById('cdSelectTop').value;
+  if (newCD === currentCD) return;
+  currentCD = newCD;
+  toast('CD alterado para: ' + currentCD, 'ok');
+  const activeView = document.querySelector('.view.active');
+  if (activeView) {
+    const viewId = activeView.id.replace('view-', '');
+    switchView(viewId);
+  }
 }
 
 /* =====================================================================
@@ -1266,40 +1094,39 @@ const VIEW_META = {
   'mat-inventario':   { group: 'grupo-materiais', crumb: 'Itens de Escritório / Inventário' },
   'mat-entrega':      { group: 'grupo-materiais', crumb: 'Itens de Escritório / Entrega de Itens' },
   'mat-cadastro':     { group: 'grupo-materiais', crumb: 'Itens de Escritório / Cadastro de Itens' },
+  'sup-solicitar':    { group: 'grupo-suprimentos', crumb: 'Suprimentos / Solicitar Materiais' },
+  'sup-visualizar':   { group: 'grupo-suprimentos', crumb: 'Suprimentos / Visualizar Solicitações' },
   'usuarios':         { group: null,              crumb: 'Administração / Cadastro de Usuários' }
 };
 
-function toggleGroup(id) {
-  document.getElementById(id).classList.toggle('open');
-}
-
+function toggleGroup(id) { document.getElementById(id).classList.toggle('open'); }
 function switchView(view) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById('view-' + view).classList.add('active');
-
-  document.querySelectorAll('.nav-subitem, #usuariosMenuBtn').forEach(b => b.classList.remove('active'));
-  const btn = document.querySelector('[data-view="' + view + '"]');
+  document.getElementById('view-'+view).classList.add('active');
+  document.querySelectorAll('.nav-subitem, #usuariosMenuBtn, #bloqueioSolicBtn').forEach(b => b.classList.remove('active'));
+  const btn = document.querySelector('[data-view="'+view+'"]');
   if (btn) btn.classList.add('active');
-
   const meta = VIEW_META[view];
   document.getElementById('topbar-crumb').textContent = meta ? meta.crumb : '';
-
   document.querySelectorAll('.nav-group').forEach(g => g.classList.remove('open'));
   if (meta && meta.group) document.getElementById(meta.group).classList.add('open');
 
-  if (view === 'usuarios') {
-    loadUsers();
-  } else if (view === 'fin-coupa') {
-    loadCoupa();
-  } else if (view === 'fin-sharepoint' && !spLoaded) {
-    loadSharepoint();
+  if (view === 'usuarios') loadUsers();
+  else if (view === 'fin-coupa') loadCoupa();
+  else if (view === 'fin-sharepoint') loadSharepoint();
+  else if (view === 'sup-solicitar') {
+    // Se já estiver no modo solicitar ou editar, mantém o estado
+    if (modoAtualSup === 'editar') modoEditar();
+    else modoSolicitar();
   }
+  else if (view === 'sup-visualizar') loadSolicitacoes();
+
   document.getElementById('sidebar').classList.remove('open');
 }
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 
 /* =====================================================================
-   TABELA COUPA
+   TABELA COUPA (com filtro CD)
    ===================================================================== */
 const COUPA_COLUMNS = [
   { key: 'DATA', label: 'Data', type: 'date' },
@@ -1319,131 +1146,109 @@ const COUPA_COLUMNS = [
   { key: 'PROTOCOLO', label: 'Protocolo', type: 'text' },
   { key: 'OCORRÊNCIA', label: 'Ocorrência', type: 'text' },
   { key: 'STATUS', label: 'Status', type: 'status' },
-  { key: 'USER_LANC', label: 'Lanç. por', type: 'text' }
+  { key: 'USER_LANC', label: 'Lanç. por', type: 'text' },
+  { key: 'CD', label: 'CD', type: 'text' }
 ];
 
 function buildCoupaTableHeader() {
   const headerRow = document.getElementById('coupaHeaderRow');
   const filterRow = document.getElementById('coupaFilterRow');
-  headerRow.innerHTML = '';
-  filterRow.innerHTML = '';
-
+  headerRow.innerHTML = ''; filterRow.innerHTML = '';
   COUPA_COLUMNS.forEach(col => {
     const th = document.createElement('th');
     if (col.type === 'money') th.classList.add('num');
     th.textContent = col.label;
     headerRow.appendChild(th);
-
     const fth = document.createElement('th');
     const inp = document.createElement('input');
-    inp.type = 'text';
-    inp.placeholder = col.label + '…';
+    inp.type = 'text'; inp.placeholder = col.label + '…';
     inp.oninput = (e) => { coupaFilters[col.key] = e.target.value; renderCoupaTable(); };
     fth.appendChild(inp);
     filterRow.appendChild(fth);
   });
   headerRow.appendChild(document.createElement('th'));
   filterRow.appendChild(document.createElement('th'));
-
-  document.getElementById('coupaTbody').innerHTML = '';
   document.querySelector('#view-fin-coupa tfoot .subtotal-row td').setAttribute('colspan', COUPA_COLUMNS.length + 1);
 }
 
 async function loadCoupa() {
   try {
-    coupaRows = await sbGet('/COUPA?select=*&order=DATA.desc');
+    if (!currentCD) { coupaRows = []; renderCoupaTable(); return; }
+    coupaRows = await sbGet('/COUPA?select=*&CD=eq.'+encodeURIComponent(currentCD)+'&order=DATA.desc');
     renderCoupaTable();
   } catch (e) {
-    document.getElementById('coupaTbody').innerHTML =
-      '<tr><td colspan="' + (COUPA_COLUMNS.length + 1) + '" class="empty-state">Erro ao carregar COUPA: ' + e.message + '</td></tr>';
-    toast('Erro ao carregar dados do Supabase (Coupa): ' + e.message, 'err');
+    document.getElementById('coupaTbody').innerHTML = '<tr><td colspan="'+(COUPA_COLUMNS.length+1)+'" class="empty-state">Erro: '+e.message+'</td></tr>';
   }
 }
-
 function coupaRowMatchesFilters(row) {
   return COUPA_COLUMNS.every(col => {
-    const f = (coupaFilters[col.key] || '').trim().toLowerCase();
+    const f = (coupaFilters[col.key]||'').trim().toLowerCase();
     if (!f) return true;
-    const val = String(row[col.key] ?? '').toLowerCase();
-    return val.includes(f);
+    return String(row[col.key]??'').toLowerCase().includes(f);
   });
 }
-
 function renderCoupaTable() {
   const tbody = document.getElementById('coupaTbody');
   const visible = coupaRows.filter(coupaRowMatchesFilters);
-
   if (!visible.length) {
-    tbody.innerHTML = '<tr><td colspan="' + (COUPA_COLUMNS.length + 1) + '" class="empty-state">Nenhum registro encontrado.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="'+(COUPA_COLUMNS.length+1)+'" class="empty-state">Nenhum registro.</td></tr>';
   } else {
     tbody.innerHTML = visible.map(row => {
       const cells = COUPA_COLUMNS.map(col => {
         let v = row[col.key];
-        if (col.type === 'date') return '<td>' + fmtDateCell(v) + '</td>';
-        if (col.type === 'money') return '<td class="num">' + (v ? formatBRL(parseBRL(v)) : '—') + '</td>';
-        if (col.type === 'status') return '<td><span class="status-pill ' + statusClass(v) + '">' + (v || 'Não iniciado') + '</span></td>';
-        return '<td>' + (v !== null && v !== undefined && v !== '' ? escapeHtml(String(v)) : '—') + '</td>';
+        if (col.type==='date') return '<td>'+fmtDateCell(v)+'</td>';
+        if (col.type==='money') return '<td class="num">'+(v?formatBRL(parseBRL(v)):'—')+'</td>';
+        if (col.type==='status') return '<td><span class="status-pill '+statusClass(v)+'">'+(v||'Não iniciado')+'</span></td>';
+        return '<td>'+(v!=null&&v!==''?escapeHtml(String(v)):'—')+'</td>';
       }).join('');
-      const rk = row.id !== undefined ? row.id : row.NF;
-      return '<tr onclick="editCoupaRow(\'' + encodeURIComponent(rk) + '\')">' + cells +
-        '<td class="row-actions" onclick="event.stopPropagation()">' +
-        '<button class="icon-btn del" title="Excluir" onclick="deleteCoupaRow(\'' + encodeURIComponent(rk) + '\')">🗑</button>' +
-        '</td></tr>';
+      const rk = row.id!==undefined ? row.id : row.NF;
+      return '<tr onclick="editCoupaRow(\''+encodeURIComponent(rk)+'\')">'+cells+'<td class="row-actions" onclick="event.stopPropagation()"><button class="icon-btn del" onclick="deleteCoupaRow(\''+encodeURIComponent(rk)+'\')">🗑</button></td></tr>';
     }).join('');
   }
-
-  const subtotal = visible.reduce((sum, r) => sum + parseBRL(r.VALOR), 0);
+  const subtotal = visible.reduce((s,r)=>s+parseBRL(r.VALOR),0);
   document.getElementById('coupaStatCount').textContent = visible.length;
   document.getElementById('coupaStatSubtotal').textContent = formatBRL(subtotal);
-  document.getElementById('coupaTfootSubtotal').textContent =
-    'Subtotal (Valor): ' + formatBRL(subtotal) + ' · ' + visible.length + ' registro(s)';
+  document.getElementById('coupaTfootSubtotal').textContent = 'Subtotal (Valor): '+formatBRL(subtotal)+' · '+visible.length+' registro(s)';
 }
-
 function toggleCoupaFilters() {
   coupaFiltersActive = !coupaFiltersActive;
   document.getElementById('coupaFilterRow').classList.toggle('hidden', !coupaFiltersActive);
   document.getElementById('coupaFilterToggleBtn').classList.toggle('active-filter', coupaFiltersActive);
 }
 function clearCoupaFilters() {
-  Object.keys(coupaFilters).forEach(k => delete coupaFilters[k]);
-  document.querySelectorAll('#coupaFilterRow input').forEach(i => i.value = '');
+  Object.keys(coupaFilters).forEach(k=>delete coupaFilters[k]);
+  document.querySelectorAll('#coupaFilterRow input').forEach(i=>i.value='');
   renderCoupaTable();
 }
 
-/* =====================================================================
-   MODAL COUPA
-   ===================================================================== */
+/* Modal Coupa com CD */
 function openCoupaModal(row) {
   coupaEditingKey = null;
   document.getElementById('lancCoupaTitle').textContent = 'Novo lançamento · COUPA';
-  ['cf_nf','cf_emissao','cf_vencimento','cf_recebimento','cf_prestador','cf_cnpj','cf_valor','cf_natureza','cf_descricao','cf_aprovador','cf_iva','cf_codigo_compra','cf_pedido','cf_protocolo','cf_ocorrencia'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
+  ['cf_nf','cf_emissao','cf_vencimento','cf_recebimento','cf_prestador','cf_cnpj','cf_valor','cf_natureza','cf_descricao','cf_aprovador','cf_iva','cf_codigo_compra','cf_pedido','cf_protocolo','cf_ocorrencia'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('cf_status').value = 'Não iniciado';
-  document.getElementById('cf_user_lanc').value = currentUser ? (currentUser.NAME || currentUser.USER) : '';
-
+  document.getElementById('cf_user_lanc').value = currentUser ? (currentUser.NAME||currentUser.USER) : '';
   if (row) {
-    coupaEditingKey = row.id !== undefined ? row.id : row.NF;
+    coupaEditingKey = row.id!==undefined ? row.id : row.NF;
     document.getElementById('lancCoupaTitle').textContent = 'Editar lançamento · COUPA';
-    document.getElementById('cf_nf').value = row.NF || '';
-    document.getElementById('cf_emissao').value = row['EMISSÃO'] ? String(row['EMISSÃO']).slice(0,10) : '';
-    document.getElementById('cf_vencimento').value = row.VENCIMENTO ? String(row.VENCIMENTO).slice(0,10) : '';
-    document.getElementById('cf_recebimento').value = row.RECEBIMENTO ? String(row.RECEBIMENTO).slice(0,10) : '';
-    document.getElementById('cf_prestador').value = row.PRESTADOR || '';
-    document.getElementById('cf_cnpj').value = row.CNPJ || '';
-    document.getElementById('cf_valor').value = row.VALOR ? formatBRL(parseBRL(row.VALOR)) : '';
-    document.getElementById('cf_natureza').value = row.NATUREZA || '';
-    document.getElementById('cf_descricao').value = row['DESCRIÇÃO'] || '';
-    document.getElementById('cf_aprovador').value = row.APROVADOR || '';
-    document.getElementById('cf_iva').value = row.IVA || '';
-    document.getElementById('cf_codigo_compra').value = row.CODIGO_COMPRA || '';
-    document.getElementById('cf_pedido').value = row.PEDIDO || '';
-    document.getElementById('cf_protocolo').value = row.PROTOCOLO || '';
-    document.getElementById('cf_ocorrencia').value = row['OCORRÊNCIA'] || '';
-    document.getElementById('cf_status').value = row.STATUS || 'Não iniciado';
-    document.getElementById('cf_user_lanc').value = row.USER_LANC || (currentUser.NAME || currentUser.USER);
+    document.getElementById('cf_nf').value = row.NF||'';
+    document.getElementById('cf_emissao').value = row['EMISSÃO']?String(row['EMISSÃO']).slice(0,10):'';
+    document.getElementById('cf_vencimento').value = row.VENCIMENTO?String(row.VENCIMENTO).slice(0,10):'';
+    document.getElementById('cf_recebimento').value = row.RECEBIMENTO?String(row.RECEBIMENTO).slice(0,10):'';
+    document.getElementById('cf_prestador').value = row.PRESTADOR||'';
+    document.getElementById('cf_cnpj').value = row.CNPJ||'';
+    document.getElementById('cf_valor').value = row.VALOR?formatBRL(parseBRL(row.VALOR)):'';
+    document.getElementById('cf_natureza').value = row.NATUREZA||'';
+    document.getElementById('cf_descricao').value = row['DESCRIÇÃO']||'';
+    document.getElementById('cf_aprovador').value = row.APROVADOR||'';
+    document.getElementById('cf_iva').value = row.IVA||'';
+    document.getElementById('cf_codigo_compra').value = row.CODIGO_COMPRA||'';
+    document.getElementById('cf_pedido').value = row.PEDIDO||'';
+    document.getElementById('cf_protocolo').value = row.PROTOCOLO||'';
+    document.getElementById('cf_ocorrencia').value = row['OCORRÊNCIA']||'';
+    document.getElementById('cf_status').value = row.STATUS||'Não iniciado';
+    document.getElementById('cf_user_lanc').value = row.USER_LANC||(currentUser.NAME||currentUser.USER);
   }
-
   document.getElementById('lancModalCoupa').classList.add('active');
 }
 function closeCoupaModal() {
@@ -1451,75 +1256,49 @@ function closeCoupaModal() {
   document.getElementById('coupaPrestadorList').classList.remove('active');
   coupaEditingKey = null;
 }
-function editCoupaRow(encodedKey) {
-  const key = decodeURIComponent(encodedKey);
-  const row = coupaRows.find(r => String(r.id !== undefined ? r.id : r.NF) === key);
+function editCoupaRow(encKey) {
+  const key = decodeURIComponent(encKey);
+  const row = coupaRows.find(r=>String(r.id!==undefined?r.id:r.NF)===key);
   if (row) openCoupaModal(row);
 }
-async function deleteCoupaRow(encodedKey) {
-  const key = decodeURIComponent(encodedKey);
-  const row = coupaRows.find(r => String(r.id !== undefined ? r.id : r.NF) === key);
+async function deleteCoupaRow(encKey) {
+  const key = decodeURIComponent(encKey);
+  const row = coupaRows.find(r=>String(r.id!==undefined?r.id:r.NF)===key);
   if (!row) return;
-  if (!confirm('Excluir o lançamento NF "' + (row.NF || '') + '"?')) return;
+  if (!confirm('Excluir NF '+row.NF+'?')) return;
   try {
-    const filterPath = row.id !== undefined
-      ? '/COUPA?id=eq.' + encodeURIComponent(row.id)
-      : '/COUPA?NF=eq.' + encodeURIComponent(row.NF);
+    const filterPath = row.id!==undefined ? '/COUPA?id=eq.'+encodeURIComponent(row.id) : '/COUPA?NF=eq.'+encodeURIComponent(row.NF);
     await sbDelete(filterPath);
-    toast('Lançamento excluído.', 'ok');
+    toast('Excluído.','ok');
     loadCoupa();
-  } catch (e) {
-    toast(e.message, 'err');
-  }
+  } catch(e) { toast(e.message,'err'); }
 }
-
-/* --- Coupa: Valor auto-format + recompute Aprovador --- */
-document.getElementById('cf_valor').addEventListener('blur', (e) => {
+document.getElementById('cf_valor').addEventListener('blur', (e)=>{
   const n = parseBRL(e.target.value);
-  e.target.value = n ? formatBRL(n) : '';
-  document.getElementById('cf_aprovador').value = n ? calcAprovador(n) : '';
+  e.target.value = n?formatBRL(n):'';
+  document.getElementById('cf_aprovador').value = n?calcAprovador(n):'';
 });
-
-/* --- Coupa: Autocomplete fornecedor --- */
+// Autocomplete Coupa
 let coupaAcTimer = null;
 const cfPrestador = document.getElementById('cf_prestador');
 const coupaPrestadorList = document.getElementById('coupaPrestadorList');
-
 cfPrestador.addEventListener('input', () => {
   const q = cfPrestador.value.trim();
   clearTimeout(coupaAcTimer);
-  document.getElementById('cf_cnpj').value = '';
-  document.getElementById('cf_natureza').value = '';
-  document.getElementById('cf_descricao').value = '';
-  document.getElementById('cf_iva').value = '';
-  document.getElementById('cf_codigo_compra').value = '';
-
-  if (q.length < 2) { coupaPrestadorList.classList.remove('active'); coupaPrestadorList.innerHTML = ''; return; }
-
+  ['cf_cnpj','cf_natureza','cf_descricao','cf_iva','cf_codigo_compra'].forEach(id => document.getElementById(id).value = '');
+  if (q.length < 2) { coupaPrestadorList.classList.remove('active'); return; }
   coupaAcTimer = setTimeout(async () => {
     try {
-      const col = encodeURIComponent('RAZÃO SOCIAL');
-      const results = await sbGet('/FORNECEDOR?select=*&' + col + '=ilike.*' + encodeURIComponent(q) + '*&limit=8');
-      if (!results.length) { coupaPrestadorList.classList.remove('active'); coupaPrestadorList.innerHTML = ''; return; }
-      coupaPrestadorList.innerHTML = results.map((f, i) => {
-        const razao = f['RAZÃO SOCIAL'] || '';
-        const cnpj = f['CNPJ'] || '';
-        return '<div class="autocomplete-item" data-idx="' + i + '">' + escapeHtml(razao) +
-          '<div class="sub">' + escapeHtml(cnpj) + '</div></div>';
-      }).join('');
+      const results = await sbGet('/FORNECEDOR?select=*&' + encodeURIComponent('RAZÃO SOCIAL') + '=ilike.*' + encodeURIComponent(q) + '*&limit=8');
+      if (!results.length) { coupaPrestadorList.classList.remove('active'); return; }
+      coupaPrestadorList.innerHTML = results.map((f,i) => '<div class="autocomplete-item" data-idx="'+i+'">'+escapeHtml(f['RAZÃO SOCIAL']||'')+'<div class="sub">'+escapeHtml(f['CNPJ']||'')+'</div></div>').join('');
       coupaPrestadorList.classList.add('active');
-      coupaPrestadorList.querySelectorAll('.autocomplete-item').forEach((el, i) => {
-        el.onclick = () => selectCoupaFornecedor(results[i]);
-      });
-    } catch (e) {
-      toast('Erro ao buscar fornecedores: ' + e.message, 'err');
-    }
+      coupaPrestadorList.querySelectorAll('.autocomplete-item').forEach((el,i) => el.onclick = () => selectCoupaFornecedor(results[i]));
+    } catch (e) { toast('Erro ao buscar fornecedores: '+e.message, 'err'); }
   }, 300);
 });
 document.addEventListener('click', (e) => {
-  if (!cfPrestador.contains(e.target) && !coupaPrestadorList.contains(e.target)) {
-    coupaPrestadorList.classList.remove('active');
-  }
+  if (!cfPrestador.contains(e.target) && !coupaPrestadorList.contains(e.target)) coupaPrestadorList.classList.remove('active');
 });
 function selectCoupaFornecedor(f) {
   document.getElementById('cf_prestador').value = f['RAZÃO SOCIAL'] || '';
@@ -1531,276 +1310,191 @@ function selectCoupaFornecedor(f) {
   coupaPrestadorList.classList.remove('active');
 }
 
-/* --- Coupa: Salvar --- */
 async function saveCoupaLancamento() {
   const btn = document.getElementById('saveCoupaBtn');
   const nf = document.getElementById('cf_nf').value.trim();
-  if (!nf) { toast('Informe o número da NF.', 'err'); return; }
-  if (!document.getElementById('cf_prestador').value.trim()) { toast('Informe o prestador.', 'err'); return; }
-
+  if (!nf) { toast('Informe NF.','err'); return; }
+  if (!document.getElementById('cf_prestador').value.trim()) { toast('Informe prestador.','err'); return; }
   const valorNum = parseBRL(document.getElementById('cf_valor').value);
   const payload = {
     NF: nf,
-    'EMISSÃO': document.getElementById('cf_emissao').value || null,
-    VENCIMENTO: document.getElementById('cf_vencimento').value || null,
-    RECEBIMENTO: document.getElementById('cf_recebimento').value || null,
+    'EMISSÃO': document.getElementById('cf_emissao').value||null,
+    VENCIMENTO: document.getElementById('cf_vencimento').value||null,
+    RECEBIMENTO: document.getElementById('cf_recebimento').value||null,
     PRESTADOR: document.getElementById('cf_prestador').value.trim(),
     CNPJ: document.getElementById('cf_cnpj').value,
-    VALOR: valorNum ? formatBRL(valorNum) : '',
+    VALOR: valorNum?formatBRL(valorNum):'',
     NATUREZA: document.getElementById('cf_natureza').value,
     'DESCRIÇÃO': document.getElementById('cf_descricao').value,
-    APROVADOR: valorNum ? calcAprovador(valorNum) : document.getElementById('cf_aprovador').value,
+    APROVADOR: valorNum?calcAprovador(valorNum):document.getElementById('cf_aprovador').value,
     IVA: document.getElementById('cf_iva').value,
     CODIGO_COMPRA: document.getElementById('cf_codigo_compra').value,
     PEDIDO: document.getElementById('cf_pedido').value,
     PROTOCOLO: document.getElementById('cf_protocolo').value,
     'OCORRÊNCIA': document.getElementById('cf_ocorrencia').value,
     STATUS: document.getElementById('cf_status').value,
-    USER_LANC: currentUser.NAME || currentUser.USER
+    USER_LANC: currentUser.NAME||currentUser.USER,
+    CD: currentCD
   };
-
-  btn.disabled = true;
-  btn.textContent = 'Salvando…';
+  btn.disabled=true; btn.textContent='Salvando…';
   try {
-    const existing = await sbGet('/COUPA?NF=eq.' + encodeURIComponent(nf) + '&select=id,NF');
+    const existing = await sbGet('/COUPA?NF=eq.'+encodeURIComponent(nf)+'&CD=eq.'+encodeURIComponent(currentCD));
     if (existing.length) {
-      const target = existing[0];
-      const filterPath = target.id !== undefined
-        ? '/COUPA?id=eq.' + encodeURIComponent(target.id)
-        : '/COUPA?NF=eq.' + encodeURIComponent(nf);
-      await sbPatch(filterPath, payload);
-      toast('Lançamento atualizado (NF já existia).', 'ok');
+      await sbPatch('/COUPA?id=eq.'+encodeURIComponent(existing[0].id), payload);
+      toast('Atualizado.','ok');
     } else {
-      payload.DATA = new Date().toISOString().slice(0, 10);
+      payload.DATA = new Date().toISOString().slice(0,10);
       await sbPost('/COUPA', payload);
-      toast('Lançamento inserido.', 'ok');
+      toast('Inserido.','ok');
     }
     closeCoupaModal();
     loadCoupa();
-  } catch (e) {
-    toast(e.message, 'err');
-  } finally {
-    btn.disabled = false;
-    btn.textContent = '💾 Salvar';
-  }
+  } catch(e) { toast(e.message,'err'); }
+  finally { btn.disabled=false; btn.textContent='💾 Salvar'; }
 }
 
 /* =====================================================================
-   TABELA SHAREPOINT
+   SHAREPOINT (com CD)
    ===================================================================== */
 const SP_COLUMNS = [
-  { key: 'NF', label: 'NF', type: 'text' },
-  { key: 'EMISSÃO', label: 'Emissão', type: 'date' },
-  { key: 'VENCIMENTO', label: 'Vencimento', type: 'date' },
-  { key: 'RECEBIMENTO', label: 'Recebimento', type: 'date' },
-  { key: 'PRESTADOR', label: 'Prestador', type: 'text' },
-  { key: 'CNPJ', label: 'CNPJ', type: 'text' },
-  { key: 'VALOR', label: 'Valor', type: 'money' },
-  { key: 'NATUREZA', label: 'Natureza', type: 'text' },
-  { key: 'DESCRIÇÃO', label: 'Descrição', type: 'text' },
-  { key: 'APROVADOR', label: 'Aprovador', type: 'text' },
-  { key: 'PEDIDO', label: 'Pedido', type: 'text' },
-  { key: 'PROTOCOLO', label: 'Protocolo', type: 'text' },
-  { key: 'OCORRÊNCIA', label: 'Ocorrência', type: 'text' },
-  { key: 'STATUS', label: 'Status', type: 'status' },
-  { key: 'USER_LANC', label: 'Lanç. por', type: 'text' }
+  { key: 'NF', label: 'NF' }, { key: 'EMISSÃO', label: 'Emissão', type:'date' }, { key: 'VENCIMENTO', label: 'Vencimento', type:'date' },
+  { key: 'RECEBIMENTO', label: 'Recebimento', type:'date' }, { key: 'PRESTADOR', label: 'Prestador' }, { key: 'CNPJ', label: 'CNPJ' },
+  { key: 'VALOR', label: 'Valor', type:'money' }, { key: 'NATUREZA', label: 'Natureza' }, { key: 'DESCRIÇÃO', label: 'Descrição' },
+  { key: 'APROVADOR', label: 'Aprovador' }, { key: 'PEDIDO', label: 'Pedido' }, { key: 'PROTOCOLO', label: 'Protocolo' },
+  { key: 'OCORRÊNCIA', label: 'Ocorrência' }, { key: 'STATUS', label: 'Status', type:'status' }, { key: 'USER_LANC', label: 'Lanç. por' },
+  { key: 'CD', label: 'CD' }
 ];
-
 function buildSpTableHeader() {
-  const headerRow = document.getElementById('spHeaderRow');
-  const filterRow = document.getElementById('spFilterRow');
-  headerRow.innerHTML = '';
-  filterRow.innerHTML = '';
-
-  SP_COLUMNS.forEach(col => {
-    const th = document.createElement('th');
-    if (col.type === 'money') th.classList.add('num');
-    th.textContent = col.label;
-    headerRow.appendChild(th);
-
-    const fth = document.createElement('th');
-    const inp = document.createElement('input');
-    inp.type = 'text';
-    inp.placeholder = col.label + '…';
-    inp.oninput = (e) => { spFilters[col.key] = e.target.value; renderSpTable(); };
-    fth.appendChild(inp);
-    filterRow.appendChild(fth);
+  const hr=document.getElementById('spHeaderRow'), fr=document.getElementById('spFilterRow');
+  hr.innerHTML=''; fr.innerHTML='';
+  SP_COLUMNS.forEach(col=>{
+    const th=document.createElement('th'); if(col.type==='money')th.classList.add('num'); th.textContent=col.label; hr.appendChild(th);
+    const fth=document.createElement('th'); const inp=document.createElement('input'); inp.type='text'; inp.placeholder=col.label+'…';
+    inp.oninput=(e)=>{spFilters[col.key]=e.target.value;renderSpTable();}; fth.appendChild(inp); fr.appendChild(fth);
   });
-  headerRow.appendChild(document.createElement('th'));
-  filterRow.appendChild(document.createElement('th'));
-
-  document.getElementById('spTbody').innerHTML = '';
-  document.querySelector('#view-fin-sharepoint tfoot .subtotal-row td').setAttribute('colspan', SP_COLUMNS.length + 1);
+  hr.appendChild(document.createElement('th')); fr.appendChild(document.createElement('th'));
+  document.querySelector('#view-fin-sharepoint tfoot .subtotal-row td').setAttribute('colspan',SP_COLUMNS.length+1);
 }
-
 async function loadSharepoint() {
   try {
-    spRows = await sbGet('/SHAREPOINT?select=*');
-    spLoaded = true;
-    renderSpTable();
-  } catch (e) {
-    document.getElementById('spTbody').innerHTML =
-      '<tr><td colspan="' + (SP_COLUMNS.length + 1) + '" class="empty-state">Erro ao carregar SharePoint: ' + e.message + '</td></tr>';
-    toast('Erro ao carregar dados do Supabase (SharePoint): ' + e.message, 'err');
+    if (!currentCD) { spRows=[]; renderSpTable(); return; }
+    spRows = await sbGet('/SHAREPOINT?select=*&CD=eq.'+encodeURIComponent(currentCD));
+    spLoaded=true; renderSpTable();
+  } catch(e) {
+    document.getElementById('spTbody').innerHTML='<tr><td colspan="'+(SP_COLUMNS.length+1)+'" class="empty-state">Erro: '+e.message+'</td></tr>';
   }
 }
-
 function spRowMatchesFilters(row) {
-  return SP_COLUMNS.every(col => {
-    const f = (spFilters[col.key] || '').trim().toLowerCase();
-    if (!f) return true;
-    const val = String(row[col.key] ?? '').toLowerCase();
-    return val.includes(f);
+  return SP_COLUMNS.every(col=>{
+    const f=(spFilters[col.key]||'').trim().toLowerCase();
+    if(!f)return true;
+    return String(row[col.key]??'').toLowerCase().includes(f);
   });
 }
-
 function renderSpTable() {
-  const tbody = document.getElementById('spTbody');
-  const visible = spRows.filter(spRowMatchesFilters);
-
-  if (!visible.length) {
-    tbody.innerHTML = '<tr><td colspan="' + (SP_COLUMNS.length + 1) + '" class="empty-state">Nenhum registro encontrado.</td></tr>';
-  } else {
-    tbody.innerHTML = visible.map(row => {
-      const cells = SP_COLUMNS.map(col => {
-        let v = row[col.key];
-        if (col.type === 'date') return '<td>' + fmtDateCell(v) + '</td>';
-        if (col.type === 'money') return '<td class="num">' + (v ? formatBRL(parseBRL(v)) : '—') + '</td>';
-        if (col.type === 'status') return '<td><span class="status-pill ' + statusClass(v) + '">' + (v || 'Não iniciado') + '</span></td>';
-        return '<td>' + (v !== null && v !== undefined && v !== '' ? escapeHtml(String(v)) : '—') + '</td>';
+  const tbody=document.getElementById('spTbody');
+  const visible=spRows.filter(spRowMatchesFilters);
+  if(!visible.length) tbody.innerHTML='<tr><td colspan="'+(SP_COLUMNS.length+1)+'" class="empty-state">Nenhum registro.</td></tr>';
+  else {
+    tbody.innerHTML=visible.map(row=>{
+      const cells=SP_COLUMNS.map(col=>{
+        let v=row[col.key];
+        if(col.type==='date')return '<td>'+fmtDateCell(v)+'</td>';
+        if(col.type==='money')return '<td class="num">'+(v?formatBRL(parseBRL(v)):'—')+'</td>';
+        if(col.type==='status')return '<td><span class="status-pill '+statusClass(v)+'">'+(v||'Não iniciado')+'</span></td>';
+        return '<td>'+(v!=null&&v!==''?escapeHtml(String(v)):'—')+'</td>';
       }).join('');
-      const rk = row.id !== undefined ? row.id : row.NF;
-      return '<tr onclick="editSpRow(\'' + encodeURIComponent(rk) + '\')">' + cells +
-        '<td class="row-actions" onclick="event.stopPropagation()">' +
-        '<button class="icon-btn del" title="Excluir" onclick="deleteSpRow(\'' + encodeURIComponent(rk) + '\')">🗑</button>' +
-        '</td></tr>';
+      const rk=row.id!==undefined?row.id:row.NF;
+      return '<tr onclick="editSpRow(\''+encodeURIComponent(rk)+'\')">'+cells+'<td class="row-actions" onclick="event.stopPropagation()"><button class="icon-btn del" onclick="deleteSpRow(\''+encodeURIComponent(rk)+'\')">🗑</button></td></tr>';
     }).join('');
   }
-
-  const subtotal = visible.reduce((sum, r) => sum + parseBRL(r.VALOR), 0);
-  document.getElementById('spStatCount').textContent = visible.length;
-  document.getElementById('spStatSubtotal').textContent = formatBRL(subtotal);
-  document.getElementById('spTfootSubtotal').textContent =
-    'Subtotal (Valor): ' + formatBRL(subtotal) + ' · ' + visible.length + ' registro(s)';
+  const subtotal=visible.reduce((s,r)=>s+parseBRL(r.VALOR),0);
+  document.getElementById('spStatCount').textContent=visible.length;
+  document.getElementById('spStatSubtotal').textContent=formatBRL(subtotal);
+  document.getElementById('spTfootSubtotal').textContent='Subtotal: '+formatBRL(subtotal)+' · '+visible.length+' registro(s)';
 }
-
 function toggleSpFilters() {
-  spFiltersActive = !spFiltersActive;
-  document.getElementById('spFilterRow').classList.toggle('hidden', !spFiltersActive);
-  document.getElementById('spFilterToggleBtn').classList.toggle('active-filter', spFiltersActive);
+  spFiltersActive=!spFiltersActive;
+  document.getElementById('spFilterRow').classList.toggle('hidden',!spFiltersActive);
+  document.getElementById('spFilterToggleBtn').classList.toggle('active-filter',spFiltersActive);
 }
 function clearSpFilters() {
-  Object.keys(spFilters).forEach(k => delete spFilters[k]);
-  document.querySelectorAll('#spFilterRow input').forEach(i => i.value = '');
+  Object.keys(spFilters).forEach(k=>delete spFilters[k]);
+  document.querySelectorAll('#spFilterRow input').forEach(i=>i.value='');
   renderSpTable();
 }
-
-/* =====================================================================
-   MODAL SHAREPOINT
-   ===================================================================== */
+// Modal SP similar ao Coupa
 function openSpModal(row) {
   spEditingKey = null;
   document.getElementById('lancSpTitle').textContent = 'Novo lançamento · SharePoint';
-  ['sf_nf','sf_emissao','sf_vencimento','sf_recebimento','sf_prestador','sf_cnpj','sf_valor','sf_natureza','sf_descricao','sf_aprovador','sf_pedido','sf_protocolo','sf_ocorrencia'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
+  ['sf_nf','sf_emissao','sf_vencimento','sf_recebimento','sf_prestador','sf_cnpj','sf_valor','sf_natureza','sf_descricao','sf_aprovador','sf_pedido','sf_protocolo','sf_ocorrencia'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('sf_status').value = 'Não iniciado';
-  document.getElementById('sf_user_lanc').value = currentUser ? (currentUser.NAME || currentUser.USER) : '';
-
+  document.getElementById('sf_user_lanc').value = currentUser ? (currentUser.NAME||currentUser.USER) : '';
   if (row) {
-    spEditingKey = row.id !== undefined ? row.id : row.NF;
+    spEditingKey = row.id!==undefined ? row.id : row.NF;
     document.getElementById('lancSpTitle').textContent = 'Editar lançamento · SharePoint';
-    document.getElementById('sf_nf').value = row.NF || '';
-    document.getElementById('sf_emissao').value = row['EMISSÃO'] ? String(row['EMISSÃO']).slice(0,10) : '';
-    document.getElementById('sf_vencimento').value = row.VENCIMENTO ? String(row.VENCIMENTO).slice(0,10) : '';
-    document.getElementById('sf_recebimento').value = row.RECEBIMENTO ? String(row.RECEBIMENTO).slice(0,10) : '';
-    document.getElementById('sf_prestador').value = row.PRESTADOR || '';
-    document.getElementById('sf_cnpj').value = row.CNPJ || '';
-    document.getElementById('sf_valor').value = row.VALOR ? formatBRL(parseBRL(row.VALOR)) : '';
-    document.getElementById('sf_natureza').value = row.NATUREZA || '';
-    document.getElementById('sf_descricao').value = row['DESCRIÇÃO'] || '';
-    document.getElementById('sf_aprovador').value = row.APROVADOR || '';
-    document.getElementById('sf_pedido').value = row.PEDIDO || '';
-    document.getElementById('sf_protocolo').value = row.PROTOCOLO || '';
-    document.getElementById('sf_ocorrencia').value = row['OCORRÊNCIA'] || '';
-    document.getElementById('sf_status').value = row.STATUS || 'Não iniciado';
-    document.getElementById('sf_user_lanc').value = row.USER_LANC || (currentUser.NAME || currentUser.USER);
+    document.getElementById('sf_nf').value = row.NF||'';
+    document.getElementById('sf_emissao').value = row['EMISSÃO']?String(row['EMISSÃO']).slice(0,10):'';
+    document.getElementById('sf_vencimento').value = row.VENCIMENTO?String(row.VENCIMENTO).slice(0,10):'';
+    document.getElementById('sf_recebimento').value = row.RECEBIMENTO?String(row.RECEBIMENTO).slice(0,10):'';
+    document.getElementById('sf_prestador').value = row.PRESTADOR||'';
+    document.getElementById('sf_cnpj').value = row.CNPJ||'';
+    document.getElementById('sf_valor').value = row.VALOR?formatBRL(parseBRL(row.VALOR)):'';
+    document.getElementById('sf_natureza').value = row.NATUREZA||'';
+    document.getElementById('sf_descricao').value = row['DESCRIÇÃO']||'';
+    document.getElementById('sf_aprovador').value = row.APROVADOR||'';
+    document.getElementById('sf_pedido').value = row.PEDIDO||'';
+    document.getElementById('sf_protocolo').value = row.PROTOCOLO||'';
+    document.getElementById('sf_ocorrencia').value = row['OCORRÊNCIA']||'';
+    document.getElementById('sf_status').value = row.STATUS||'Não iniciado';
+    document.getElementById('sf_user_lanc').value = row.USER_LANC||(currentUser.NAME||currentUser.USER);
   }
-
   document.getElementById('lancModalSp').classList.add('active');
 }
-function closeSpModal() {
-  document.getElementById('lancModalSp').classList.remove('active');
-  document.getElementById('spPrestadorList').classList.remove('active');
-  spEditingKey = null;
-}
-function editSpRow(encodedKey) {
-  const key = decodeURIComponent(encodedKey);
-  const row = spRows.find(r => String(r.id !== undefined ? r.id : r.NF) === key);
+function closeSpModal() { document.getElementById('lancModalSp').classList.remove('active'); spEditingKey=null; }
+function editSpRow(encKey) {
+  const key = decodeURIComponent(encKey);
+  const row = spRows.find(r=>String(r.id!==undefined?r.id:r.NF)===key);
   if (row) openSpModal(row);
 }
-async function deleteSpRow(encodedKey) {
-  const key = decodeURIComponent(encodedKey);
-  const row = spRows.find(r => String(r.id !== undefined ? r.id : r.NF) === key);
+async function deleteSpRow(encKey) {
+  const key = decodeURIComponent(encKey);
+  const row = spRows.find(r=>String(r.id!==undefined?r.id:r.NF)===key);
   if (!row) return;
-  if (!confirm('Excluir o lançamento NF "' + (row.NF || '') + '"?')) return;
+  if (!confirm('Excluir NF '+row.NF+'?')) return;
   try {
-    const filterPath = row.id !== undefined
-      ? '/SHAREPOINT?id=eq.' + encodeURIComponent(row.id)
-      : '/SHAREPOINT?NF=eq.' + encodeURIComponent(row.NF);
+    const filterPath = row.id!==undefined ? '/SHAREPOINT?id=eq.'+encodeURIComponent(row.id) : '/SHAREPOINT?NF=eq.'+encodeURIComponent(row.NF);
     await sbDelete(filterPath);
-    toast('Lançamento excluído.', 'ok');
+    toast('Excluído.','ok');
     loadSharepoint();
-  } catch (e) {
-    toast(e.message, 'err');
-  }
+  } catch(e) { toast(e.message,'err'); }
 }
-
-/* --- SharePoint: Valor auto-format + recompute Aprovador --- */
-document.getElementById('sf_valor').addEventListener('blur', (e) => {
+document.getElementById('sf_valor').addEventListener('blur', (e)=>{
   const n = parseBRL(e.target.value);
-  e.target.value = n ? formatBRL(n) : '';
-  document.getElementById('sf_aprovador').value = n ? calcAprovador(n) : '';
+  e.target.value = n?formatBRL(n):'';
+  document.getElementById('sf_aprovador').value = n?calcAprovador(n):'';
 });
-
-/* --- SharePoint: Autocomplete fornecedor --- */
+// Autocomplete SharePoint
 let spAcTimer = null;
 const sfPrestador = document.getElementById('sf_prestador');
 const spPrestadorList = document.getElementById('spPrestadorList');
-
 sfPrestador.addEventListener('input', () => {
   const q = sfPrestador.value.trim();
   clearTimeout(spAcTimer);
-  document.getElementById('sf_cnpj').value = '';
-  document.getElementById('sf_natureza').value = '';
-  document.getElementById('sf_descricao').value = '';
-
-  if (q.length < 2) { spPrestadorList.classList.remove('active'); spPrestadorList.innerHTML = ''; return; }
-
+  ['sf_cnpj','sf_natureza','sf_descricao'].forEach(id => document.getElementById(id).value = '');
+  if (q.length < 2) { spPrestadorList.classList.remove('active'); return; }
   spAcTimer = setTimeout(async () => {
     try {
-      const col = encodeURIComponent('RAZÃO SOCIAL');
-      const results = await sbGet('/FORNECEDOR?select=*&' + col + '=ilike.*' + encodeURIComponent(q) + '*&limit=8');
-      if (!results.length) { spPrestadorList.classList.remove('active'); spPrestadorList.innerHTML = ''; return; }
-      spPrestadorList.innerHTML = results.map((f, i) => {
-        const razao = f['RAZÃO SOCIAL'] || '';
-        const cnpj = f['CNPJ'] || '';
-        return '<div class="autocomplete-item" data-idx="' + i + '">' + escapeHtml(razao) +
-          '<div class="sub">' + escapeHtml(cnpj) + '</div></div>';
-      }).join('');
+      const results = await sbGet('/FORNECEDOR?select=*&' + encodeURIComponent('RAZÃO SOCIAL') + '=ilike.*' + encodeURIComponent(q) + '*&limit=8');
+      if (!results.length) { spPrestadorList.classList.remove('active'); return; }
+      spPrestadorList.innerHTML = results.map((f,i) => '<div class="autocomplete-item" data-idx="'+i+'">'+escapeHtml(f['RAZÃO SOCIAL']||'')+'<div class="sub">'+escapeHtml(f['CNPJ']||'')+'</div></div>').join('');
       spPrestadorList.classList.add('active');
-      spPrestadorList.querySelectorAll('.autocomplete-item').forEach((el, i) => {
-        el.onclick = () => selectSpFornecedor(results[i]);
-      });
-    } catch (e) {
-      toast('Erro ao buscar fornecedores: ' + e.message, 'err');
-    }
+      spPrestadorList.querySelectorAll('.autocomplete-item').forEach((el,i) => el.onclick = () => selectSpFornecedor(results[i]));
+    } catch (e) { toast('Erro ao buscar fornecedores: '+e.message, 'err'); }
   }, 300);
 });
 document.addEventListener('click', (e) => {
-  if (!sfPrestador.contains(e.target) && !spPrestadorList.contains(e.target)) {
-    spPrestadorList.classList.remove('active');
-  }
+  if (!sfPrestador.contains(e.target) && !spPrestadorList.contains(e.target)) spPrestadorList.classList.remove('active');
 });
 function selectSpFornecedor(f) {
   document.getElementById('sf_prestador').value = f['RAZÃO SOCIAL'] || '';
@@ -1809,264 +1503,493 @@ function selectSpFornecedor(f) {
   document.getElementById('sf_descricao').value = f['TIPO NOTA'] || '';
   spPrestadorList.classList.remove('active');
 }
-
-/* --- SharePoint: Salvar --- */
 async function saveSpLancamento() {
   const btn = document.getElementById('saveSpBtn');
   const nf = document.getElementById('sf_nf').value.trim();
-  if (!nf) { toast('Informe o número da NF.', 'err'); return; }
-  if (!document.getElementById('sf_prestador').value.trim()) { toast('Informe o prestador.', 'err'); return; }
-
+  if (!nf) { toast('Informe NF.','err'); return; }
+  if (!document.getElementById('sf_prestador').value.trim()) { toast('Informe prestador.','err'); return; }
   const valorNum = parseBRL(document.getElementById('sf_valor').value);
   const payload = {
     NF: nf,
-    'EMISSÃO': document.getElementById('sf_emissao').value || null,
-    VENCIMENTO: document.getElementById('sf_vencimento').value || null,
-    RECEBIMENTO: document.getElementById('sf_recebimento').value || null,
+    'EMISSÃO': document.getElementById('sf_emissao').value||null,
+    VENCIMENTO: document.getElementById('sf_vencimento').value||null,
+    RECEBIMENTO: document.getElementById('sf_recebimento').value||null,
     PRESTADOR: document.getElementById('sf_prestador').value.trim(),
     CNPJ: document.getElementById('sf_cnpj').value,
-    VALOR: valorNum ? formatBRL(valorNum) : '',
+    VALOR: valorNum?formatBRL(valorNum):'',
     NATUREZA: document.getElementById('sf_natureza').value,
     'DESCRIÇÃO': document.getElementById('sf_descricao').value,
-    APROVADOR: valorNum ? calcAprovador(valorNum) : document.getElementById('sf_aprovador').value,
+    APROVADOR: valorNum?calcAprovador(valorNum):document.getElementById('sf_aprovador').value,
     PEDIDO: document.getElementById('sf_pedido').value,
     PROTOCOLO: document.getElementById('sf_protocolo').value,
     'OCORRÊNCIA': document.getElementById('sf_ocorrencia').value,
     STATUS: document.getElementById('sf_status').value,
-    USER_LANC: currentUser.NAME || currentUser.USER
+    USER_LANC: currentUser.NAME||currentUser.USER,
+    CD: currentCD
   };
-
-  btn.disabled = true;
-  btn.textContent = 'Salvando…';
+  btn.disabled=true; btn.textContent='Salvando…';
   try {
-    const existing = await sbGet('/SHAREPOINT?NF=eq.' + encodeURIComponent(nf) + '&select=id,NF');
+    const existing = await sbGet('/SHAREPOINT?NF=eq.'+encodeURIComponent(nf)+'&CD=eq.'+encodeURIComponent(currentCD));
     if (existing.length) {
-      const target = existing[0];
-      const filterPath = target.id !== undefined
-        ? '/SHAREPOINT?id=eq.' + encodeURIComponent(target.id)
-        : '/SHAREPOINT?NF=eq.' + encodeURIComponent(nf);
-      await sbPatch(filterPath, payload);
-      toast('Lançamento atualizado (NF já existia).', 'ok');
+      await sbPatch('/SHAREPOINT?id=eq.'+encodeURIComponent(existing[0].id), payload);
+      toast('Atualizado.','ok');
     } else {
       await sbPost('/SHAREPOINT', payload);
-      toast('Lançamento inserido.', 'ok');
+      toast('Inserido.','ok');
     }
     closeSpModal();
     loadSharepoint();
-  } catch (e) {
-    toast(e.message, 'err');
-  } finally {
-    btn.disabled = false;
-    btn.textContent = '💾 Salvar';
-  }
+  } catch(e) { toast(e.message,'err'); }
+  finally { btn.disabled=false; btn.textContent='💾 Salvar'; }
 }
 
 /* =====================================================================
-   ITENS DE ESCRITÓRIO — helpers de saldo (BD_SALDO)
+   ITENS DE ESCRITÓRIO (com CD)
    ===================================================================== */
 async function buscarPorEan(table, ean, selectCols) {
-  const rows = await sbGet('/' + table + '?' + qs({ EAN: 'eq.' + ean, select: selectCols }));
-  return rows[0] || null;
+  const rows = await sbGet('/'+table+'?'+qs({EAN:'eq.'+ean,select:selectCols}));
+  return rows[0]||null;
 }
 async function ajustarSaldo(ean, descricao, qtd, modo) {
   const existente = await buscarPorEan('BD_SALDO', ean, 'EAN,DESCRIÇÃO,SALDO');
   let novoSaldo;
-  if (existente) {
-    const atual = Number(existente.SALDO) || 0;
-    if (modo === 'soma') novoSaldo = atual + Number(qtd);
-    else if (modo === 'subtrai') novoSaldo = atual - Number(qtd);
-    else novoSaldo = Number(qtd);
-    await sbPatch('/BD_SALDO?' + qs({ EAN: 'eq.' + ean }), {
-      'DESCRIÇÃO': descricao || existente['DESCRIÇÃO'],
-      SALDO: novoSaldo
-    });
+  if(existente) {
+    const atual=Number(existente.SALDO)||0;
+    if(modo==='soma') novoSaldo=atual+Number(qtd);
+    else if(modo==='subtrai') novoSaldo=atual-Number(qtd);
+    else novoSaldo=Number(qtd);
+    await sbPatch('/BD_SALDO?'+qs({EAN:'eq.'+ean}),{'DESCRIÇÃO':descricao||existente['DESCRIÇÃO'],SALDO:novoSaldo});
   } else {
-    novoSaldo = modo === 'subtrai' ? -Number(qtd) : Number(qtd);
-    await sbPost('/BD_SALDO', [{ EAN: ean, 'DESCRIÇÃO': descricao || '', SALDO: novoSaldo }]);
+    novoSaldo = modo==='subtrai'? -Number(qtd):Number(qtd);
+    await sbPost('/BD_SALDO',{EAN:ean,'DESCRIÇÃO':descricao||'',SALDO:novoSaldo});
   }
   return novoSaldo;
 }
-
 function limparForm(area) {
   const map = {
-    recebimento: ['rec-ean','rec-desc','rec-qtd'],
-    inventario: ['inv-ean','inv-desc','inv-contagem'],
-    entrega: ['ent-ean','ent-desc','ent-qtd','ent-solicitante'],
-    'cadastro-add': ['add-ean','add-desc','add-tipo'],
-    'cadastro-edit': ['edit-ean','edit-desc','edit-tipo']
+    recebimento:['rec-ean','rec-desc','rec-qtd'],
+    inventario:['inv-ean','inv-desc','inv-contagem'],
+    entrega:['ent-ean','ent-desc','ent-qtd','ent-solicitante'],
+    'cadastro-add':['add-ean','add-desc','add-tipo'],
+    'cadastro-edit':['edit-ean','edit-desc','edit-tipo']
   };
-  (map[area]||[]).forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
-  if (area === 'inventario') document.getElementById('inv-info').style.display = 'none';
-  if (area === 'cadastro-edit') {
-    document.getElementById('edit-desc').disabled = true;
-    document.getElementById('edit-tipo').disabled = true;
-    document.getElementById('edit-btn').disabled = true;
+  (map[area]||[]).forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  if(area==='inventario') document.getElementById('inv-info').style.display='none';
+  if(area==='cadastro-edit') {
+    document.getElementById('edit-desc').disabled=true;
+    document.getElementById('edit-tipo').disabled=true;
+    document.getElementById('edit-btn').disabled=true;
   }
 }
-
-async function autoPreencherDescricao(eanInputId, descInputId) {
-  const ean = document.getElementById(eanInputId).value.trim();
-  if (!ean) return;
-  try {
-    const item = await buscarPorEan('CADASTRO_ITENS', ean, 'DESCRIÇÃO');
-    if (item && item['DESCRIÇÃO']) document.getElementById(descInputId).value = item['DESCRIÇÃO'];
-  } catch (e) { /* best-effort */ }
+async function autoPreencherDescricao(eanId, descId) {
+  const ean=document.getElementById(eanId).value.trim();
+  if(!ean)return;
+  try{ const item=await buscarPorEan('CADASTRO_ITENS',ean,'DESCRIÇÃO'); if(item)document.getElementById(descId).value=item['DESCRIÇÃO']; }catch(e){}
 }
-['rec-ean','ent-ean'].forEach(id => {
-  const el = document.getElementById(id);
-  if (!el) return;
-  const target = id === 'rec-ean' ? 'rec-desc' : 'ent-desc';
-  el.addEventListener('blur', () => autoPreencherDescricao(id, target));
-  el.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); autoPreencherDescricao(id, target); } });
+['rec-ean','ent-ean'].forEach(id=>{
+  const el=document.getElementById(id); if(!el)return;
+  const target=id==='rec-ean'?'rec-desc':'ent-desc';
+  el.addEventListener('blur',()=>autoPreencherDescricao(id,target));
+  el.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();autoPreencherDescricao(id,target);}});
 });
-
-/* ---- Recebimento ---- */
 async function lancarRecebimento() {
-  const ean = document.getElementById('rec-ean').value.trim();
-  const desc = document.getElementById('rec-desc').value.trim();
-  const qtd = Number(document.getElementById('rec-qtd').value);
-  if (!ean || !desc || !qtd || qtd<=0) { toast('Preencha EAN, Descrição e Quantidade (maior que 0).', 'err'); return; }
-
-  setLoading('rec-btn', true);
-  try {
-    await sbPost('/RECEBIMENTO_ITENS', [{ EAN: ean, 'DESCRIÇÃO': desc, QTD: qtd }]);
-    const novoSaldo = await ajustarSaldo(ean, desc, qtd, 'soma');
-    toast('Recebimento lançado! Novo saldo de "' + desc + '": ' + novoSaldo, 'ok');
+  const ean=document.getElementById('rec-ean').value.trim();
+  const desc=document.getElementById('rec-desc').value.trim();
+  const qtd=Number(document.getElementById('rec-qtd').value);
+  if(!ean||!desc||!qtd||qtd<=0){toast('Preencha EAN, Descrição e Qtd >0.','err');return;}
+  setLoading('rec-btn',true);
+  try{
+    await sbPost('/RECEBIMENTO_ITENS',[{EAN:ean,'DESCRIÇÃO':desc,QTD:qtd,CD:currentCD,USER_LANC:currentUser.NAME||currentUser.USER}]);
+    const novoSaldo=await ajustarSaldo(ean,desc,qtd,'soma');
+    toast('Recebido! Saldo: '+novoSaldo,'ok');
     limparForm('recebimento');
-    document.getElementById('rec-ean').focus();
-  } catch (e) {
-    toast('Erro ao lançar recebimento: ' + e.message, 'err');
-  } finally {
-    setLoading('rec-btn', false, '✅ Lançar Recebimento');
-  }
+  }catch(e){toast(e.message,'err');}
+  finally{setLoading('rec-btn',false,'✅ Lançar Recebimento');}
 }
-
-/* ---- Inventário ---- */
 async function buscarSaldoInventario() {
-  const ean = document.getElementById('inv-ean').value.trim();
-  if (!ean) { toast('Informe o EAN para buscar.', 'err'); return; }
-  try {
-    const item = await buscarPorEan('BD_SALDO', ean, 'EAN,DESCRIÇÃO,SALDO');
-    const box = document.getElementById('inv-info');
-    if (item) {
-      document.getElementById('inv-desc-view').textContent = item['DESCRIÇÃO'] || '(sem descrição)';
-      document.getElementById('inv-saldo-atual').textContent = item.SALDO ?? 0;
-      document.getElementById('inv-desc').value = item['DESCRIÇÃO'] || '';
-      box.style.display = 'grid';
-      toast('Item encontrado no saldo.', 'ok');
-    } else {
-      document.getElementById('inv-desc-view').textContent = 'Item não encontrado (será criado)';
-      document.getElementById('inv-saldo-atual').textContent = '0';
-      box.style.display = 'grid';
-      toast('Item não existe em BD_SALDO ainda. Preencha a descrição para criá-lo.', 'err');
+  const ean=document.getElementById('inv-ean').value.trim();
+  if(!ean){toast('Informe o EAN.','err');return;}
+  try{
+    const item=await buscarPorEan('BD_SALDO',ean,'EAN,DESCRIÇÃO,SALDO');
+    const box=document.getElementById('inv-info');
+    if(item){
+      document.getElementById('inv-desc-view').textContent=item['DESCRIÇÃO']||'(sem descrição)';
+      document.getElementById('inv-saldo-atual').textContent=item.SALDO??0;
+      document.getElementById('inv-desc').value=item['DESCRIÇÃO']||'';
+      box.style.display='grid';
+    }else{
+      document.getElementById('inv-desc-view').textContent='Item não encontrado (será criado)';
+      document.getElementById('inv-saldo-atual').textContent='0';
+      box.style.display='grid';
     }
-  } catch (e) {
-    toast('Erro ao buscar item: ' + e.message, 'err');
-  }
+  }catch(e){toast(e.message,'err');}
 }
 async function confirmarAjusteInventario() {
-  const ean = document.getElementById('inv-ean').value.trim();
-  const desc = document.getElementById('inv-desc').value.trim();
-  const contagem = document.getElementById('inv-contagem').value;
-  if (!ean || contagem === '') { toast('Informe o EAN e a quantidade contada.', 'err'); return; }
-
-  setLoading('inv-btn', true);
-  try {
-    const novoSaldo = await ajustarSaldo(ean, desc, Number(contagem), 'define');
-    toast('Saldo ajustado! Novo saldo: ' + novoSaldo, 'ok');
+  const ean=document.getElementById('inv-ean').value.trim();
+  const desc=document.getElementById('inv-desc').value.trim();
+  const contagem=document.getElementById('inv-contagem').value;
+  if(!ean||contagem===''){toast('Informe EAN e quantidade contada.','err');return;}
+  setLoading('inv-btn',true);
+  try{
+    const novoSaldo=await ajustarSaldo(ean,desc,Number(contagem),'define');
+    toast('Saldo ajustado! '+novoSaldo,'ok');
     limparForm('inventario');
-  } catch (e) {
-    toast('Erro ao ajustar saldo do inventário: ' + e.message, 'err');
-  } finally {
-    setLoading('inv-btn', false, '✅ Confirmar Ajuste de Saldo');
-  }
+  }catch(e){toast(e.message,'err');}
+  finally{setLoading('inv-btn',false,'✅ Confirmar Ajuste');}
 }
-
-/* ---- Entrega ---- */
 async function lancarEntrega() {
-  const ean = document.getElementById('ent-ean').value.trim();
-  const desc = document.getElementById('ent-desc').value.trim();
-  const qtd = Number(document.getElementById('ent-qtd').value);
-  const solicitante = document.getElementById('ent-solicitante').value.trim();
-  if (!ean || !desc || !qtd || qtd<=0 || !solicitante) { toast('Preencha EAN, Descrição, Quantidade e Solicitante.', 'err'); return; }
-
-  setLoading('ent-btn', true);
-  try {
-    await sbPost('/SAIDA_ITENS', [{ EAN: ean, 'DESCRIÇÃO': desc, QTD: qtd, SOLICITANTE: solicitante }]);
-    const novoSaldo = await ajustarSaldo(ean, desc, qtd, 'subtrai');
-    toast('Entrega registrada! Novo saldo de "' + desc + '": ' + novoSaldo, 'ok');
+  const ean=document.getElementById('ent-ean').value.trim();
+  const desc=document.getElementById('ent-desc').value.trim();
+  const qtd=Number(document.getElementById('ent-qtd').value);
+  const solicitante=document.getElementById('ent-solicitante').value.trim();
+  if(!ean||!desc||!qtd||qtd<=0||!solicitante){toast('Preencha todos os campos.','err');return;}
+  setLoading('ent-btn',true);
+  try{
+    await sbPost('/SAIDA_ITENS',[{EAN:ean,'DESCRIÇÃO':desc,QTD:qtd,SOLICITANTE:solicitante,CD:currentCD,USER_LANC:currentUser.NAME||currentUser.USER}]);
+    const novoSaldo=await ajustarSaldo(ean,desc,qtd,'subtrai');
+    toast('Entrega registrada! Saldo: '+novoSaldo,'ok');
     limparForm('entrega');
-    document.getElementById('ent-ean').focus();
-  } catch (e) {
-    toast('Erro ao registrar entrega: ' + e.message, 'err');
-  } finally {
-    setLoading('ent-btn', false, '✅ Registrar Entrega');
-  }
+  }catch(e){toast(e.message,'err');}
+  finally{setLoading('ent-btn',false,'✅ Registrar Entrega');}
 }
-
-/* ---- Cadastro de Itens ---- */
+/* Cadastro de Itens */
 function mostrarTabCadastro(qual) {
   document.getElementById('tab-add').classList.toggle('active', qual==='add');
   document.getElementById('tab-edit').classList.toggle('active', qual==='edit');
-  document.getElementById('cadastro-add').style.display = qual==='add' ? 'block' : 'none';
-  document.getElementById('cadastro-edit').style.display = qual==='edit' ? 'block' : 'none';
+  document.getElementById('cadastro-add').style.display = qual==='add'?'block':'none';
+  document.getElementById('cadastro-edit').style.display = qual==='edit'?'block':'none';
 }
 async function cadastrarItem() {
   const ean = document.getElementById('add-ean').value.trim();
   const desc = document.getElementById('add-desc').value.trim();
   const tipo = document.getElementById('add-tipo').value.trim();
-  if (!ean || !desc || !tipo) { toast('Preencha EAN, Descrição e Tipo.', 'err'); return; }
-
-  setLoading('add-btn', true);
-  try {
-    const existente = await buscarPorEan('CADASTRO_ITENS', ean, 'EAN');
-    if (existente) { toast('Este EAN já está cadastrado. Use a aba Editar Item.', 'err'); return; }
-    await sbPost('/CADASTRO_ITENS', [{ EAN: ean, 'DESCRIÇÃO': desc, TIPO: tipo }]);
-    toast('Item cadastrado com sucesso!', 'ok');
+  if(!ean||!desc||!tipo){toast('Preencha EAN, Descrição e Tipo.','err');return;}
+  setLoading('add-btn',true);
+  try{
+    const existente = await buscarPorEan('CADASTRO_ITENS',ean,'EAN');
+    if(existente){toast('EAN já cadastrado.','err');return;}
+    await sbPost('/CADASTRO_ITENS',{EAN:ean,'DESCRIÇÃO':desc,TIPO:tipo,CD:currentCD});
+    toast('Item cadastrado!','ok');
     limparForm('cadastro-add');
-  } catch (e) {
-    toast('Erro ao cadastrar item: ' + e.message, 'err');
-  } finally {
-    setLoading('add-btn', false, '✅ Cadastrar Item');
-  }
+  }catch(e){toast(e.message,'err');}
+  finally{setLoading('add-btn',false,'✅ Cadastrar Item');}
 }
 async function buscarItemEdicao() {
   const ean = document.getElementById('edit-ean').value.trim();
-  if (!ean) { toast('Informe o EAN para buscar.', 'err'); return; }
-  try {
-    const item = await buscarPorEan('CADASTRO_ITENS', ean, 'EAN,DESCRIÇÃO,TIPO');
-    const descInput = document.getElementById('edit-desc');
-    const tipoInput = document.getElementById('edit-tipo');
-    const saveBtn = document.getElementById('edit-btn');
-    if (item) {
-      descInput.value = item['DESCRIÇÃO'] || '';
-      tipoInput.value = item.TIPO || '';
-      descInput.disabled = false; tipoInput.disabled = false; saveBtn.disabled = false;
-      toast('Item encontrado. Edite os campos e salve.', 'ok');
-    } else {
-      descInput.value = ''; tipoInput.value = '';
-      descInput.disabled = true; tipoInput.disabled = true; saveBtn.disabled = true;
-      toast('Item não encontrado em CADASTRO_ITENS.', 'err');
+  if(!ean)return;
+  try{
+    const item = await buscarPorEan('CADASTRO_ITENS',ean,'EAN,DESCRIÇÃO,TIPO');
+    const d=document.getElementById('edit-desc'), t=document.getElementById('edit-tipo'), b=document.getElementById('edit-btn');
+    if(item){
+      d.value=item['DESCRIÇÃO']||''; t.value=item.TIPO||'';
+      d.disabled=false; t.disabled=false; b.disabled=false;
+    }else{
+      d.value=''; t.value=''; d.disabled=true; t.disabled=true; b.disabled=true;
+      toast('Item não encontrado.','err');
     }
-  } catch (e) {
-    toast('Erro ao buscar item: ' + e.message, 'err');
-  }
+  }catch(e){toast(e.message,'err');}
 }
 async function salvarEdicaoItem() {
   const ean = document.getElementById('edit-ean').value.trim();
   const desc = document.getElementById('edit-desc').value.trim();
   const tipo = document.getElementById('edit-tipo').value.trim();
-  if (!ean || !desc || !tipo) { toast('Preencha Descrição e Tipo antes de salvar.', 'err'); return; }
+  if(!ean||!desc||!tipo){toast('Preencha Descrição e Tipo.','err');return;}
+  setLoading('edit-btn',true);
+  try{
+    await sbPatch('/CADASTRO_ITENS?'+qs({EAN:'eq.'+ean}),{'DESCRIÇÃO':desc,TIPO:tipo});
+    toast('Item atualizado!','ok');
+  }catch(e){toast(e.message,'err');}
+  finally{setLoading('edit-btn',false,'💾 Salvar Alterações');}
+}
 
-  setLoading('edit-btn', true);
+/* =====================================================================
+   SUPRIMENTOS: SOLICITAR MATERIAIS (modos solicitar/editar)
+   ===================================================================== */
+async function modoSolicitar() {
+  modoAtualSup = 'solicitar';
+  document.getElementById('btnModoSolicitar').classList.add('active-filter');
+  document.getElementById('btnModoEditar').classList.remove('active-filter');
+  document.getElementById('btnConfirmar').style.display = 'inline-flex';
+  document.getElementById('btnSalvarEdicao').style.display = 'none';
+  await loadMateriaisSuprimento();
+}
+
+async function modoEditar() {
+  modoAtualSup = 'editar';
+  document.getElementById('btnModoEditar').classList.add('active-filter');
+  document.getElementById('btnModoSolicitar').classList.remove('active-filter');
+  document.getElementById('btnConfirmar').style.display = 'none';
+  document.getElementById('btnSalvarEdicao').style.display = 'inline-flex';
+  await loadSolicitacoesParaEdicao();
+}
+
+async function loadMateriaisSuprimento() {
   try {
-    await sbPatch('/CADASTRO_ITENS?' + qs({ EAN: 'eq.' + ean }), { 'DESCRIÇÃO': desc, TIPO: tipo });
-    toast('Item atualizado com sucesso!', 'ok');
+    supRows = await sbGet('/MATERIAIS_SUPRIMENTO?select=*');
+    renderSupTable();
   } catch (e) {
-    toast('Erro ao salvar alterações: ' + e.message, 'err');
-  } finally {
-    setLoading('edit-btn', false, '💾 Salvar Alterações');
+    document.getElementById('supTbody').innerHTML = '<tr><td colspan="8" class="empty-state">Erro ao carregar: '+e.message+'</td></tr>';
+    toast('Erro ao carregar materiais: '+e.message, 'err');
   }
+}
+
+async function loadSolicitacoesParaEdicao() {
+  try {
+    if (!currentCD) { supRows = []; renderSupTable(); return; }
+    solicitacoesEdit = await sbGet('/SOLICITAÇÃO_SUPRIMENTO?select=*&CD=eq.'+encodeURIComponent(currentCD));
+    supRows = solicitacoesEdit.map(s => ({
+      id: s.id,
+      CODIGO: s.CODIGO,
+      'DESCRIÇÃO DO PRODUTO': s['DESCRIÇÃO DO PRODUTO'],
+      UNIDADE: s.UNIDADE,
+      FORNECEDOR: s.FORNECEDOR,
+      CATEGORIA: s.CATEGORIA,
+      'VALOR UNITÁRIO': s['VALOR UNITÁRIO'],
+      QUANTIDADE: s.QUANTIDADE
+    }));
+    renderSupTable();
+  } catch (e) {
+    document.getElementById('supTbody').innerHTML = '<tr><td colspan="8" class="empty-state">Erro: '+e.message+'</td></tr>';
+    toast('Erro ao carregar solicitações: '+e.message, 'err');
+  }
+}
+
+function supRowMatchesFilters(row) {
+  return ['CODIGO','DESCRIÇÃO DO PRODUTO','UNIDADE','FORNECEDOR','CATEGORIA'].every(key => {
+    const f = (supFilters[key] || '').trim().toLowerCase();
+    if (!f) return true;
+    return String(row[key] ?? '').toLowerCase().includes(f);
+  });
+}
+
+function renderSupTable() {
+  const tbody = document.getElementById('supTbody');
+  const visible = supRows.filter(supRowMatchesFilters);
+  if (!visible.length) {
+    tbody.innerHTML = '<tr><td colspan="8" class="empty-state">Nenhum item encontrado.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = visible.map((row, idx) => {
+    const valorUnitario = parseBRL(row['VALOR UNITÁRIO'] || 0);
+    const qtd = (modoAtualSup === 'editar') ? (row.QUANTIDADE || 0) : 0;
+    const qtdInput = '<input type="number" min="0" value="'+qtd+'" style="width:80px;" onchange="updateValorTotal(this, '+valorUnitario+')" oninput="updateValorTotal(this, '+valorUnitario+')">';
+    return '<tr data-idx="'+idx+'">' +
+      '<td>'+escapeHtml(String(row.CODIGO||''))+'</td>' +
+      '<td>'+escapeHtml(String(row['DESCRIÇÃO DO PRODUTO']||''))+'</td>' +
+      '<td>'+escapeHtml(String(row.UNIDADE||''))+'</td>' +
+      '<td>'+escapeHtml(String(row.FORNECEDOR||''))+'</td>' +
+      '<td>'+escapeHtml(String(row.CATEGORIA||''))+'</td>' +
+      '<td class="num">'+formatBRL(valorUnitario)+'</td>' +
+      '<td>'+qtdInput+'</td>' +
+      '<td class="num valor-total">'+formatBRL(qtd * valorUnitario)+'</td>' +
+      '</tr>';
+  }).join('');
+}
+
+function updateValorTotal(input, valorUnitario) {
+  const qtd = Number(input.value) || 0;
+  const td = input.closest('tr').querySelector('.valor-total');
+  if (td) td.textContent = formatBRL(qtd * valorUnitario);
+}
+
+function toggleSupFilters() {
+  document.getElementById('supFilterRow').classList.toggle('hidden');
+  document.getElementById('supFilterToggleBtn').classList.toggle('active-filter');
+}
+function clearSupFilters() {
+  supFilters = {};
+  document.querySelectorAll('#supFilterRow input').forEach(i => i.value = '');
+  renderSupTable();
+}
+
+async function confirmarSolicitacao() {
+  if (modoAtualSup !== 'solicitar') return;
+  if (!currentCD) { toast('Selecione um CD.', 'err'); return; }
+  if (currentUser.USER !== '5520967') {
+    const bloqueada = await isSolicitacaoBloqueada();
+    if (bloqueada) { toast('Solicitações bloqueadas.', 'err'); return; }
+  }
+  const rows = document.querySelectorAll('#supTbody tr');
+  const itens = [];
+  rows.forEach(row => {
+    const input = row.querySelector('input[type="number"]');
+    if (!input) return;
+    const qtd = Number(input.value) || 0;
+    if (qtd <= 0) return;
+    const cells = row.querySelectorAll('td');
+    const codigo = cells[0].textContent.trim();
+    const descricao = cells[1].textContent.trim();
+    const unidade = cells[2].textContent.trim();
+    const fornecedor = cells[3].textContent.trim();
+    const categoria = cells[4].textContent.trim();
+    const valorUnitario = parseBRL(cells[5].textContent);
+    const valorTotal = qtd * valorUnitario;
+    itens.push({ codigo, descricao, unidade, fornecedor, categoria, valorUnitario, quantidade: qtd, valorTotal });
+  });
+  if (itens.length === 0) { toast('Nenhum item com quantidade > 0.', 'err'); return; }
+  if (!confirm('Confirmar solicitação de '+itens.length+' item(ns)?')) return;
+  const turno = getTurno();
+  const userLanc = currentUser.NAME || currentUser.USER;
+  try {
+    const inserts = itens.map(item => ({
+      CODIGO: item.codigo,
+      'DESCRIÇÃO DO PRODUTO': item.descricao,
+      UNIDADE: item.unidade,
+      FORNECEDOR: item.fornecedor,
+      CATEGORIA: item.categoria,
+      'VALOR UNITÁRIO': item.valorUnitario,
+      QUANTIDADE: item.quantidade,
+      VALOR_TOTAL: item.valorTotal,
+      TURNO_LANC: turno,
+      USER_LANC: userLanc,
+      CD: currentCD,
+      DATA: new Date().toISOString()
+    }));
+    await Promise.all(inserts.map(payload => sbPost('/SOLICITAÇÃO_SUPRIMENTO', payload)));
+    toast('Solicitação confirmada!', 'ok');
+    await loadMateriaisSuprimento();
+  } catch (e) {
+    toast('Erro ao salvar: ' + e.message, 'err');
+  }
+}
+
+async function salvarEdicaoSolicitacao() {
+  if (modoAtualSup !== 'editar') return;
+  if (!currentCD) { toast('Selecione um CD.', 'err'); return; }
+  const rows = document.querySelectorAll('#supTbody tr');
+  const novosItens = [];
+  rows.forEach(row => {
+    const idx = row.getAttribute('data-idx');
+    if (idx === null) return;
+    const original = supRows[Number(idx)];
+    const input = row.querySelector('input[type="number"]');
+    if (!input) return;
+    const qtd = Number(input.value) || 0;
+    const cells = row.querySelectorAll('td');
+    const valorUnitario = parseBRL(cells[5].textContent);
+    novosItens.push({
+      id: original.id,
+      codigo: original.CODIGO,
+      descricao: original['DESCRIÇÃO DO PRODUTO'],
+      unidade: original.UNIDADE,
+      fornecedor: original.FORNECEDOR,
+      categoria: original.CATEGORIA,
+      valorUnitario: valorUnitario,
+      quantidade: qtd,
+      valorTotal: qtd * valorUnitario
+    });
+  });
+  if (!confirm('Salvar alterações?')) return;
+  const turno = getTurno();
+  const userLanc = currentUser.NAME || currentUser.USER;
+  try {
+    const updates = [];
+    const deletes = [];
+    for (const item of novosItens) {
+      if (item.id) {
+        if (item.quantidade > 0) {
+          updates.push(sbPatch('/SOLICITAÇÃO_SUPRIMENTO?id=eq.' + encodeURIComponent(item.id), {
+            QUANTIDADE: item.quantidade,
+            VALOR_TOTAL: item.valorTotal,
+            TURNO_LANC: turno,
+            USER_LANC: userLanc
+          }));
+        } else {
+          deletes.push(sbDelete('/SOLICITAÇÃO_SUPRIMENTO?id=eq.' + encodeURIComponent(item.id)));
+        }
+      } else if (item.quantidade > 0) {
+        updates.push(sbPost('/SOLICITAÇÃO_SUPRIMENTO', {
+          CODIGO: item.codigo,
+          'DESCRIÇÃO DO PRODUTO': item.descricao,
+          UNIDADE: item.unidade,
+          FORNECEDOR: item.fornecedor,
+          CATEGORIA: item.categoria,
+          'VALOR UNITÁRIO': item.valorUnitario,
+          QUANTIDADE: item.quantidade,
+          VALOR_TOTAL: item.valorTotal,
+          TURNO_LANC: turno,
+          USER_LANC: userLanc,
+          CD: currentCD,
+          DATA: new Date().toISOString()
+        }));
+      }
+    }
+    await Promise.all([...updates, ...deletes]);
+    toast('Alterações salvas!', 'ok');
+    await loadSolicitacoesParaEdicao();
+  } catch (e) {
+    toast('Erro ao salvar: ' + e.message, 'err');
+  }
+}
+
+/* Bloqueio */
+async function isSolicitacaoBloqueada() {
+  try {
+    const res = await sbGet('/CONFIGURACOES?chave=eq.solicitacao_bloqueada');
+    return res.length > 0 && res[0].valor === 'true';
+  } catch (e) { return false; }
+}
+async function alternarBloqueioSolicitacoes() {
+  if (currentUser.USER !== '5520967') return;
+  const bloqueada = await isSolicitacaoBloqueada();
+  const novoEstado = !bloqueada;
+  try {
+    const existing = await sbGet('/CONFIGURACOES?chave=eq.solicitacao_bloqueada');
+    if (existing.length) {
+      await sbPatch('/CONFIGURACOES?chave=eq.solicitacao_bloqueada', { valor: String(novoEstado) });
+    } else {
+      await sbPost('/CONFIGURACOES', { chave: 'solicitacao_bloqueada', valor: String(novoEstado) });
+    }
+    toast('Solicitações ' + (novoEstado ? 'bloqueadas' : 'desbloqueadas') + '.', 'ok');
+  } catch (e) { toast(e.message, 'err'); }
+}
+
+/* Visualizar Solicitações */
+async function loadSolicitacoes() {
+  try {
+    if (!currentCD) { document.getElementById('solTbody').innerHTML='<tr><td colspan="12" class="empty-state">Selecione um CD.</td></tr>'; return; }
+    const data = await sbGet('/SOLICITAÇÃO_SUPRIMENTO?select=*&CD=eq.'+encodeURIComponent(currentCD)+'&order=DATA.desc');
+    const tbody = document.getElementById('solTbody');
+    if (!data.length) { tbody.innerHTML = '<tr><td colspan="12" class="empty-state">Nenhuma solicitação.</td></tr>'; return; }
+    tbody.innerHTML = data.map(s => {
+      return '<tr>' +
+        '<td>'+fmtDateCell(s.DATA)+'</td>' +
+        '<td>'+escapeHtml(s.CODIGO||'')+'</td>' +
+        '<td>'+escapeHtml(s['DESCRIÇÃO DO PRODUTO']||'')+'</td>' +
+        '<td>'+escapeHtml(s.UNIDADE||'')+'</td>' +
+        '<td>'+escapeHtml(s.FORNECEDOR||'')+'</td>' +
+        '<td>'+escapeHtml(s.CATEGORIA||'')+'</td>' +
+        '<td class="num">'+formatBRL(parseBRL(s['VALOR UNITÁRIO']))+'</td>' +
+        '<td class="num">'+s.QUANTIDADE+'</td>' +
+        '<td class="num">'+formatBRL(parseBRL(s.VALOR_TOTAL))+'</td>' +
+        '<td>'+escapeHtml(s.USER_LANC||'')+'</td>' +
+        '<td>'+escapeHtml(s.TURNO_LANC||'')+'</td>' +
+        '<td>'+escapeHtml(s.CD||'')+'</td>' +
+        '</tr>';
+    }).join('');
+  } catch (e) {
+    document.getElementById('solTbody').innerHTML = '<tr><td colspan="12" class="empty-state">Erro: '+e.message+'</td></tr>';
+  }
+}
+async function exportarConsolidado() {
+  if (!currentCD) { toast('Selecione um CD.', 'err'); return; }
+  try {
+    const data = await sbGet('/SOLICITAÇÃO_SUPRIMENTO?select=*&CD=eq.'+encodeURIComponent(currentCD));
+    const agrupado = {};
+    data.forEach(s => {
+      const chave = s.CODIGO + '|' + (s['DESCRIÇÃO DO PRODUTO']||'');
+      if (!agrupado[chave]) agrupado[chave] = { codigo: s.CODIGO, descricao: s['DESCRIÇÃO DO PRODUTO'], unidade: s.UNIDADE, quantidade: 0 };
+      agrupado[chave].quantidade += Number(s.QUANTIDADE) || 0;
+    });
+    let csv = 'Código,Descrição,Unidade,Quantidade Total\n';
+    Object.values(agrupado).forEach(i => csv += i.codigo+','+i.descricao+','+(i.unidade||'')+','+i.quantidade+'\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'consolidado_'+currentCD+'.csv';
+    a.click();
+    toast('Exportado!', 'ok');
+  } catch (e) { toast(e.message, 'err'); }
 }
 
 /* =====================================================================
@@ -2076,16 +1999,19 @@ async function loadUsers() {
   const tbody = document.getElementById('usersTbody');
   try {
     const users = await sbGet('/BD_USER?select=*');
-    if (!users.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Nenhum usuário cadastrado.</td></tr>'; return; }
+    if (!users.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Nenhum usuário.</td></tr>'; return; }
     tbody.innerHTML = users.map(u => (
-      '<tr><td>' + escapeHtml(String(u.USER)) + '</td>' +
-      '<td>' + escapeHtml(String(u.NAME || '')) + '</td>' +
-      '<td>' + escapeHtml(String(u.SYSTEM || '')) + '</td>' +
-      '<td>' + escapeHtml(String(u.LEVEL)) + '</td>' +
-      '<td></td></tr>'
+      '<tr>' +
+      '<td>'+escapeHtml(String(u.USER))+'</td>' +
+      '<td>'+escapeHtml(String(u.NAME||''))+'</td>' +
+      '<td>'+escapeHtml(String(u.SYSTEM||''))+'</td>' +
+      '<td>'+escapeHtml(String(u.LEVEL))+'</td>' +
+      '<td>'+escapeHtml(String(u.CD||''))+'</td>' +
+      '<td>' + (u.USER === '5520967' ? '<span style="color:var(--gold);">Master</span>' : '<button class="icon-btn del" onclick="excluirUsuario(\''+u.USER+'\')">🗑</button>') + '</td>' +
+      '</tr>'
     )).join('');
   } catch (e) {
-    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Erro ao carregar usuários: ' + e.message + '</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Erro: '+e.message+'</td></tr>';
   }
 }
 function openUserModal() {
@@ -2095,6 +2021,7 @@ function openUserModal() {
   document.getElementById('u_sys_financas').checked = true;
   document.getElementById('u_sys_materiais').checked = false;
   document.getElementById('u_level').value = '0';
+  document.getElementById('u_cd').value = '';
   document.getElementById('userModal').classList.add('active');
 }
 function closeUserModal() { document.getElementById('userModal').classList.remove('active'); }
@@ -2103,29 +2030,42 @@ async function saveUser() {
   const name = document.getElementById('u_name').value.trim();
   const pass = document.getElementById('u_pass').value;
   const level = document.getElementById('u_level').value;
+  const cd = document.getElementById('u_cd').value.trim();
   const systems = [];
   if (document.getElementById('u_sys_financas').checked) systems.push('FINANCAS');
   if (document.getElementById('u_sys_materiais').checked) systems.push('MATERIAIS');
 
   if (!user || !name || !pass) { toast('Preencha todos os campos.', 'err'); return; }
   if (!systems.length && level !== '1') { toast('Selecione ao menos um módulo.', 'err'); return; }
+  if (user === '5520967') { toast('Usuário master não pode ser alterado.', 'err'); return; }
 
-  const systemStr = systems.join(',');
   try {
-    const existing = await sbGet('/BD_USER?USER=eq.' + encodeURIComponent(user) + '&select=USER');
+    const existing = await sbGet('/BD_USER?USER=eq.' + encodeURIComponent(user));
     if (existing.length) {
-      await sbPatch('/BD_USER?USER=eq.' + encodeURIComponent(user), { NAME: name, PASSWORD: pass, SYSTEM: systemStr, LEVEL: level });
+      await sbPatch('/BD_USER?USER=eq.' + encodeURIComponent(user), { NAME: name, PASSWORD: pass, SYSTEM: systems.join(','), LEVEL: level, CD: cd });
       toast('Usuário atualizado.', 'ok');
     } else {
-      await sbPost('/BD_USER', { USER: user, NAME: name, PASSWORD: pass, SYSTEM: systemStr, LEVEL: level });
+      await sbPost('/BD_USER', { USER: user, NAME: name, PASSWORD: pass, SYSTEM: systems.join(','), LEVEL: level, CD: cd });
       toast('Usuário criado.', 'ok');
     }
     closeUserModal();
     loadUsers();
-  } catch (e) {
-    toast(e.message, 'err');
-  }
+  } catch (e) { toast(e.message, 'err'); }
 }
+async function excluirUsuario(user) {
+  if (user === '5520967') { toast('Não é possível excluir o master.', 'err'); return; }
+  if (!confirm('Excluir usuário '+user+'?')) return;
+  try {
+    await sbDelete('/BD_USER?USER=eq.' + encodeURIComponent(user));
+    toast('Usuário excluído.', 'ok');
+    loadUsers();
+  } catch (e) { toast(e.message, 'err'); }
+}
+
+/* Inicialização */
+document.addEventListener('DOMContentLoaded', ()=>{
+  document.getElementById('loginUser').focus();
+});
 </script>
 </body>
 </html>

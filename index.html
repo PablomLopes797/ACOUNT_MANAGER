@@ -409,6 +409,19 @@
     outline: none; cursor: pointer;
   }
 
+  /* Barra de rolagem superior */
+  .scroll-top-wrap {
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: 12px;
+    margin-bottom: -1px;
+  }
+  .scroll-top-wrap::-webkit-scrollbar { height: 10px; }
+  .scroll-top-wrap::-webkit-scrollbar-track { background: var(--bg-2); }
+  .scroll-top-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 6px; }
+  .scroll-top-wrap::-webkit-scrollbar-thumb:hover { background: var(--border-soft); }
+  .scroll-top-inner { height: 1px; pointer-events: none; }
+
   @media (max-width: 900px) {
     .sidebar { position: fixed; left: -280px; z-index: 300; transition: left .2s; box-shadow: 20px 0 40px rgba(0,0,0,0.4); }
     .sidebar.open { left: 0; }
@@ -671,24 +684,31 @@
           <button class="btn" id="btnModoEditar" onclick="modoEditar()">✏️ Editar Solicitação</button>
         </div>
       </div>
-      <div class="table-card"><div class="table-scroll">
-        <table class="data-table" id="supTable">
-          <thead>
-            <tr>
-              <th>Código</th><th>Descrição do Produto</th><th>Unidade</th><th>Fornecedor</th><th>Categoria</th><th class="num">Valor Unitário</th><th>Quantidade</th><th class="num">Valor Total</th>
-            </tr>
-            <tr class="filter-row hidden" id="supFilterRow">
-              <th><input type="text" placeholder="Código…" oninput="supFilters.CODIGO=this.value;renderSupTable()"></th>
-              <th><input type="text" placeholder="Descrição…" oninput="supFilters['DESCRIÇÃO DO PRODUTO']=this.value;renderSupTable()"></th>
-              <th><input type="text" placeholder="Unidade…" oninput="supFilters.UNIDADE=this.value;renderSupTable()"></th>
-              <th><input type="text" placeholder="Fornecedor…" oninput="supFilters.FORNECEDOR=this.value;renderSupTable()"></th>
-              <th><input type="text" placeholder="Categoria…" oninput="supFilters.CATEGORIA=this.value;renderSupTable()"></th>
-              <th></th><th></th><th></th>
-            </tr>
-          </thead>
-          <tbody id="supTbody"><tr><td colspan="8" class="empty-state">Selecione o modo (Novo Pedido ou Editar)</td></tr></tbody>
-        </table>
-      </div></div>
+      <div class="table-card">
+        <!-- Barra de rolagem superior sincronizada -->
+        <div class="scroll-top-wrap" id="scrollTopWrap">
+          <div class="scroll-top-inner" id="scrollTopInner"></div>
+        </div>
+        <!-- Tabela com rolagem inferior -->
+        <div class="table-scroll" id="tableScroll">
+          <table class="data-table" id="supTable">
+            <thead>
+              <tr>
+                <th>Código</th><th>Descrição do Produto</th><th>Unidade</th><th>Fornecedor</th><th>Categoria</th><th class="num">Valor Unitário</th><th>Quantidade</th><th class="num">Valor Total</th>
+              </tr>
+              <tr class="filter-row hidden" id="supFilterRow">
+                <th><input type="text" placeholder="Código…" oninput="supFilters.CODIGO=this.value;renderSupTable()"></th>
+                <th><input type="text" placeholder="Descrição…" oninput="supFilters['DESCRIÇÃO DO PRODUTO']=this.value;renderSupTable()"></th>
+                <th><input type="text" placeholder="Unidade…" oninput="supFilters.UNIDADE=this.value;renderSupTable()"></th>
+                <th><input type="text" placeholder="Fornecedor…" oninput="supFilters.FORNECEDOR=this.value;renderSupTable()"></th>
+                <th><input type="text" placeholder="Categoria…" oninput="supFilters.CATEGORIA=this.value;renderSupTable()"></th>
+                <th></th><th></th><th></th>
+              </tr>
+            </thead>
+            <tbody id="supTbody"><tr><td colspan="8" class="empty-state">Selecione o modo (Novo Pedido ou Editar)</td></tr></tbody>
+          </table>
+        </div>
+      </div>
       <div style="margin-top:16px; text-align:right;">
         <button class="btn gold" id="btnConfirmar" onclick="confirmarSolicitacao()">✅ Confirmar Solicitação</button>
         <button class="btn gold" id="btnSalvarEdicao" onclick="salvarEdicaoSolicitacao()" style="display:none;">💾 Salvar Alterações</button>
@@ -897,8 +917,8 @@ let availableCDs = [];
 let coupaRows = [], coupaFiltersActive = false, coupaFilters = {}, coupaEditingKey = null;
 let spRows = [], spLoaded = false, spFiltersActive = false, spFilters = {}, spEditingKey = null;
 let supRows = [], supFilters = {};
-let solicitacoesEdit = []; // usado no modo editar
-let modoAtualSup = 'solicitar'; // 'solicitar' ou 'editar'
+let solicitacoesEdit = [];
+let modoAtualSup = 'solicitar';
 
 /* =====================================================================
    TOAST / HELPERS
@@ -1115,7 +1135,6 @@ function switchView(view) {
   else if (view === 'fin-coupa') loadCoupa();
   else if (view === 'fin-sharepoint') loadSharepoint();
   else if (view === 'sup-solicitar') {
-    // Se já estiver no modo solicitar ou editar, mantém o estado
     if (modoAtualSup === 'editar') modoEditar();
     else modoSolicitar();
   }
@@ -1278,7 +1297,6 @@ document.getElementById('cf_valor').addEventListener('blur', (e)=>{
   e.target.value = n?formatBRL(n):'';
   document.getElementById('cf_aprovador').value = n?calcAprovador(n):'';
 });
-// Autocomplete Coupa
 let coupaAcTimer = null;
 const cfPrestador = document.getElementById('cf_prestador');
 const coupaPrestadorList = document.getElementById('coupaPrestadorList');
@@ -1423,7 +1441,6 @@ function clearSpFilters() {
   document.querySelectorAll('#spFilterRow input').forEach(i=>i.value='');
   renderSpTable();
 }
-// Modal SP similar ao Coupa
 function openSpModal(row) {
   spEditingKey = null;
   document.getElementById('lancSpTitle').textContent = 'Novo lançamento · SharePoint';
@@ -1474,7 +1491,6 @@ document.getElementById('sf_valor').addEventListener('blur', (e)=>{
   e.target.value = n?formatBRL(n):'';
   document.getElementById('sf_aprovador').value = n?calcAprovador(n):'';
 });
-// Autocomplete SharePoint
 let spAcTimer = null;
 const sfPrestador = document.getElementById('sf_prestador');
 const spPrestadorList = document.getElementById('spPrestadorList');
@@ -1652,7 +1668,6 @@ async function lancarEntrega() {
   }catch(e){toast(e.message,'err');}
   finally{setLoading('ent-btn',false,'✅ Registrar Entrega');}
 }
-/* Cadastro de Itens */
 function mostrarTabCadastro(qual) {
   document.getElementById('tab-add').classList.toggle('active', qual==='add');
   document.getElementById('tab-edit').classList.toggle('active', qual==='edit');
@@ -1725,7 +1740,15 @@ async function modoEditar() {
 
 async function loadMateriaisSuprimento() {
   try {
-    supRows = await sbGet('/MATERIAIS_SUPRIMENTO?select=*');
+    const data = await sbGet('/MATERIAIS_SUPRIMENTO?select=*');
+    supRows = data.map(item => ({
+      CODIGO: item['Código'] || item.CODIGO || '',
+      'DESCRIÇÃO DO PRODUTO': item['Descrição do Produto'] || item['DESCRIÇÃO DO PRODUTO'] || item.DESCRICAO || '',
+      UNIDADE: item['Unidade'] || item.UNIDADE || '',
+      FORNECEDOR: item['Fornecedor'] || item.FORNECEDOR || '',
+      CATEGORIA: item['Categoria'] || item.CATEGORIA || '',
+      'VALOR UNITÁRIO': item['Valor Unitário'] || item['VALOR UNITÁRIO'] || item.VALOR_UNITARIO || 0
+    }));
     renderSupTable();
   } catch (e) {
     document.getElementById('supTbody').innerHTML = '<tr><td colspan="8" class="empty-state">Erro ao carregar: '+e.message+'</td></tr>';
@@ -1784,6 +1807,7 @@ function renderSupTable() {
       '<td class="num valor-total">'+formatBRL(qtd * valorUnitario)+'</td>' +
       '</tr>';
   }).join('');
+  syncScrollTop();
 }
 
 function updateValorTotal(input, valorUnitario) {
@@ -1927,21 +1951,30 @@ async function isSolicitacaoBloqueada() {
   try {
     const res = await sbGet('/CONFIGURACOES?chave=eq.solicitacao_bloqueada');
     return res.length > 0 && res[0].valor === 'true';
-  } catch (e) { return false; }
+  } catch (e) {
+    console.warn('Erro ao verificar bloqueio, assumindo não bloqueado:', e);
+    return false;
+  }
 }
 async function alternarBloqueioSolicitacoes() {
-  if (currentUser.USER !== '5520967') return;
-  const bloqueada = await isSolicitacaoBloqueada();
-  const novoEstado = !bloqueada;
+  if (currentUser.USER !== '5520967') {
+    toast('Apenas o master pode alterar essa configuração.', 'err');
+    return;
+  }
   try {
-    const existing = await sbGet('/CONFIGURACOES?chave=eq.solicitacao_bloqueada');
-    if (existing.length) {
-      await sbPatch('/CONFIGURACOES?chave=eq.solicitacao_bloqueada', { valor: String(novoEstado) });
+    const res = await sbGet('/CONFIGURACOES?chave=eq.solicitacao_bloqueada');
+    const novaSituacao = !(res.length > 0 && res[0].valor === 'true');
+    if (res.length === 0) {
+      await sbPost('/CONFIGURACOES', { chave: 'solicitacao_bloqueada', valor: 'true' });
+      toast('Solicitações agora estão BLOQUEADAS.', 'ok');
     } else {
-      await sbPost('/CONFIGURACOES', { chave: 'solicitacao_bloqueada', valor: String(novoEstado) });
+      await sbPatch('/CONFIGURACOES?chave=eq.solicitacao_bloqueada', { valor: String(novaSituacao) });
+      toast('Solicitações ' + (novaSituacao ? 'BLOQUEADAS' : 'LIBERADAS') + '.', 'ok');
     }
-    toast('Solicitações ' + (novoEstado ? 'bloqueadas' : 'desbloqueadas') + '.', 'ok');
-  } catch (e) { toast(e.message, 'err'); }
+  } catch (e) {
+    toast('Erro ao alternar bloqueio. Verifique se a tabela CONFIGURACOES existe no Supabase.', 'err');
+    console.error(e);
+  }
 }
 
 /* Visualizar Solicitações */
@@ -2062,9 +2095,25 @@ async function excluirUsuario(user) {
   } catch (e) { toast(e.message, 'err'); }
 }
 
-/* Inicialização */
-document.addEventListener('DOMContentLoaded', ()=>{
-  document.getElementById('loginUser').focus();
+/* Sincronização da barra de rolagem superior */
+function syncScrollTop() {
+  const topWrap = document.getElementById('scrollTopWrap');
+  const bottomScroll = document.getElementById('tableScroll');
+  const topInner = document.getElementById('scrollTopInner');
+  if (topWrap && bottomScroll && topInner) {
+    topInner.style.width = bottomScroll.scrollWidth + 'px';
+    topWrap.scrollLeft = bottomScroll.scrollLeft;
+  }
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const bottomScroll = document.getElementById('tableScroll');
+  const topWrap = document.getElementById('scrollTopWrap');
+  if (bottomScroll && topWrap) {
+    bottomScroll.addEventListener('scroll', () => topWrap.scrollLeft = bottomScroll.scrollLeft);
+    topWrap.addEventListener('scroll', () => bottomScroll.scrollLeft = topWrap.scrollLeft);
+    window.addEventListener('resize', syncScrollTop);
+    setTimeout(syncScrollTop, 100);
+  }
 });
 </script>
 </body>

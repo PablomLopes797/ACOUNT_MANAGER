@@ -680,11 +680,11 @@
         <p class="hint-text">Ao lançar, o item é gravado em RECEBIMENTO_ITENS e o saldo em BD_SALDO é somado automaticamente.</p>
       </div>
       <div class="card">
-        <h3>📊 Estoque e Últimos Recebimentos</h3>
+        <h3>📋 Recebimentos já lançados</h3>
         <div class="table-scroll">
           <table class="data-table" id="recTabelaEstoque">
-            <thead><tr><th>EAN</th><th>Descrição</th><th>Saldo</th><th>Último Recebimento</th><th>Qtd</th></tr></thead>
-            <tbody id="recTbodyEstoque"><tr><td colspan="5" class="empty-state">Carregando...</td></tbody>
+            <thead><tr><th>Data</th><th>EAN</th><th>Descrição</th><th>Quantidade</th><th>Lançado por</th><th>CD</th></tr></thead>
+            <tbody id="recTbodyEstoque"><tr><td colspan="6" class="empty-state">Carregando...</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -711,11 +711,11 @@
         <p class="hint-text">O saldo em BD_SALDO será substituído pelo valor contado.</p>
       </div>
       <div class="card">
-        <h3>📊 Estoque e Últimos Ajustes</h3>
+        <h3>📋 Inventários já lançados</h3>
         <div class="table-scroll">
           <table class="data-table" id="invTabelaEstoque">
-            <thead><tr><th>EAN</th><th>Descrição</th><th>Saldo</th><th>Último Ajuste</th><th>Qtd</th></tr></thead>
-            <tbody id="invTbodyEstoque"><tr><td colspan="5" class="empty-state">Carregando...</td></tbody>
+            <thead><tr><th>Data</th><th>EAN</th><th>Descrição</th><th>Quantidade Contada</th><th>Lançado por</th><th>CD</th></tr></thead>
+            <tbody id="invTbodyEstoque"><tr><td colspan="6" class="empty-state">Carregando...</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -736,11 +736,11 @@
         <p class="hint-text">Ao registrar, o item é gravado em SAIDA_ITENS e o saldo em BD_SALDO é debitado automaticamente.</p>
       </div>
       <div class="card">
-        <h3>📊 Estoque e Últimas Saídas</h3>
+        <h3>📋 Entregas já lançadas</h3>
         <div class="table-scroll">
           <table class="data-table" id="entTabelaEstoque">
-            <thead><tr><th>EAN</th><th>Descrição</th><th>Saldo</th><th>Última Saída</th><th>Qtd</th></tr></thead>
-            <tbody id="entTbodyEstoque"><tr><td colspan="5" class="empty-state">Carregando...</td></tbody>
+            <thead><tr><th>Data</th><th>EAN</th><th>Descrição</th><th>Quantidade</th><th>Solicitante</th><th>Lançado por</th><th>CD</th></tr></thead>
+            <tbody id="entTbodyEstoque"><tr><td colspan="7" class="empty-state">Carregando...</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -775,11 +775,11 @@
         <div class="actions"><button class="btn gold" id="edit-btn" onclick="salvarEdicaoItem()" disabled>💾 Salvar Alterações</button><button class="btn" onclick="limparForm('cadastro-edit')">Limpar</button></div>
       </div>
       <div class="card">
-        <h3>📊 Estoque e Itens Cadastrados</h3>
+        <h3>📋 Itens já cadastrados</h3>
         <div class="table-scroll">
           <table class="data-table" id="cadTabelaEstoque">
-            <thead><tr><th>EAN</th><th>Descrição</th><th>Saldo</th><th>Data Cadastro</th></tr></thead>
-            <tbody id="cadTbodyEstoque"><tr><td colspan="4" class="empty-state">Carregando...</td></tbody>
+            <thead><tr><th>Data</th><th>EAN</th><th>Descrição</th><th>Tipo</th><th>CD</th></tr></thead>
+            <tbody id="cadTbodyEstoque"><tr><td colspan="5" class="empty-state">Carregando...</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -1959,6 +1959,7 @@ async function confirmarAjusteInventario() {
   if(!ean||contagem===''){toast('Informe EAN e quantidade contada.','err');return;}
   setLoading('inv-btn',true);
   try{
+    await sbPost('/INVENTARIO',[{EAN:ean,'DESCRIÇÃO':desc,QTD:Number(contagem),CD:currentCD,USER_LANC:currentUser.NAME||currentUser.USER}]);
     const novoSaldo=await ajustarSaldo(ean,desc,Number(contagem),'define');
     toast('Saldo ajustado! '+novoSaldo,'ok');
     limparForm('inventario');
@@ -2037,50 +2038,21 @@ async function salvarEdicaoItem() {
 // TABELAS DE ESTOQUE
 // =====================================================================
 async function carregarTabelaEstoque(tipo, prefix) {
-  const tbodyId = prefix + 'TbodyEstoque';
-  const tbody = document.getElementById(tbodyId);
+  const tbody = document.getElementById(prefix + 'TbodyEstoque');
   if (!tbody) return;
+  const configs = {
+    RECEBIMENTO_ITENS: {url:'/RECEBIMENTO_ITENS?select=*&CD=eq.',empty:'Nenhum recebimento lançado.',colspan:6,render:r=>[fmtDateCell(r.DATA),r.EAN,r['DESCRIÇÃO']||'',r.QTD??'',r.USER_LANC||'',r.CD||'']},
+    INVENTARIO: {url:'/INVENTARIO?select=*&CD=eq.',empty:'Nenhum inventário lançado.',colspan:6,render:r=>[fmtDateCell(r.DATA),r.EAN,r['DESCRIÇÃO']||'',r.QTD??r.CONTAGEM??'',r.USER_LANC||'',r.CD||'']},
+    SAIDA_ITENS: {url:'/SAIDA_ITENS?select=*&CD=eq.',empty:'Nenhuma entrega lançada.',colspan:7,render:r=>[fmtDateCell(r.DATA),r.EAN,r['DESCRIÇÃO']||'',r.QTD??'',r.SOLICITANTE||'',r.USER_LANC||'',r.CD||'']},
+    CADASTRO_ITENS: {url:'/CADASTRO_ITENS?select=*&CD=eq.',empty:'Nenhum item cadastrado.',colspan:5,render:r=>[fmtDateCell(r.DATA),r.EAN,r['DESCRIÇÃO']||'',r.TIPO||'',r.CD||'']}
+  };
+  const cfg=configs[tipo]; if(!cfg)return;
   try {
-    const saldoData = await sbGet('/BD_SALDO?select=*&CD=eq.'+encodeURIComponent(currentCD));
-    let lancamentos = [];
-    if (tipo === 'RECEBIMENTO_ITENS') {
-      lancamentos = await sbGet('/RECEBIMENTO_ITENS?select=*&CD=eq.'+encodeURIComponent(currentCD)+'&order=DATA.desc&limit=10');
-    } else if (tipo === 'SAIDA_ITENS') {
-      lancamentos = await sbGet('/SAIDA_ITENS?select=*&CD=eq.'+encodeURIComponent(currentCD)+'&order=DATA.desc&limit=10');
-    } else if (tipo === 'CADASTRO_ITENS') {
-      lancamentos = await sbGet('/CADASTRO_ITENS?select=*&CD=eq.'+encodeURIComponent(currentCD)+'&order=DATA.desc&limit=10');
-    }
-    let html = '';
-    if (saldoData.length === 0) {
-      html = '<tr><td colspan="5" class="empty-state">Nenhum item em estoque.</td></tr>';
-    } else {
-      saldoData.forEach(item => {
-        const ean = item.EAN;
-        const desc = item['DESCRIÇÃO'] || '';
-        const saldo = item.SALDO || 0;
-        let ultimo = '—';
-        let qtdUltimo = '';
-        if (tipo === 'RECEBIMENTO_ITENS') {
-          const found = lancamentos.find(l => l.EAN === ean);
-          if (found) { ultimo = fmtDateCell(found.DATA); qtdUltimo = found.QTD; }
-        } else if (tipo === 'SAIDA_ITENS') {
-          const found = lancamentos.find(l => l.EAN === ean);
-          if (found) { ultimo = fmtDateCell(found.DATA); qtdUltimo = found.QTD; }
-        } else if (tipo === 'CADASTRO_ITENS') {
-          const found = lancamentos.find(l => l.EAN === ean);
-          if (found) { ultimo = fmtDateCell(found.DATA); }
-        }
-        html += '<tr>' +
-          '<td>'+escapeHtml(ean)+'</td>' +
-          '<td>'+escapeHtml(desc)+'</td>' +
-          '<td class="num">'+saldo+'</td>' +
-          (tipo === 'CADASTRO_ITENS' ? '<td>'+ultimo+'</td>' : '<td>'+ultimo+'</td><td>'+qtdUltimo+'</td>') +
-          '</tr>';
-      });
-    }
-    tbody.innerHTML = html;
-  } catch (e) {
-    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Erro ao carregar estoque: '+e.message+'</td></tr>';
+    const rows=await sbGet(cfg.url+encodeURIComponent(currentCD)+'&order=DATA.desc');
+    if(!rows.length){tbody.innerHTML='<tr><td colspan="'+cfg.colspan+'" class="empty-state">'+cfg.empty+'</td></tr>';return;}
+    tbody.innerHTML=rows.map(r=>'<tr>'+cfg.render(r).map(v=>'<td>'+escapeHtml(String(v??''))+'</td>').join('')+'</tr>').join('');
+  } catch(e) {
+    tbody.innerHTML='<tr><td colspan="'+cfg.colspan+'" class="empty-state">Erro ao carregar lançamentos: '+escapeHtml(e.message)+'</td></tr>';
   }
 }
 

@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Controle de Contas Pro</title>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -516,6 +517,29 @@
     .form-grid { grid-template-columns: 1fr; }
     #mobileMenuBtn { display: flex !important; }
   }
+
+  /* ===== DASHBOARD ITENS DE ESCRITÓRIO ===== */
+  .office-dashboard { margin-top: 18px; }
+  .dashboard-toolbar { display:flex; gap:10px; align-items:end; flex-wrap:wrap; margin-bottom:14px; }
+  .dashboard-filter { min-width:150px; }
+  .dashboard-filter label { display:block; font-size:11px; color:var(--text-dim); margin-bottom:6px; font-weight:700; text-transform:uppercase; }
+  .dashboard-filter select { width:100%; background:var(--bg-2); color:var(--text); border:1px solid var(--border); border-radius:9px; padding:10px 12px; outline:none; }
+  .dashboard-kpis { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+  .dashboard-kpi { background:linear-gradient(145deg,var(--panel-2),var(--panel)); border:1px solid var(--border); border-radius:12px; padding:15px; min-height:90px; }
+  .dashboard-kpi .kpi-label { color:var(--text-dim); font-size:11px; text-transform:uppercase; font-weight:700; }
+  .dashboard-kpi .kpi-value { margin-top:8px; font-family:var(--display); font-size:25px; font-weight:800; }
+  .dashboard-grid { display:grid; grid-template-columns:1.2fr 1fr; gap:12px; margin-top:12px; }
+  .dashboard-panel { background:var(--bg-2); border:1px solid var(--border-soft); border-radius:12px; padding:15px; }
+  .dashboard-panel h4 { margin:0 0 12px; font-size:13px; }
+  .dash-bar-row { display:grid; grid-template-columns:145px 1fr 60px; gap:8px; align-items:center; margin:9px 0; font-size:12px; }
+  .dash-bar-label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--text-dim); }
+  .dash-bar-track { height:10px; background:var(--panel-2); border-radius:99px; overflow:hidden; }
+  .dash-bar-fill { height:100%; background:var(--blue); border-radius:99px; }
+  .dash-bar-value { text-align:right; font-family:var(--mono); font-size:11px; }
+  .export-actions { display:flex; gap:8px; margin-left:auto; }
+  .btn-excel { background:#217346 !important; color:#fff !important; border-color:#217346 !important; }
+  @media(max-width:900px){ .dashboard-kpis{grid-template-columns:repeat(2,1fr)} .dashboard-grid{grid-template-columns:1fr} .dash-bar-row{grid-template-columns:100px 1fr 55px} }
+
 </style>
 </head>
 <body>
@@ -679,6 +703,15 @@
         <div class="actions"><button class="btn gold" id="rec-btn" onclick="lancarRecebimento()">✅ Lançar Recebimento</button><button class="btn" onclick="limparForm('recebimento')">Limpar</button></div>
         <p class="hint-text">Ao lançar, o item é gravado em RECEBIMENTO_ITENS e o saldo em BD_SALDO é somado automaticamente.</p>
       </div>
+      <div class="card office-dashboard" id="dashboard-rec">
+        <div class="dashboard-toolbar">
+          <div class="dashboard-filter"><label>Ano</label><select id="recDashYear" onchange="aplicarFiltroDashboard('rec')"></select></div>
+          <div class="dashboard-filter"><label>Mês</label><select id="recDashMonth" onchange="aplicarFiltroDashboard('rec')"></select></div>
+          <div class="export-actions"><button class="btn btn-excel" onclick="exportarExcel('rec')">📊 Exportar Excel</button></div>
+        </div>
+        <div class="dashboard-kpis" id="recDashKpis"></div>
+        <div class="dashboard-grid"><div class="dashboard-panel"><h4>📈 Quantidade por mês</h4><div id="recDashMonthly"></div></div><div class="dashboard-panel"><h4>🏆 Top itens</h4><div id="recDashItems"></div></div></div>
+      </div>
       <div class="card">
         <h3>📋 Recebimentos já lançados</h3>
         <div class="table-scroll">
@@ -710,6 +743,15 @@
         <div class="actions"><button class="btn gold" id="inv-btn" onclick="confirmarAjusteInventario()">✅ Confirmar Ajuste de Saldo</button><button class="btn" onclick="limparForm('inventario')">Limpar</button></div>
         <p class="hint-text">O saldo em BD_SALDO será substituído pelo valor contado.</p>
       </div>
+      <div class="card office-dashboard" id="dashboard-inv">
+        <div class="dashboard-toolbar">
+          <div class="dashboard-filter"><label>Ano</label><select id="invDashYear" onchange="aplicarFiltroDashboard('inv')"></select></div>
+          <div class="dashboard-filter"><label>Mês</label><select id="invDashMonth" onchange="aplicarFiltroDashboard('inv')"></select></div>
+          <div class="export-actions"><button class="btn btn-excel" onclick="exportarExcel('inv')">📊 Exportar Excel</button></div>
+        </div>
+        <div class="dashboard-kpis" id="invDashKpis"></div>
+        <div class="dashboard-grid"><div class="dashboard-panel"><h4>📈 Quantidade por mês</h4><div id="invDashMonthly"></div></div><div class="dashboard-panel"><h4>🏆 Top itens</h4><div id="invDashItems"></div></div></div>
+      </div>
       <div class="card">
         <h3>📋 Inventários já lançados</h3>
         <div class="table-scroll">
@@ -734,6 +776,15 @@
         </div>
         <div class="actions"><button class="btn gold" id="ent-btn" onclick="lancarEntrega()">✅ Registrar Entrega</button><button class="btn" onclick="limparForm('entrega')">Limpar</button></div>
         <p class="hint-text">Ao registrar, o item é gravado em SAIDA_ITENS e o saldo em BD_SALDO é debitado automaticamente.</p>
+      </div>
+      <div class="card office-dashboard" id="dashboard-ent">
+        <div class="dashboard-toolbar">
+          <div class="dashboard-filter"><label>Ano</label><select id="entDashYear" onchange="aplicarFiltroDashboard('ent')"></select></div>
+          <div class="dashboard-filter"><label>Mês</label><select id="entDashMonth" onchange="aplicarFiltroDashboard('ent')"></select></div>
+          <div class="export-actions"><button class="btn btn-excel" onclick="exportarExcel('ent')">📊 Exportar Excel</button></div>
+        </div>
+        <div class="dashboard-kpis" id="entDashKpis"></div>
+        <div class="dashboard-grid"><div class="dashboard-panel"><h4>📈 Quantidade por mês</h4><div id="entDashMonthly"></div></div><div class="dashboard-panel"><h4>🏆 Top solicitantes</h4><div id="entDashItems"></div></div></div>
       </div>
       <div class="card">
         <h3>📋 Entregas já lançadas</h3>
@@ -773,6 +824,15 @@
           <div class="form-field"><label>Tipo</label><input type="text" id="edit-tipo" placeholder="Tipo do item" disabled></div>
         </div>
         <div class="actions"><button class="btn gold" id="edit-btn" onclick="salvarEdicaoItem()" disabled>💾 Salvar Alterações</button><button class="btn" onclick="limparForm('cadastro-edit')">Limpar</button></div>
+      </div>
+      <div class="card office-dashboard" id="dashboard-cad">
+        <div class="dashboard-toolbar">
+          <div class="dashboard-filter"><label>Ano</label><select id="cadDashYear" onchange="aplicarFiltroDashboard('cad')"></select></div>
+          <div class="dashboard-filter"><label>Mês</label><select id="cadDashMonth" onchange="aplicarFiltroDashboard('cad')"></select></div>
+          <div class="export-actions"><button class="btn btn-excel" onclick="exportarExcel('cad')">📊 Exportar Excel</button></div>
+        </div>
+        <div class="dashboard-kpis" id="cadDashKpis"></div>
+        <div class="dashboard-grid"><div class="dashboard-panel"><h4>📈 Cadastros por mês</h4><div id="cadDashMonthly"></div></div><div class="dashboard-panel"><h4>🏷️ Itens por tipo</h4><div id="cadDashItems"></div></div></div>
       </div>
       <div class="card">
         <h3>📋 Itens já cadastrados</h3>
@@ -2037,28 +2097,82 @@ async function salvarEdicaoItem() {
 // =====================================================================
 // TABELAS DE ESTOQUE
 // =====================================================================
+const officeHistory = {};
+const officeDashConfig = {
+  rec:{tipo:'RECEBIMENTO_ITENS',prefix:'rec',label:'Recebimentos',qty:'QTD',group:'DESCRIÇÃO'},
+  inv:{tipo:'INVENTARIO',prefix:'inv',label:'Inventários',qty:'QTD',group:'DESCRIÇÃO'},
+  ent:{tipo:'SAIDA_ITENS',prefix:'ent',label:'Entregas',qty:'QTD',group:'SOLICITANTE'},
+  cad:{tipo:'CADASTRO_ITENS',prefix:'cad',label:'Cadastros',qty:null,group:'TIPO'}
+};
+function getRowDate(r){ return r.DATA||r.data||r.created_at||r.createdAt||''; }
+function rowMonth(r){ const d=String(getRowDate(r)); return d.length>=7?d.slice(0,7):''; }
+function getDashFilters(prefix){ return {year:document.getElementById(prefix+'DashYear')?.value||'ALL',month:document.getElementById(prefix+'DashMonth')?.value||'ALL'}; }
+function filteredOfficeRows(prefix){
+  const rows=officeHistory[prefix]||[], f=getDashFilters(prefix);
+  return rows.filter(r=>{ const d=String(getRowDate(r)); if(!d)return false; const y=d.slice(0,4), m=d.slice(5,7); return (f.year==='ALL'||y===f.year)&&(f.month==='ALL'||m===f.month); });
+}
+function formatNumber(n){return Number(n||0).toLocaleString('pt-BR');}
+function fillDashSelects(prefix,rows){
+  const ys=[...new Set(rows.map(r=>String(getRowDate(r)).slice(0,4)).filter(y=>/^\d{4}$/.test(y)))].sort((a,b)=>b.localeCompare(a));
+  const ym=document.getElementById(prefix+'DashYear'), mm=document.getElementById(prefix+'DashMonth'); if(!ym||!mm)return;
+  const oldY=ym.value, oldM=mm.value;
+  ym.innerHTML='<option value="ALL">Todos os anos</option>'+ys.map(y=>`<option value="${y}">${y}</option>`).join('');
+  mm.innerHTML='<option value="ALL">Todos os meses</option>'+['01 - Janeiro','02 - Fevereiro','03 - Março','04 - Abril','05 - Maio','06 - Junho','07 - Julho','08 - Agosto','09 - Setembro','10 - Outubro','11 - Novembro','12 - Dezembro'].map(x=>`<option value="${x.slice(0,2)}">${x.slice(5)}</option>`).join('');
+  ym.value=ys.includes(oldY)?oldY:'ALL'; mm.value=/^\d{2}$/.test(oldM)?oldM:'ALL';
+}
+function renderBars(targetId,entries,suffix=''){ const el=document.getElementById(targetId); if(!el)return; if(!entries.length){el.innerHTML='<div class="empty-state">Sem dados no período.</div>';return;} const max=Math.max(...entries.map(x=>x[1]),1); el.innerHTML=entries.slice(0,8).map(([k,v])=>`<div class="dash-bar-row"><div class="dash-bar-label" title="${escapeHtml(k)}">${escapeHtml(k)}</div><div class="dash-bar-track"><div class="dash-bar-fill" style="width:${(v/max)*100}%"></div></div><div class="dash-bar-value">${formatNumber(v)}${suffix}</div></div>`).join(''); }
+function renderOfficeDashboard(prefix){
+  const cfg=officeDashConfig[prefix], rows=filteredOfficeRows(prefix), all=officeHistory[prefix]||[];
+  const kpis=document.getElementById(prefix+'DashKpis'); if(!kpis)return;
+  const qty=cfg.qty?rows.reduce((a,r)=>a+Number(r[cfg.qty]||0),0):rows.length;
+  const unique=new Set(rows.map(r=>r.EAN).filter(Boolean)).size;
+  const totalQty=cfg.qty?all.reduce((a,r)=>a+Number(r[cfg.qty]||0),0):all.length;
+  const avg=rows.length?(qty/rows.length):0;
+  kpis.innerHTML=`<div class="dashboard-kpi"><div class="kpi-label">${cfg.label} no período</div><div class="kpi-value">${formatNumber(rows.length)}</div></div><div class="dashboard-kpi"><div class="kpi-label">${cfg.qty?'Quantidade total':'Total de registros'}</div><div class="kpi-value">${formatNumber(qty)}</div></div><div class="dashboard-kpi"><div class="kpi-label">${cfg.qty?'Itens / EANs':'EANs únicos'}</div><div class="kpi-value">${formatNumber(unique)}</div></div><div class="dashboard-kpi"><div class="kpi-label">${cfg.qty?'Média por lançamento':'Acumulado geral'}</div><div class="kpi-value">${cfg.qty?formatNumber(avg.toFixed(1)):formatNumber(totalQty)}</div></div>`;
+  const monthly={}; rows.forEach(r=>{const m=rowMonth(r);if(m)monthly[m]=(monthly[m]||0)+(cfg.qty?Number(r[cfg.qty]||0):1);});
+  const months=Object.entries(monthly).sort((a,b)=>a[0].localeCompare(b[0]));
+  renderBars(prefix+'DashMonthly',months.map(([k,v])=>[k.slice(5)+'/'+k.slice(0,4),v]));
+  const grouped={}; rows.forEach(r=>{const key=String(r[cfg.group]||'Não informado');grouped[key]=(grouped[key]||0)+(cfg.qty?Number(r[cfg.qty]||0):1);});
+  renderBars(prefix+'DashItems',Object.entries(grouped).sort((a,b)=>b[1]-a[1]),'');
+}
+function aplicarFiltroDashboard(prefix){ renderOfficeDashboard(prefix); renderOfficeTable(prefix); }
+function renderOfficeTable(prefix){
+  const rows=filteredOfficeRows(prefix), cfg=officeDashConfig[prefix], tbody=document.getElementById(prefix+'TbodyEstoque'); if(!tbody)return;
+  const configs={
+    rec:r=>[fmtDateCell(getRowDate(r)),r.EAN,r['DESCRIÇÃO']||'',r.QTD??'',r.USER_LANC||'',r.CD||''],
+    inv:r=>[fmtDateCell(getRowDate(r)),r.EAN,r['DESCRIÇÃO']||'',r.QTD??r.CONTAGEM??'',r.USER_LANC||'',r.CD||''],
+    ent:r=>[fmtDateCell(getRowDate(r)),r.EAN,r['DESCRIÇÃO']||'',r.QTD??'',r.SOLICITANTE||'',r.USER_LANC||'',r.CD||''],
+    cad:r=>[fmtDateCell(getRowDate(r)),r.EAN,r['DESCRIÇÃO']||'',r.TIPO||'',r.CD||'']
+  };
+  const cols={rec:6,inv:6,ent:7,cad:5};
+  if(!rows.length){tbody.innerHTML=`<tr><td colspan="${cols[prefix]}" class="empty-state">Nenhum lançamento no período selecionado.</td></tr>`;return;}
+  tbody.innerHTML=rows.map(r=>'<tr>'+configs[prefix](r).map(v=>'<td>'+escapeHtml(String(v??''))+'</td>').join('')+'</tr>').join('');
+}
+function exportarExcel(prefix){
+  const cfg=officeDashConfig[prefix], rows=filteredOfficeRows(prefix); if(!rows.length){toast('Não há dados para exportar no período selecionado.','err');return;}
+  if(typeof XLSX==='undefined'){toast('Biblioteca Excel não carregada. Verifique a conexão.','err');return;}
+  const data=rows.map(r=>({Data:fmtDateCell(getRowDate(r)),EAN:r.EAN||'',Descrição:r['DESCRIÇÃO']||'',Quantidade:r.QTD??r.CONTAGEM??'',Solicitante:r.SOLICITANTE||'',Tipo:r.TIPO||'',Lançado_por:r.USER_LANC||'',CD:r.CD||''}));
+  const ws=XLSX.utils.json_to_sheet(data), wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,cfg.label.slice(0,31));
+  const f=getDashFilters(prefix), periodo=(f.year==='ALL'?'Todos':f.year)+(f.month==='ALL'?'':'-'+f.month);
+  XLSX.writeFile(wb,`Itens_Escritorio_${cfg.label}_${periodo}.xlsx`); toast('Excel exportado com sucesso!','ok');
+}
 async function carregarTabelaEstoque(tipo, prefix) {
-  const tbody = document.getElementById(prefix + 'TbodyEstoque');
-  if (!tbody) return;
+  const tbody = document.getElementById(prefix + 'TbodyEstoque'); if (!tbody) return;
   const configs = {
-    RECEBIMENTO_ITENS: {url:'/RECEBIMENTO_ITENS?select=*&CD=eq.',empty:'Nenhum recebimento lançado.',colspan:6,render:r=>[fmtDateCell(r.DATA),r.EAN,r['DESCRIÇÃO']||'',r.QTD??'',r.USER_LANC||'',r.CD||'']},
-    INVENTARIO: {url:'/INVENTARIO?select=*&CD=eq.',empty:'Nenhum inventário lançado.',colspan:6,render:r=>[fmtDateCell(r.DATA),r.EAN,r['DESCRIÇÃO']||'',r.QTD??r.CONTAGEM??'',r.USER_LANC||'',r.CD||'']},
-    SAIDA_ITENS: {url:'/SAIDA_ITENS?select=*&CD=eq.',empty:'Nenhuma entrega lançada.',colspan:7,render:r=>[fmtDateCell(r.DATA),r.EAN,r['DESCRIÇÃO']||'',r.QTD??'',r.SOLICITANTE||'',r.USER_LANC||'',r.CD||'']},
-    CADASTRO_ITENS: {url:'/CADASTRO_ITENS?select=*&CD=eq.',empty:'Nenhum item cadastrado.',colspan:5,render:r=>[fmtDateCell(r.DATA),r.EAN,r['DESCRIÇÃO']||'',r.TIPO||'',r.CD||'']}
+    RECEBIMENTO_ITENS:{url:'/RECEBIMENTO_ITENS?select=*&CD=eq.',empty:'Nenhum recebimento lançado.'},
+    INVENTARIO:{url:'/INVENTARIO?select=*&CD=eq.',empty:'Nenhum inventário lançado.'},
+    SAIDA_ITENS:{url:'/SAIDA_ITENS?select=*&CD=eq.',empty:'Nenhuma entrega lançada.'},
+    CADASTRO_ITENS:{url:'/CADASTRO_ITENS?select=*&CD=eq.',empty:'Nenhum item cadastrado.'}
   };
   const cfg=configs[tipo]; if(!cfg)return;
-  try {
+  try{
     const rows=await sbGet(cfg.url+encodeURIComponent(currentCD));
-      rows.sort((a,b)=>{
-        const da=a.DATA||a.data||a.created_at||a.createdAt||'';
-        const db=b.DATA||b.data||b.created_at||b.createdAt||'';
-        return String(db).localeCompare(String(da));
-      });
-    if(!rows.length){tbody.innerHTML='<tr><td colspan="'+cfg.colspan+'" class="empty-state">'+cfg.empty+'</td></tr>';return;}
-    tbody.innerHTML=rows.map(r=>'<tr>'+cfg.render(r).map(v=>'<td>'+escapeHtml(String(v??''))+'</td>').join('')+'</tr>').join('');
-  } catch(e) {
-    tbody.innerHTML='<tr><td colspan="'+cfg.colspan+'" class="empty-state">Erro ao carregar lançamentos: '+escapeHtml(e.message)+'</td></tr>';
-  }
+    rows.sort((a,b)=>String(getRowDate(b)).localeCompare(String(getRowDate(a))));
+    officeHistory[prefix]=rows;
+    fillDashSelects(prefix,rows);
+    renderOfficeDashboard(prefix);
+    renderOfficeTable(prefix);
+  }catch(e){tbody.innerHTML='<tr><td colspan="'+({rec:6,inv:6,ent:7,cad:5}[prefix])+'" class="empty-state">Erro ao carregar lançamentos: '+escapeHtml(e.message)+'</td></tr>';}
 }
 
 // =====================================================================

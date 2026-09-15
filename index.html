@@ -2048,7 +2048,12 @@ async function carregarTabelaEstoque(tipo, prefix) {
   };
   const cfg=configs[tipo]; if(!cfg)return;
   try {
-    const rows=await sbGet(cfg.url+encodeURIComponent(currentCD)+'&order=DATA.desc');
+    const rows=await sbGet(cfg.url+encodeURIComponent(currentCD));
+      rows.sort((a,b)=>{
+        const da=a.DATA||a.data||a.created_at||a.createdAt||'';
+        const db=b.DATA||b.data||b.created_at||b.createdAt||'';
+        return String(db).localeCompare(String(da));
+      });
     if(!rows.length){tbody.innerHTML='<tr><td colspan="'+cfg.colspan+'" class="empty-state">'+cfg.empty+'</td></tr>';return;}
     tbody.innerHTML=rows.map(r=>'<tr>'+cfg.render(r).map(v=>'<td>'+escapeHtml(String(v??''))+'</td>').join('')+'</tr>').join('');
   } catch(e) {
